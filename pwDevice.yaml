@@ -1,16 +1,15 @@
-- portID: 1
-  baudRate: 9600
+- portID: 7
+  baudRate: 19200
   dataBits: 8
   parity: n
   stopBits: 1
-  portString: 9600,n,8,1
+  portString: 19200,n,8,1
   messageMode: Delimited
   searchMethodNumberOfChars: 0
-  searchMethodSuffix: \r\n
-  name: Right-Side-Scanner
+  name: Left-Side-Scanner
   deviceType: COMPort
   disabled: false
-- portID: 1
+- portID: 7
   baudRate: 9600
   dataBits: 8
   parity: n

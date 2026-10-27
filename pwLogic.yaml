@@ -1,7 +1,7 @@
 - gridRows: 3
   gridColumns: 10
-  name: Right-Side-Scanner-Logiic-State-1
-  associatedDeviceName: Right-Side-Scanner
+  name: Left-Side-Scanner-Logic-State-1
+  associatedDeviceName: Left-Side-Scanner
   triggerMode: OnEvent
   order: 2
   steps:
@@ -16,63 +16,8 @@
       name: Cell 0 1
 - gridRows: 3
   gridColumns: 10
-  name: Right-Side-Scanner-Logiic-State-2
-  associatedDeviceName: Right-Side-Scanner
-  triggerMode: OnEvent
-  order: 3
-  steps:
-  - action:
-      actionType: NoOp
-      name: Cell 0 2
-  - action:
-      actionType: Math
-      sourceType: Variable
-      source: Stack-Light
-      source2Type: Value
-      source2: 10
-      operator: AddAsNumbers
-      variable: Stack-Light
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 2
-      description: Stack-Light=Stack-Light + 10
-  - action:
-      actionType: Math
-      sourceType: Value
-      source: YELLOW
-      operator: SetVariableToValue
-      variable: Left-Clear-Ack_Buitton-BGColorVariable
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 3
-  - action:
-      actionType: PackBytes
-      fields:
-      - sourceType: Value
-        source: 0xA0
-        format: Byte
-      - sourceType: Value
-        source: 0x03
-        format: Byte
-      - sourceType: Value
-        source: 0x01
-        format: Byte
-      - sourceType: Value
-        source: 0xA4
-        format: Byte
-      variable: Stack-Light-Cmd
-      name: Cell 0 4
-  - action:
-      actionType: ActionWriteToDevice
-      sourceType: Variable
-      source: Stack-Light-Cmd
-      addCrLf: Yes
-      device: Right-Side-Scanner
-      name: Cell 0 5
-- gridRows: 3
-  gridColumns: 10
-  name: Right-Side-Scanner-Logiic-State-3
-  associatedDeviceName: Right-Side-Scanner
+  name: Left-Side-Scanner-Logic-State-3
+  associatedDeviceName: Left-Side-Scanner
   triggerMode: OnEvent
   order: 4
   steps:
@@ -120,8 +65,8 @@
       name: Cell 0 5
 - gridRows: 3
   gridColumns: 10
-  name: Right-Side-Scanner-Logiic-State-4
-  associatedDeviceName: Right-Side-Scanner
+  name: Left-Side-Scanner-Logic-State-4
+  associatedDeviceName: Left-Side-Scanner
   triggerMode: OnEvent
   order: 5
   steps:
@@ -169,8 +114,8 @@
       name: Cell 0 5
 - gridRows: 3
   gridColumns: 18
-  name: Right-Side-Scanner_Logic
-  associatedDeviceName: Right-Side-Scanner
+  name: Left-Side-Scanner_Logic
+  associatedDeviceName: Left-Side-Scanner
   triggerMode: OnEvent
   order: 1
   steps:
@@ -370,3 +315,58 @@
         clearStartIndex: 1
         clearLength: 1
         name: Cell 1 5
+- gridRows: 3
+  gridColumns: 10
+  name: Leftt-Side-Scanner-Logiic-State-2
+  associatedDeviceName: Left-Side-Scanner
+  triggerMode: OnEvent
+  order: 3
+  steps:
+  - action:
+      actionType: NoOp
+      name: Cell 0 2
+  - action:
+      actionType: Math
+      sourceType: Variable
+      source: Stack-Light
+      source2Type: Value
+      source2: 10
+      operator: AddAsNumbers
+      variable: Stack-Light
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 2
+      description: Stack-Light=Stack-Light + 10
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: YELLOW
+      operator: SetVariableToValue
+      variable: Left-Clear-Ack_Buitton-BGColorVariable
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 3
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x03
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0xA4
+        format: Byte
+      variable: Stack-Light-Cmd
+      name: Cell 0 4
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: Yes
+      device: Right-Side-Scanner
+      name: Cell 0 5
