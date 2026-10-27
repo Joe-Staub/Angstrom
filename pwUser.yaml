@@ -1,0 +1,25 @@
+- name: DefaultDeveloper
+  password: PBKDF2$100000$UfbhT3e/pkrbxqpSWsk1wQ==$sS2s9Ukfs0SudFpSepdWz1l52U9/d7tMQe76qgCzeEA=
+  timeoutPeriod: 0
+  securityLevelNames:
+  - Operator
+  - Setup
+  - Developer
+- name: DefaultOperator
+  password: PBKDF2$100000$4Goif/bH+kPgRNlOQvlD2A==$VjNqzOxstcLtUSDeSG7aUf2vcYvz4GBViDcRMaaDzgs=
+  timeoutPeriod: 0
+  securityLevelNames:
+  - Operator
+- name: DefaultSetup
+  password: PBKDF2$100000$e1dGfczwT/8y16kuL/mdig==$owlWIZ/fMz1EerGOh6qFiH0xPuXlZCjOrId4CdpHVmY=
+  timeoutPeriod: 0
+  securityLevelNames:
+  - Setup
+  - Operator
+- name: staub
+  password: PBKDF2$100000$o4QAJmSQwFBEkDkzMtNdIg==$zKexiSUA87uOxtSxqfjNUZNTwJyHmzmajkyppYHScdg=
+  timeoutPeriod: 0
+  securityLevelNames:
+  - Operator
+  - Setup
+  - Developer

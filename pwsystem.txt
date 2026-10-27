@@ -1,0 +1,9 @@
+123
+PlantwatchApplicationVersion:
+4.0.0
+StartupDelay:
+0
+DoNotReadSecurityDongle:
+
+RemoteClientsEnabled:
+Yes

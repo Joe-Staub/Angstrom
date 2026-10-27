@@ -1,0 +1,6 @@
+- name: ABCStation
+  description: Description
+  associatedLine: ABCLine
+  sequence: 0
+  count: 0
+  operations: []

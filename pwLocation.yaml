@@ -1,0 +1,4 @@
+- name: ABCLocation
+  description: LocationDescription
+  associatedCompany: ABCCompany
+  country: USA

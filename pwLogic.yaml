@@ -1,0 +1,372 @@
+- gridRows: 3
+  gridColumns: 10
+  name: Right-Side-Scanner-Logiic-State-1
+  associatedDeviceName: Right-Side-Scanner
+  triggerMode: OnEvent
+  order: 2
+  steps:
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: RED
+      operator: SetVariableToValue
+      variable: Left-Clear-Ack_Buitton-BGColorVariable
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+- gridRows: 3
+  gridColumns: 10
+  name: Right-Side-Scanner-Logiic-State-2
+  associatedDeviceName: Right-Side-Scanner
+  triggerMode: OnEvent
+  order: 3
+  steps:
+  - action:
+      actionType: NoOp
+      name: Cell 0 2
+  - action:
+      actionType: Math
+      sourceType: Variable
+      source: Stack-Light
+      source2Type: Value
+      source2: 10
+      operator: AddAsNumbers
+      variable: Stack-Light
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 2
+      description: Stack-Light=Stack-Light + 10
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: YELLOW
+      operator: SetVariableToValue
+      variable: Left-Clear-Ack_Buitton-BGColorVariable
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 3
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x03
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0xA4
+        format: Byte
+      variable: Stack-Light-Cmd
+      name: Cell 0 4
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: Yes
+      device: Right-Side-Scanner
+      name: Cell 0 5
+- gridRows: 3
+  gridColumns: 10
+  name: Right-Side-Scanner-Logiic-State-3
+  associatedDeviceName: Right-Side-Scanner
+  triggerMode: OnEvent
+  order: 4
+  steps:
+  - action:
+      actionType: NoOp
+      name: Cell 0 2
+  - action:
+      actionType: Math
+      sourceType: Variable
+      source: Stack-Light
+      source2Type: Value
+      source2: 1001
+      operator: AddAsNumbers
+      variable: Stack-Light-Cmd
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 2
+      description: Stack-Light=Stack-Light + 1001
+  - action:
+      actionType: NoOp
+      name: Cell 0 3
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0xB3
+        format: Byte
+      variable: Stack-Light-Cmd
+      name: Cell 0 4
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: Yes
+      device: Stack-Light
+      name: Cell 0 5
+- gridRows: 3
+  gridColumns: 10
+  name: Right-Side-Scanner-Logiic-State-4
+  associatedDeviceName: Right-Side-Scanner
+  triggerMode: OnEvent
+  order: 5
+  steps:
+  - action:
+      actionType: NoOp
+      name: Cell 0 2
+  - action:
+      actionType: Math
+      sourceType: Variable
+      source: Stack-Light
+      source2Type: Value
+      source2: 1
+      operator: AddAsNumbers
+      variable: Stack-Light-Cmd
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 2
+      description: Stack-Light=Stack-Light + 1001
+  - action:
+      actionType: NoOp
+      name: Cell 0 3
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0xB3
+        format: Byte
+      variable: Stack-Light-Cmd
+      name: Cell 0 4
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: Yes
+      device: Stack-Light
+      name: Cell 0 5
+- gridRows: 3
+  gridColumns: 18
+  name: Right-Side-Scanner_Logic
+  associatedDeviceName: Right-Side-Scanner
+  triggerMode: OnEvent
+  order: 1
+  steps:
+  - action:
+      actionType: NoOp
+      name: Cell 0 1
+  - action:
+      actionType: Math
+      sourceType: Device
+      operator: SetVariableToValue
+      variable: Left-PartId-Data
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 2
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: Clear the fault
+      operator: SetVariableToValue
+      variable: Error-Mesage
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 3
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: 1
+      operator: SetVariableToValue
+      variable: Error-State
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 4
+  - action:
+      actionType: If
+      sourceType: Variable
+      source: Stack-Light
+      compareOperator: =
+      containsStartPositionVariable: Date
+      containsInstanceCountVariable: Date
+      comparedToType: Value
+      comparedTo: 0
+      name: Cell 0 5
+    trueBranch:
+    - action:
+        actionType: Math
+        sourceType: Value
+        source: No Read Barcode.
+        operator: SetVariableToValue
+        variable: Error-Mesage
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 6
+    - action:
+        actionType: Math
+        sourceType: Value
+        source: 2
+        operator: SetVariableToValue
+        variable: Error-Mesage
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 7
+    - action:
+        actionType: If
+        sourceType: Variable
+        source: Left-PartId-Data
+        compareOperator: <>
+        containsStartPositionVariable: Date
+        containsInstanceCountVariable: Date
+        comparedToType: Value
+        comparedTo: No Read
+        name: Cell 0 8
+      trueBranch:
+      - action:
+          actionType: SubString
+          sourceType: Variable
+          source: Left-PartId-Data
+          startCharType: Value
+          startChar: 15
+          lengthType: Value
+          length: 6
+          dest: Left-Part-Number
+          name: Cell 0 9
+      - action:
+          actionType: Math
+          sourceType: Value
+          source: Part belongs on the other line
+          operator: SetVariableToValue
+          variable: Error-Mesage
+          clearStartIndex: 1
+          clearLength: 1
+          name: Cell 0 10
+      - action:
+          actionType: Math
+          sourceType: Value
+          source: 3
+          operator: SetVariableToValue
+          variable: Error-State
+          clearStartIndex: 1
+          clearLength: 1
+          name: Cell 0 11
+      - action:
+          actionType: If
+          sourceType: Variable
+          source: Left-Part-Number
+          compareOperator: <>
+          containsStartPositionVariable: Date
+          containsInstanceCountVariable: Date
+          comparedToType: Value
+          comparedTo: 85545338
+          name: Cell 0 11
+        trueBranch:
+        - action:
+            actionType: ActionBirth
+            partNumberType: Variable
+            partNumber: Left-Part-Number
+            partProducerType: Constant
+            partProducer: ABCCompany
+            partSerialNumberType: Variable
+            partSerialNumber: Left-PartId-Data
+            lotQuantityType: Value
+            lotQuantity: 1
+            statusVariableType: Variable
+            statusVariable: Left-DB-Result
+            name: Cell 0 13
+        - action:
+            actionType: Math
+            sourceType: Value
+            source: Duplicate Part, already in the database
+            operator: SetVariableToValue
+            variable: Error-Mesage
+            clearStartIndex: 1
+            clearLength: 1
+            name: Cell 0 13
+        - action:
+            actionType: Math
+            sourceType: Value
+            source: 4
+            operator: SetVariableToValue
+            variable: Error-State
+            clearStartIndex: 1
+            clearLength: 1
+            name: Cell 0 14
+        - action:
+            actionType: If
+            sourceType: Variable
+            source: Left-DB-Result
+            compareOperator: =
+            containsStartPositionVariable: Date
+            containsInstanceCountVariable: Date
+            comparedToType: Value
+            comparedTo: 0
+            name: Cell 0 16
+          trueBranch:
+          - action:
+              actionType: Math
+              operator: None
+              clearStartIndex: 1
+              clearLength: 1
+              name: Cell 0 17
+          falseBranch:
+          - action:
+              actionType: Math
+              sourceType: Variable
+              source: Error-Mesage
+              operator: SetVariableToValue
+              variable: Display-Error-Message
+              clearStartIndex: 1
+              clearLength: 1
+              name: Cell 1 16
+        falseBranch:
+        - action:
+            actionType: Math
+            sourceType: Variable
+            source: Error-Mesage
+            operator: SetVariableToValue
+            variable: Display-Error-Message
+            clearStartIndex: 1
+            clearLength: 1
+            name: Cell 1 12
+      falseBranch:
+      - action:
+          actionType: Math
+          sourceType: Variable
+          source: Error-Mesage
+          operator: SetVariableToValue
+          variable: Display-Error-Message
+          clearStartIndex: 1
+          clearLength: 1
+          name: Cell 1 8
+    falseBranch:
+    - action:
+        actionType: Math
+        sourceType: Variable
+        source: Error-Mesage
+        operator: SetVariableToValue
+        variable: Display-Error-Message
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 1 5

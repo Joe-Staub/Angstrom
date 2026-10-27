@@ -1,0 +1,4 @@
+enabled: yes
+brokerAddress: 127.0.0.1
+brokerPort: 1883
+heartbeatIntervalSeconds: 5

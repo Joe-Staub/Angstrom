@@ -1,0 +1,3 @@
+- name: ABCPlant
+  description: PlantDescription
+  associatedLocation: ABCLocation

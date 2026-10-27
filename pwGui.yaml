@@ -1,0 +1,342 @@
+screens:
+- name: Operator-Main
+  backgroundColor: Silver
+  buttons:
+  - name: Right-Clear-Ack-Button
+    description: Clear Error
+    xposition: 783
+    yposition: 460
+    width: 5240
+    height: 110
+    fGColor: Black
+    bGColor: Wheat
+    font: Arial, 14pt, style=Bold
+    type: SetToValue
+  - name: Left-Clear-Ack-Button
+    description: Clear Error
+    xposition: 140
+    yposition: 460
+    width: 5240
+    height: 110
+    fGColor: Black
+    bGColor: Wheat
+    font: Arial, 14pt, style=Bold
+    type: SetToValue
+    bGColorVariable: Left-Clear-Ack_Buitton-BGColorVariable
+  - name: Reset-ProductionCounts
+    description: Reset Production Counts
+    xposition: 600
+    yposition: 740
+    width: 5320
+    height: 35
+    fGColor: Black
+    bGColor: DarkSeaGreen
+    font: Arial, 14pt, style=Bold
+    type: SetToValue
+  labels:
+  - name: Label1
+    description: Last Data Scanned
+    xposition: 100
+    yposition: 240
+    width: 200
+    height: 25
+    fGColor: Black
+    bGColor: White
+    font: Arial, 14pt, style=Bold
+    source: Last Data Scanned
+    sourceType: Constant
+    textAlign: Left
+    verticalAlign: Top
+  - name: Label1_1
+    description: Time of Last Scan
+    xposition: 120
+    yposition: 280
+    width: 183
+    height: 22
+    fGColor: Black
+    bGColor: White
+    font: Arial, 14pt, style=Bold
+    source: Time of Last Scan
+    sourceType: Constant
+    textAlign: Left
+    verticalAlign: Top
+  - name: Label1_2
+    description: Last Data Scanned
+    xposition: 580
+    yposition: 240
+    width: 209
+    height: 25
+    fGColor: Black
+    bGColor: White
+    font: Arial, 14pt, style=Bold
+    source: Last Data Scanned
+    sourceType: Constant
+    textAlign: Left
+    verticalAlign: Top
+  - name: Label1_1_1
+    description: Time of Last Scan
+    xposition: 580
+    yposition: 280
+    width: 209
+    height: 22
+    fGColor: Black
+    bGColor: White
+    font: Arial, 14pt, style=Bold
+    source: Time of Last Scan
+    sourceType: Constant
+    textAlign: Left
+    verticalAlign: Top
+  - name: Label1_1_1_1
+    description: Production Count
+    xposition: 580
+    yposition: 320
+    width: 209
+    height: 22
+    fGColor: Black
+    bGColor: White
+    font: Arial, 14pt, style=Bold
+    source: Production Count
+    sourceType: Constant
+    textAlign: Left
+    verticalAlign: Top
+  - name: Label1_1_1_1_1
+    description: Production Count
+    xposition: 120
+    yposition: 320
+    width: 183
+    height: 22
+    fGColor: Black
+    bGColor: White
+    font: Arial, 14pt, style=Bold
+    source: Production Count
+    sourceType: Constant
+    textAlign: Left
+    verticalAlign: Top
+  - name: Label1_1_1_1_2
+    description: Current Container Count
+    xposition: 580
+    yposition: 360
+    width: 209
+    height: 22
+    fGColor: Black
+    bGColor: White
+    font: Arial, 14pt, style=Bold
+    source: Current Container Count
+    sourceType: Constant
+    textAlign: Left
+    verticalAlign: Top
+  - name: Label1_1_1_1_1_1
+    description: Current Container Count
+    xposition: 120
+    yposition: 360
+    width: 183
+    height: 22
+    fGColor: Black
+    bGColor: White
+    font: Arial, 14pt, style=Bold
+    source: Current Container Count
+    sourceType: Constant
+    textAlign: Left
+    verticalAlign: Top
+  - name: Label1_3
+    description: 'Production Part No.: 85545338'
+    xposition: 640
+    yposition: 180
+    width: 292
+    height: 20
+    fGColor: SteelBlue
+    bGColor: Silver
+    font: Arial, 14pt, style=Bold
+    source: 'Production Part No.: 85545338'
+    sourceType: Constant
+    textAlign: Left
+    verticalAlign: Top
+  - name: Label1_3_1
+    description: 'Production Part No.: 85545339'
+    xposition: 160
+    yposition: 180
+    width: 292
+    height: 20
+    fGColor: SteelBlue
+    bGColor: Silver
+    font: Arial, 14pt, style=Bold
+    source: 'Production Part No.: 85545339'
+    sourceType: Constant
+    textAlign: Left
+    verticalAlign: Top
+  - name: Label3
+    description: Left Side Line
+    xposition: 80
+    yposition: 120
+    width: 420
+    height: 37
+    fGColor: DarkCyan
+    bGColor: Silver
+    font: Arial, 20.25pt, style=Bold
+    source: Left Side Line
+    sourceType: Constant
+    textAlign: Center
+    verticalAlign: Top
+  - name: Label3_1
+    description: Right Side Line
+    xposition: 580
+    yposition: 120
+    width: 399
+    height: 37
+    fGColor: DarkCyan
+    bGColor: Silver
+    font: Arial, 20.25pt, style=Bold
+    source: Right Side Line
+    sourceType: Constant
+    textAlign: Center
+    verticalAlign: Top
+  inputs: []
+  images:
+  - name: Image11
+    xposition: 20
+    yposition: 720
+    width: 183
+    height: 66
+    source: PlantWatch Logo_vectorformat_031111_transparent.png
+    sourceType: Constant
+    refreshOnlyOnNameChange: No
+  listboxes: []
+  dropdowns: []
+  webPages: []
+  outputTexts:
+  - name: OutputText2
+    description: ${Left-PartId-Data}
+    xposition: 320
+    yposition: 240
+    width: 183
+    height: 20
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 14pt, style=Bold
+    variable: Left-PartId-Data
+    textAlign: Left
+    verticalAlign: Top
+  - name: OutputText3
+    description: ${Display-Error-Message}
+    xposition: 60
+    yposition: 20
+    width: 896
+    height: 49
+    fGColor: Black
+    bGColor: WhiteSmoke
+    font: Arial, 15.75pt, style=Bold
+    variable: Display-Error-Message
+    textAlign: Center
+    verticalAlign: Middle
+  - name: OutputText2_1
+    description: ${Left-PartId-Scan-Time}
+    xposition: 320
+    yposition: 280
+    width: 183
+    height: 20
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 14pt, style=Bold
+    variable: Left-PartId-Scan-Time
+    textAlign: Left
+    verticalAlign: Top
+  - name: OutputText2_2
+    description: ${Right-PartId-Data}
+    xposition: 800
+    yposition: 240
+    width: 183
+    height: 20
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 14pt, style=Bold
+    variable: Right-PartId-Data
+    textAlign: Left
+    verticalAlign: Top
+  - name: OutputText2_1_1
+    description: ${Right-PartId-Scan-Time}
+    xposition: 800
+    yposition: 280
+    width: 183
+    height: 20
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 14pt, style=Bold
+    variable: Right-PartId-Scan-Time
+    textAlign: Left
+    verticalAlign: Top
+  - name: OutputText2_1_1_1
+    description: ${Right-Production-Count}
+    xposition: 800
+    yposition: 320
+    width: 183
+    height: 20
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 14pt, style=Bold
+    variable: Right-Production-Count
+    textAlign: Left
+    verticalAlign: Top
+  - name: OutputText2_1_1_1_1
+    description: ${Left-Production-Count}
+    xposition: 320
+    yposition: 320
+    width: 183
+    height: 20
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 14pt, style=Bold
+    variable: Left-Production-Count
+    textAlign: Left
+    verticalAlign: Top
+  - name: OutputText2_1_1_1_1_1
+    description: ${Left-Container-Count}
+    xposition: 320
+    yposition: 360
+    width: 183
+    height: 20
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 14pt, style=Bold
+    variable: Left-Container-Count
+    textAlign: Left
+    verticalAlign: Top
+  - name: OutputText2_1_1_1_2
+    description: ${Right-Container-Count}
+    xposition: 800
+    yposition: 360
+    width: 183
+    height: 20
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 14pt, style=Bold
+    variable: Right-Container-Count
+    textAlign: Left
+    verticalAlign: Top
+  gradientButtons: []
+  userLogins: []
+  zOrder:
+  - Label1
+  - OutputText2
+  - OutputText3
+  - Label1_1
+  - OutputText2_1
+  - Label1_2
+  - OutputText2_2
+  - Label1_1_1
+  - OutputText2_1_1
+  - Label1_1_1_1
+  - OutputText2_1_1_1
+  - Label1_1_1_1_1
+  - OutputText2_1_1_1_1
+  - Right-Clear-Ack-Button
+  - Left-Clear-Ack-Button
+  - Reset-ProductionCounts
+  - Label1_1_1_1_2
+  - Label1_1_1_1_1_1
+  - Label1_3
+  - Label1_3_1
+  - Label3
+  - Label3_1
+  - Image11
+  - OutputText2_1_1_1_1_1
+  - OutputText2_1_1_1_2

@@ -1,0 +1,6 @@
+- name: Developer
+  description: Can do things that probably should not be done in production
+- name: Operator
+  description: Can view data and acknowledge alarms.
+- name: Setup
+  description: Can change setup information

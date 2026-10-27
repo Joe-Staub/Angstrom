@@ -1,0 +1,7 @@
+- name: PWDatabase
+  connectionString: Data Source=localhost\SQLEXPRESS;initial Catalog=PWInventory;Integrated Security=SSPI
+  timeout: 2000
+  sQLorODBCType: NativeSQL
+  connectionTestQueryPeriod: 10
+  disabled: No
+  useCommandAndStatusVariables: no
