@@ -1,3 +1,4 @@
+startupScreen: Operator-Main
 screens:
 - name: Operator-Main
   backgroundColor: Silver

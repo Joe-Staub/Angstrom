@@ -48,6 +48,110 @@
       device: Stack-Light
       name: Cell 0 4
 - gridRows: 3
+  gridColumns: 11
+  name: Left-Clear-Alert
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: NoOp
+      name: Cell 0 2
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: RED
+      operator: SetVariableToValue
+      variable: Left-Clear-Ack_Buitton-BGColorVariable
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 2
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0x00
+        format: Byte
+      - sourceType: Value
+        source: 0xA1
+        format: Byte
+      variable: Stack-Light-Cmd
+      status: Error-State
+      name: Cell 0 3
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: Yes
+      device: Left-Light
+      name: Cell 0 4
+  - action:
+      actionType: Sleep
+      durationType: Variable
+      duration: LIGHT_SLEEP
+      name: Cell 0 6
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x02
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0xA3
+        format: Byte
+      variable: Stack-Light-Cmd
+      status: Error-State
+      name: Cell 0 5
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: Yes
+      device: Left-Light
+      name: Cell 0 6
+  - action:
+      actionType: Sleep
+      durationType: Variable
+      duration: LIGHT_SLEEP
+      name: Cell 0 8
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x04
+        format: Byte
+      - sourceType: Value
+        source: 0x00
+        format: Byte
+      - sourceType: Value
+        source: 0xA4
+        format: Byte
+      variable: Stack-Light-Cmd
+      status: Error-State
+      name: Cell 0 8
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: No
+      device: Left-Light
+      name: Cell 0 8
+- gridRows: 3
   gridColumns: 10
   name: Left-Side-Scanner-Diuplicate-Part-4
   associatedDeviceName: Left-Side-Scanner
@@ -151,41 +255,10 @@
   order: 4
   steps:
   - action:
-      actionType: NoOp
+      actionType: CallSubroutine
+      subroutineName: LeftAlert
+      continueOnFailure: false
       name: Cell 0 2
-  - action:
-      actionType: Math
-      sourceType: Value
-      source: RED
-      operator: SetVariableToValue
-      variable: Left-Clear-Ack_Buitton-BGColorVariable
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 2
-  - action:
-      actionType: PackBytes
-      fields:
-      - sourceType: Value
-        source: 0xA0
-        format: Byte
-      - sourceType: Value
-        source: 0x01
-        format: Byte
-      - sourceType: Value
-        source: 0x01
-        format: Byte
-      - sourceType: Value
-        source: 0xB3
-        format: Byte
-      variable: Stack-Light-Cmd
-      name: Cell 0 4
-  - action:
-      actionType: ActionWriteToDevice
-      sourceType: Variable
-      source: Stack-Light-Cmd
-      addCrLf: Yes
-      device: Stack-Light
-      name: Cell 0 5
 - gridRows: 3
   gridColumns: 10
   name: Left-Side-Scanner-Persist-Data-Error-5
@@ -618,6 +691,108 @@
         clearLength: 1
         name: Cell 1 5
 - gridRows: 3
+  gridColumns: 11
+  name: LeftAlert
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: NoOp
+      name: Cell 0 2
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: RED
+      operator: SetVariableToValue
+      variable: Left-Clear-Ack_Buitton-BGColorVariable
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 2
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0xB3
+        format: Byte
+      variable: Stack-Light-Cmd
+      name: Cell 0 3
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: Yes
+      device: Left-Light
+      name: Cell 0 4
+  - action:
+      actionType: Sleep
+      durationType: Variable
+      duration: LIGHT_SLEEP
+      name: Cell 0 4
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x02
+        format: Byte
+      - sourceType: Value
+        source: 0x00
+        format: Byte
+      - sourceType: Value
+        source: 0xA2
+        format: Byte
+      variable: Stack-Light-Cmd
+      name: Cell 0 5
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: Yes
+      device: Left-Light
+      name: Cell 0 6
+  - action:
+      actionType: Sleep
+      durationType: Variable
+      duration: LIGHT_SLEEP
+      name: Cell 0 8
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x04
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0xD8
+        format: Byte
+      variable: Stack-Light-Cmd
+      status: Error-State
+      name: Cell 0 7
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: No
+      device: Left-Light
+      name: Cell 0 8
+- gridRows: 3
   gridColumns: 10
   name: Leftt-Side-Scanner-Clear-Fault-2
   associatedDeviceName: Left-Side-Scanner
@@ -658,7 +833,7 @@
       sourceType: Variable
       source: Stack-Light-Cmd
       addCrLf: Yes
-      device: Stack-Light
+      device: Left-Light
       name: Cell 0 5
 - gridRows: 3
   gridColumns: 10
@@ -712,3 +887,209 @@
       clearStartIndex: 1
       clearLength: 1
       name: Cell 0 5
+- gridRows: 3
+  gridColumns: 11
+  name: Right-Clear-Alert
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: NoOp
+      name: Cell 0 2
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: RED
+      operator: SetVariableToValue
+      variable: Left-Clear-Ack_Buitton-BGColorVariable
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 2
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0x00
+        format: Byte
+      - sourceType: Value
+        source: 0xA1
+        format: Byte
+      variable: Stack-Light-Cmd
+      status: Error-State
+      name: Cell 0 3
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: Yes
+      device: Right-Light
+      name: Cell 0 4
+  - action:
+      actionType: Sleep
+      durationType: Variable
+      duration: LIGHT_SLEEP
+      name: Cell 0 6
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x02
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0xA3
+        format: Byte
+      variable: Stack-Light-Cmd
+      status: Error-State
+      name: Cell 0 5
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: Yes
+      device: Right-Light
+      name: Cell 0 6
+  - action:
+      actionType: Sleep
+      durationType: Variable
+      duration: LIGHT_SLEEP
+      name: Cell 0 8
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x04
+        format: Byte
+      - sourceType: Value
+        source: 0x00
+        format: Byte
+      - sourceType: Value
+        source: 0xA4
+        format: Byte
+      variable: Stack-Light-Cmd
+      status: Error-State
+      name: Cell 0 8
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: No
+      device: Right-Light
+      name: Cell 0 8
+- gridRows: 3
+  gridColumns: 11
+  name: RightAlert
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: NoOp
+      name: Cell 0 2
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: RED
+      operator: SetVariableToValue
+      variable: Left-Clear-Ack_Buitton-BGColorVariable
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 2
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0xB3
+        format: Byte
+      variable: Stack-Light-Cmd
+      name: Cell 0 3
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: Yes
+      device: Right-Light
+      name: Cell 0 4
+  - action:
+      actionType: Sleep
+      durationType: Variable
+      duration: LIGHT_SLEEP
+      name: Cell 0 4
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x02
+        format: Byte
+      - sourceType: Value
+        source: 0x00
+        format: Byte
+      - sourceType: Value
+        source: 0xA2
+        format: Byte
+      variable: Stack-Light-Cmd
+      name: Cell 0 5
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: Yes
+      device: Right-Light
+      name: Cell 0 6
+  - action:
+      actionType: Sleep
+      durationType: Variable
+      duration: LIGHT_SLEEP
+      name: Cell 0 8
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x04
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0xD8
+        format: Byte
+      variable: Stack-Light-Cmd
+      status: Error-State
+      name: Cell 0 7
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: No
+      device: Right-Light
+      name: Cell 0 8
