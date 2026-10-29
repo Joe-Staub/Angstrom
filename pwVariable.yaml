@@ -1,3 +1,9 @@
+- variableType: Constant
+  name: BLANK
+  description: 'Constant: '
+  isArray: false
+  dataType: String
+  defaultValue: '  '
 - name: Display-Error-Message
   isArray: false
   dataType: String
@@ -10,16 +16,17 @@
   isArray: false
   dataType: String
   variableType: Local
-- name: Left-Ack
-  isArray: false
-  dataType: String
-  variableType: Local
 - name: Left-Clear-Ack_Buitton-BGColorVariable
   isArray: false
   dataType: String
   defaultValue: Wheat
   variableType: Local
 - name: Left-Container-Count
+  isArray: false
+  dataType: String
+  persistenceGroup: Angstrom-Axle-Tube
+  variableType: Local
+- name: Left-Current-Container
   isArray: false
   dataType: String
   variableType: Local
@@ -39,9 +46,14 @@
   isArray: false
   dataType: String
   variableType: Local
+- name: Left-Persist-Status
+  isArray: false
+  dataType: String
+  variableType: Local
 - name: Left-Production-Count
   isArray: false
   dataType: String
+  persistenceGroup: Angstrom-Axle-Tube
   variableType: Local
 - name: Part-No.-Select
   isArray: false
@@ -56,6 +68,10 @@
   dataType: String
   variableType: Local
 - name: Right-Container-Count
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Right-Current-Container
   isArray: false
   dataType: String
   variableType: Local
@@ -79,7 +95,7 @@
   isArray: false
   dataType: String
   variableType: Local
-- name: anissue
+- name: WIP-Part-Label-Template
   isArray: false
-  dataType: Integer
+  dataType: String
   variableType: Local

@@ -4,7 +4,7 @@ screens:
   buttons:
   - name: Right-Clear-Ack-Button
     description: Clear Error
-    xposition: 783
+    xposition: 673
     yposition: 460
     width: 5240
     height: 110
@@ -14,7 +14,7 @@ screens:
     type: SetToValue
   - name: Left-Clear-Ack-Button
     description: Clear Error
-    xposition: 140
+    xposition: 160
     yposition: 460
     width: 5240
     height: 110
@@ -25,7 +25,7 @@ screens:
     bGColorVariable: Left-Clear-Ack_Buitton-BGColorVariable
   - name: Reset-ProductionCounts
     description: Reset Production Counts
-    xposition: 600
+    xposition: 420
     yposition: 740
     width: 5320
     height: 35
@@ -36,10 +36,10 @@ screens:
   labels:
   - name: Label1
     description: Last Data Scanned
-    xposition: 100
+    xposition: 60
     yposition: 240
-    width: 200
-    height: 25
+    width: 244
+    height: 22
     fGColor: Black
     bGColor: White
     font: Arial, 14pt, style=Bold
@@ -49,9 +49,9 @@ screens:
     verticalAlign: Top
   - name: Label1_1
     description: Time of Last Scan
-    xposition: 120
+    xposition: 60
     yposition: 280
-    width: 183
+    width: 244
     height: 22
     fGColor: Black
     bGColor: White
@@ -62,10 +62,10 @@ screens:
     verticalAlign: Top
   - name: Label1_2
     description: Last Data Scanned
-    xposition: 580
+    xposition: 540
     yposition: 240
-    width: 209
-    height: 25
+    width: 241
+    height: 22
     fGColor: Black
     bGColor: White
     font: Arial, 14pt, style=Bold
@@ -75,9 +75,9 @@ screens:
     verticalAlign: Top
   - name: Label1_1_1
     description: Time of Last Scan
-    xposition: 580
+    xposition: 540
     yposition: 280
-    width: 209
+    width: 241
     height: 22
     fGColor: Black
     bGColor: White
@@ -88,9 +88,9 @@ screens:
     verticalAlign: Top
   - name: Label1_1_1_1
     description: Production Count
-    xposition: 580
+    xposition: 540
     yposition: 320
-    width: 209
+    width: 241
     height: 22
     fGColor: Black
     bGColor: White
@@ -101,9 +101,9 @@ screens:
     verticalAlign: Top
   - name: Label1_1_1_1_1
     description: Production Count
-    xposition: 120
+    xposition: 60
     yposition: 320
-    width: 183
+    width: 244
     height: 22
     fGColor: Black
     bGColor: White
@@ -113,35 +113,35 @@ screens:
     textAlign: Left
     verticalAlign: Top
   - name: Label1_1_1_1_2
-    description: Current Container Count
-    xposition: 580
+    description: Current Container
+    xposition: 540
     yposition: 360
-    width: 209
+    width: 241
     height: 22
     fGColor: Black
     bGColor: White
     font: Arial, 14pt, style=Bold
-    source: Current Container Count
+    source: Current Container
     sourceType: Constant
     textAlign: Left
     verticalAlign: Top
   - name: Label1_1_1_1_1_1
-    description: Current Container Count
-    xposition: 120
+    description: Current Container
+    xposition: 60
     yposition: 360
-    width: 183
+    width: 244
     height: 22
     fGColor: Black
     bGColor: White
     font: Arial, 14pt, style=Bold
-    source: Current Container Count
+    source: Current Container
     sourceType: Constant
     textAlign: Left
     verticalAlign: Top
   - name: Label1_3
     description: 'Production Part No.: 85545338'
-    xposition: 640
-    yposition: 180
+    xposition: 633
+    yposition: 160
     width: 292
     height: 20
     fGColor: SteelBlue
@@ -153,8 +153,8 @@ screens:
     verticalAlign: Top
   - name: Label1_3_1
     description: 'Production Part No.: 85545339'
-    xposition: 160
-    yposition: 180
+    xposition: 153
+    yposition: 160
     width: 292
     height: 20
     fGColor: SteelBlue
@@ -166,9 +166,9 @@ screens:
     verticalAlign: Top
   - name: Label3
     description: Left Side Line
-    xposition: 80
+    xposition: 155
     yposition: 120
-    width: 420
+    width: 292
     height: 37
     fGColor: DarkCyan
     bGColor: Silver
@@ -179,9 +179,9 @@ screens:
     verticalAlign: Top
   - name: Label3_1
     description: Right Side Line
-    xposition: 580
+    xposition: 627
     yposition: 120
-    width: 399
+    width: 292
     height: 37
     fGColor: DarkCyan
     bGColor: Silver
@@ -189,6 +189,32 @@ screens:
     source: Right Side Line
     sourceType: Constant
     textAlign: Center
+    verticalAlign: Top
+  - name: Label1_1_1_1_2_1
+    description: Current Container Count
+    xposition: 540
+    yposition: 400
+    width: 241
+    height: 22
+    fGColor: Black
+    bGColor: White
+    font: Arial, 14pt, style=Bold
+    source: Current Container Count
+    sourceType: Constant
+    textAlign: Left
+    verticalAlign: Top
+  - name: Label1_1_1_1_1_1_1
+    description: Current Container Count
+    xposition: 60
+    yposition: 400
+    width: 244
+    height: 22
+    fGColor: Black
+    bGColor: White
+    font: Arial, 14pt, style=Bold
+    source: Current Container Count
+    sourceType: Constant
+    textAlign: Left
     verticalAlign: Top
   inputs: []
   images:
@@ -290,7 +316,7 @@ screens:
     verticalAlign: Top
   - name: OutputText2_1_1_1_1_1
     description: ${Left-Container-Count}
-    xposition: 320
+    xposition: 313
     yposition: 360
     width: 183
     height: 20
@@ -301,9 +327,33 @@ screens:
     textAlign: Left
     verticalAlign: Top
   - name: OutputText2_1_1_1_2
-    description: ${Right-Container-Count}
+    description: ${Right-Current-Container}
     xposition: 800
     yposition: 360
+    width: 183
+    height: 20
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 14pt, style=Bold
+    variable: Right-Current-Container
+    textAlign: Left
+    verticalAlign: Top
+  - name: OutputText2_1_1_1_1_1_1
+    description: ${Left-Current-Container}
+    xposition: 313
+    yposition: 400
+    width: 183
+    height: 20
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 14pt, style=Bold
+    variable: Left-Current-Container
+    textAlign: Left
+    verticalAlign: Top
+  - name: OutputText2_1_1_1_2_1
+    description: ${Right-Container-Count}
+    xposition: 800
+    yposition: 400
     width: 183
     height: 20
     fGColor: Black
@@ -340,3 +390,7 @@ screens:
   - Image11
   - OutputText2_1_1_1_1_1
   - OutputText2_1_1_1_2
+  - Label1_1_1_1_2_1
+  - Label1_1_1_1_1_1_1
+  - OutputText2_1_1_1_1_1_1
+  - OutputText2_1_1_1_2_1

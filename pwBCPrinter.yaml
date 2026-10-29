@@ -1,1 +1,6 @@
-[]
+- name: Left-WIP-Container-Label-Printer
+  type: Network
+  disabled: Yes
+- name: Left-WIP-Part-Label-Printer
+  type: Network
+  disabled: Yes
