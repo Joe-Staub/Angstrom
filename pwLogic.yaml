@@ -302,9 +302,9 @@
       - action:
           actionType: RegexExtract
           sourceType: Variable
-          source: Left-SupPartNumber>
+          source: Left-PartId-Data
           patternType: Value
-          pattern: ESAT(?<Left-LblYear>\d{2})(?<Left-DayOfYear>\d{3})(?<Left-Line>\d)(?<Left-DailySequence>\d{4})(?<Left-GMPartNumber>\d{8})(?<Left-SupPartNumber>\d(9)*)
+          pattern: ^ESAT(?<LeftLblYear>\d{2})(?<LeftDayOfYear>\d{3})(?<LeftLine>\d)(?<LeftDailySequence>\d{4})(?<LeftGMPartNumber>\d{8})(?<SupPartNumber>\d*)$
           name: Cell 0 9
       - action:
           actionType: SubString
@@ -313,7 +313,7 @@
           startCharType: Value
           startChar: 15
           lengthType: Value
-          length: 6
+          length: 8
           dest: Left-Part-Number
           name: Cell 0 9
       - action:
@@ -341,8 +341,8 @@
           compareOperator: <>
           containsStartPositionVariable: Date
           containsInstanceCountVariable: Date
-          comparedToType: Value
-          comparedTo: 85545338
+          comparedToType: Variable
+          comparedTo: Left-Supplier-Part-No-Constant
           name: Cell 0 11
         trueBranch:
         - action:
@@ -350,14 +350,14 @@
             partNumberType: Variable
             partNumber: Left-Part-Number
             partProducerType: Constant
-            partProducer: ABCCompany
+            partProducer: Angstrom
             partSerialNumberType: Variable
             partSerialNumber: Left-PartId-Data
             lotQuantityType: Value
             lotQuantity: 1
             statusVariableType: Variable
             statusVariable: Left-DB-Result
-            name: Cell 0 13
+            name: Cell 0 14
         - action:
             actionType: Math
             sourceType: Value
@@ -564,28 +564,13 @@
                     clearStartIndex: 1
                     clearLength: 1
                     name: Cell 0 32
-      falseBranch:
-      - action:
-          actionType: Math
-          sourceType: Variable
-          source: Error-Mesage
-          operator: SetVariableToValue
-          variable: Display-Error-Message
-          clearStartIndex: 1
-          clearLength: 1
-          name: Cell 1 8
+        falseBranch:
+        - action:
+            actionType: NoOp
     falseBranch:
     - action:
-        actionType: Math
-        sourceType: Variable
-        source: Error-Mesage
-        operator: SetVariableToValue
-        variable: Display-Error-Message
-        clearStartIndex: 1
-        clearLength: 1
-        name: Cell 1 5
-    - action:
         actionType: NoOp
+        name: Cell 1 5
 - gridRows: 3
   gridColumns: 10
   name: Left-Side-Scanner_Logic_Test

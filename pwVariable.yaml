@@ -35,26 +35,6 @@
   isArray: false
   dataType: String
 - variableType: Local
-  name: Left-DailySequence
-  isArray: false
-  dataType: String
-- variableType: Local
-  name: Left-DayOfYear
-  isArray: false
-  dataType: String
-- variableType: Local
-  name: Left-GMPartNumber
-  isArray: false
-  dataType: String
-- variableType: Local
-  name: Left-LblYea
-  isArray: false
-  dataType: String
-- variableType: Local
-  name: Left-Line
-  isArray: false
-  dataType: String
-- variableType: Local
   name: Left-Part-Number
   isArray: false
   dataType: String
@@ -75,8 +55,34 @@
   isArray: false
   dataType: String
   persistenceGroup: Angstrom-Axle-Tube
+- variableType: Constant
+  name: Left-Supplier-Part-No-Constant
+  description: 'Constant: 85545338'
+  isArray: false
+  dataType: String
+  defaultValue: 85545338
 - variableType: Local
-  name: Left-SupPartNumber>
+  name: LeftDailySequence
+  isArray: false
+  dataType: String
+- variableType: Local
+  name: LeftDayOfYear
+  isArray: false
+  dataType: String
+- variableType: Local
+  name: LeftGMPartNumber
+  isArray: false
+  dataType: String
+- variableType: Local
+  name: LeftLblYear
+  isArray: false
+  dataType: String
+- variableType: Local
+  name: LeftLine
+  isArray: false
+  dataType: String
+- variableType: Local
+  name: LeftSupPartNumber>
   isArray: false
   dataType: String
 - variableType: Local
@@ -111,6 +117,12 @@
   name: Right-Production-Count
   isArray: false
   dataType: String
+- variableType: Constant
+  name: Right-Supplier-Part-No-Constant
+  description: 'Constant: 85545339'
+  isArray: false
+  dataType: String
+  defaultValue: 85545339
 - variableType: Local
   name: Stack-Light
   isArray: false
