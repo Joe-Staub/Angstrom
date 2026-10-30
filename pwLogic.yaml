@@ -318,7 +318,7 @@
       device: Stack-Light
       name: Cell 0 5
 - gridRows: 3
-  gridColumns: 34
+  gridColumns: 35
   name: Left-Side-Scanner_Logic
   associatedDeviceName: Left-Side-Scanner
   triggerMode: OnEvent
@@ -394,13 +394,20 @@
         name: Cell 0 8
       trueBranch:
       - action:
+          actionType: RegexExtract
+          sourceType: Variable
+          source: Left-PartId-Data
+          patternType: Value
+          pattern: ^ESAT(?<LeftLblYear>\d{2})(?<LeftDayOfYear>\d{3})(?<LeftLine>\d)(?<LeftDailySequence>\d{4})(?<LeftGMPartNumber>\d{8})(?<SupPartNumber>\d*)$
+          name: Cell 0 9
+      - action:
           actionType: SubString
           sourceType: Variable
           source: Left-PartId-Data
           startCharType: Value
           startChar: 15
           lengthType: Value
-          length: 6
+          length: 8
           dest: Left-Part-Number
           name: Cell 0 9
       - action:
@@ -428,8 +435,8 @@
           compareOperator: <>
           containsStartPositionVariable: Date
           containsInstanceCountVariable: Date
-          comparedToType: Value
-          comparedTo: 85545338
+          comparedToType: Variable
+          comparedTo: Left-Supplier-Part-No-Constant
           name: Cell 0 11
         trueBranch:
         - action:
@@ -437,14 +444,14 @@
             partNumberType: Variable
             partNumber: Left-Part-Number
             partProducerType: Constant
-            partProducer: ABCCompany
+            partProducer: Angstrom
             partSerialNumberType: Variable
             partSerialNumber: Left-PartId-Data
             lotQuantityType: Value
             lotQuantity: 1
             statusVariableType: Variable
             statusVariable: Left-DB-Result
-            name: Cell 0 13
+            name: Cell 0 14
         - action:
             actionType: Math
             sourceType: Value
@@ -651,65 +658,12 @@
                     clearStartIndex: 1
                     clearLength: 1
                     name: Cell 0 32
-                falseBranch:
-                - action:
-                    actionType: Math
-                    sourceType: Value
-                    source: 0
-                    operator: SetVariableToValue
-                    variable: Stack-Light
-                    clearStartIndex: 1
-                    clearLength: 1
-                    name: Cell 1 29
-              falseBranch:
-              - action:
-                  actionType: Math
-                  sourceType: Variable
-                  source: Error-Mesage
-                  operator: SetVariableToValue
-                  variable: Display-Error-Message
-                  clearStartIndex: 1
-                  clearLength: 1
-                  name: Cell 1 26
-          falseBranch:
-          - action:
-              actionType: Math
-              sourceType: Variable
-              source: Error-Mesage
-              operator: SetVariableToValue
-              variable: Display-Error-Message
-              clearStartIndex: 1
-              clearLength: 1
-              name: Cell 1 16
         falseBranch:
         - action:
-            actionType: Math
-            sourceType: Variable
-            source: Error-Mesage
-            operator: SetVariableToValue
-            variable: Display-Error-Message
-            clearStartIndex: 1
-            clearLength: 1
-            name: Cell 1 12
-      falseBranch:
-      - action:
-          actionType: Math
-          sourceType: Variable
-          source: Error-Mesage
-          operator: SetVariableToValue
-          variable: Display-Error-Message
-          clearStartIndex: 1
-          clearLength: 1
-          name: Cell 1 8
+            actionType: NoOp
     falseBranch:
     - action:
-        actionType: Math
-        sourceType: Variable
-        source: Error-Mesage
-        operator: SetVariableToValue
-        variable: Display-Error-Message
-        clearStartIndex: 1
-        clearLength: 1
+        actionType: NoOp
         name: Cell 1 5
 - gridRows: 3
   gridColumns: 11
@@ -813,6 +767,38 @@
       addCrLf: No
       device: Left-Light
       name: Cell 0 8
+- gridRows: 3
+  gridColumns: 10
+  name: Left-Side-Scanner_Logic_Test
+  associatedDeviceName: Left-Side-Scanner
+  triggerMode: OnEvent
+  order: 8
+  steps:
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: 0
+      operator: SetVariableToValue
+      variable: Stack-Light
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
+      actionType: SplitToNextLine
+  - action:
+      actionType: If
+      sourceType: Variable
+      source: Stack-Light
+      compareOperator: =
+      containsStartPositionVariable: BLANK
+      containsInstanceCountVariable: BLANK
+      comparedToType: Value
+      comparedTo: 1
+      name: Cell 0 3
+    trueBranch:
+    - action:
+        actionType: NoOp
+        name: Cell 0 4
 - gridRows: 3
   gridColumns: 10
   name: Leftt-Side-Scanner-Clear-Fault-2

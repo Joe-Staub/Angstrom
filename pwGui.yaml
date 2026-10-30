@@ -244,7 +244,7 @@ screens:
     textAlign: Left
     verticalAlign: Top
   - name: OutputText3
-    description: ${Display-Error-Message}
+    description: ${Error-Mesage}
     xposition: 60
     yposition: 20
     width: 896
@@ -252,7 +252,7 @@ screens:
     fGColor: Black
     bGColor: WhiteSmoke
     font: Arial, 15.75pt, style=Bold
-    variable: Display-Error-Message
+    variable: Error-Mesage
     textAlign: Center
     verticalAlign: Middle
   - name: OutputText2_1

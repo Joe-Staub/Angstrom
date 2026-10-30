@@ -1,4 +1,4 @@
 - name: ABCLocation
   description: LocationDescription
-  associatedCompany: ABCCompany
+  associatedCompany: Angstrom
   country: USA

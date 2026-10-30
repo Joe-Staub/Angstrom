@@ -1,1 +1,25 @@
-[]
+- name: ABCLine
+  nodes:
+  - id: na4387248
+    kind: Start
+    printerKind: Barcode
+    x: 60
+    y: 60
+  - id: ndce733f8
+    kind: Station
+    stationName: ABCStation
+    printerKind: Barcode
+    x: 60
+    y: 170
+  - id: n349f697b
+    kind: End
+    printerKind: Barcode
+    x: 60
+    y: 280
+  links:
+  - fromId: na4387248
+    toId: ndce733f8
+    waypoints: []
+  - fromId: ndce733f8
+    toId: n349f697b
+    waypoints: []

@@ -1,2 +1,4 @@
-enabled: no
-provider: file
+enabled: yes
+provider: pw
+databaseName: PWDatabase
+connectionString: Data Source=localhost\SQLEXPRESS;initial Catalog=PWInventory;Integrated Security=SSPI
