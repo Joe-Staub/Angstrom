@@ -224,7 +224,7 @@
       device: Stack-Light
       name: Cell 0 5
 - gridRows: 3
-  gridColumns: 34
+  gridColumns: 35
   name: Left-Side-Scanner_Logic
   associatedDeviceName: Left-Side-Scanner
   triggerMode: OnEvent
@@ -299,6 +299,13 @@
         comparedTo: NOREAD
         name: Cell 0 8
       trueBranch:
+      - action:
+          actionType: RegexExtract
+          sourceType: Variable
+          source: Left-SupPartNumber>
+          patternType: Value
+          pattern: ESAT(?<Left-LblYear>\d{2})(?<Left-DayOfYear>\d{3})(?<Left-Line>\d)(?<Left-DailySequence>\d{4})(?<Left-GMPartNumber>\d{8})(?<Left-SupPartNumber>\d(9)*)
+          name: Cell 0 9
       - action:
           actionType: SubString
           sourceType: Variable
@@ -557,46 +564,6 @@
                     clearStartIndex: 1
                     clearLength: 1
                     name: Cell 0 32
-                falseBranch:
-                - action:
-                    actionType: Math
-                    sourceType: Value
-                    source: 0
-                    operator: SetVariableToValue
-                    variable: Stack-Light
-                    clearStartIndex: 1
-                    clearLength: 1
-                    name: Cell 1 29
-              falseBranch:
-              - action:
-                  actionType: Math
-                  sourceType: Variable
-                  source: Error-Mesage
-                  operator: SetVariableToValue
-                  variable: Display-Error-Message
-                  clearStartIndex: 1
-                  clearLength: 1
-                  name: Cell 1 26
-          falseBranch:
-          - action:
-              actionType: Math
-              sourceType: Variable
-              source: Error-Mesage
-              operator: SetVariableToValue
-              variable: Display-Error-Message
-              clearStartIndex: 1
-              clearLength: 1
-              name: Cell 1 16
-        falseBranch:
-        - action:
-            actionType: Math
-            sourceType: Variable
-            source: Error-Mesage
-            operator: SetVariableToValue
-            variable: Display-Error-Message
-            clearStartIndex: 1
-            clearLength: 1
-            name: Cell 1 12
       falseBranch:
       - action:
           actionType: Math
@@ -617,6 +584,40 @@
         clearStartIndex: 1
         clearLength: 1
         name: Cell 1 5
+    - action:
+        actionType: NoOp
+- gridRows: 3
+  gridColumns: 10
+  name: Left-Side-Scanner_Logic_Test
+  associatedDeviceName: Left-Side-Scanner
+  triggerMode: OnEvent
+  order: 8
+  steps:
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: 0
+      operator: SetVariableToValue
+      variable: Stack-Light
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
+      actionType: SplitToNextLine
+  - action:
+      actionType: If
+      sourceType: Variable
+      source: Stack-Light
+      compareOperator: =
+      containsStartPositionVariable: BLANK
+      containsInstanceCountVariable: BLANK
+      comparedToType: Value
+      comparedTo: 1
+      name: Cell 0 3
+    trueBranch:
+    - action:
+        actionType: NoOp
+        name: Cell 0 4
 - gridRows: 3
   gridColumns: 10
   name: Leftt-Side-Scanner-Clear-Fault-2
