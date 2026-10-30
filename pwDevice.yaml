@@ -15,7 +15,7 @@
   searchMethodNumberOfChars: 0
   searchMethodPrefix: ^XA
   searchMethodSuffix: ^XZ
-  name: Left-Axel-Printer
+  name: Left-Axle-Printer
   deviceType: Socket
   disabled: false
 - portID: 4
@@ -35,6 +35,7 @@
   connectionTimeoutMs: 5000
   messageMode: Automatic
   searchMethodNumberOfChars: 0
+  searchMethodSuffix: \r\n
   name: Left-Side-Scanner-Net
   deviceType: Socket
   disabled: false
@@ -45,7 +46,7 @@
   searchMethodNumberOfChars: 0
   searchMethodPrefix: ^XA
   searchMethodSuffix: ^XZ
-  name: Right-Axel-Printer
+  name: Right-Axle-Printer
   deviceType: Socket
   disabled: false
 - portID: 5
@@ -60,7 +61,7 @@
   name: Right-Light
   deviceType: COMPort
   disabled: false
-- portID: 9004
+- portID: 9005
   iPAddress: 192.168.1.52
   connectionTimeoutMs: 5000
   messageMode: Automatic

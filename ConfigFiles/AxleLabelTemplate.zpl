@@ -4,11 +4,11 @@
 ^LH0,0
 ^FO10,30
 ^BXN,10,200,18,18
-^FD${LblPrefix}${LblYear:%2}${LblDayOfYear:%03d}${Line}${DailySequence:%04d}${GMPartNumber}${SupPartNumber}^FS
+^FD${LeftPartData}^FS
 ^FO10,230
 ^A0N,20,20
 ^FB350,1,0,L,0
-^FD${LblPrefix}${LblYear:%2}${LblDayOfYear:%03d}${Line}${DailySequence:%04d}${GMPartNumber}${SupPartNumber}^FS
+^FD${LeftPartData}^FS
 ^CI28
 ^PW406
 ^LL609

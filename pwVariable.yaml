@@ -30,10 +30,10 @@
   variableType: Local
 - variableType: Constant
   name: LIGHT_SLEEP
-  description: 'Constant: 10'
+  description: 'Constant: 100'
   isArray: false
   dataType: Integer
-  defaultValue: 10
+  defaultValue: 100
 - name: LblBoxId
   isArray: false
   dataType: String
@@ -45,7 +45,7 @@
   variableType: Local
 - name: Left-Container-Count
   isArray: false
-  dataType: String
+  dataType: Integer
   persistenceGroup: Angstrom-Axle-Tube
   variableType: Local
 - name: Left-Current-Container
@@ -72,14 +72,19 @@
   isArray: false
   dataType: String
   variableType: Local
-- name: Left-Production-Count
+- name: Left-Print-Buffer
   isArray: false
   dataType: String
+  variableType: Local
+- name: Left-Production-Count
+  isArray: false
+  dataType: Integer
   persistenceGroup: Angstrom-Axle-Tube
   variableType: Local
 - name: Left-Stack-Alert
   isArray: false
   dataType: Integer
+  defaultValue: 0
   variableType: Local
 - variableType: Constant
   name: Left-Supplier-Part-No-Constant
@@ -104,6 +109,18 @@
   dataType: String
   variableType: Local
 - name: LeftLine
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: LeftPartData
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: LeftPartIdData
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: LeftPrintBuffer
   isArray: false
   dataType: String
   variableType: Local

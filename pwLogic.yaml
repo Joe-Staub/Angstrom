@@ -1,5 +1,25 @@
 - gridRows: 3
   gridColumns: 10
+  name: A_TEST
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: ActionBirth
+      partNumberType: Variable
+      partNumber: LeftGMPartNumber
+      partProducerType: Constant
+      partProducer: Angstrom
+      partSerialNumberType: Variable
+      partSerialNumber: Left-PartId-Data
+      lotQuantityType: Value
+      lotQuantity: 1
+      statusVariableType: Variable
+      statusVariable: Left-DB-Result
+      name: Cell 0 1
+- gridRows: 3
+  gridColumns: 10
   name: Box-Print-Label
   associatedDeviceName: Subroutine
   triggerMode: OnEvent
@@ -19,6 +39,24 @@
       device: Box-Printer
       status: Error-Mesage
       name: Cell 0 2
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: 0
+      operator: SetVariableToValue
+      variable: Left-Container-Count
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 3
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: Container Label Printed
+      operator: SetVariableToValue
+      variable: Error-Mesage
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 4
 - gridRows: 3
   gridColumns: 10
   name: Initialize
@@ -49,6 +87,15 @@
   order: 0
   steps:
   - action:
+      actionType: Math
+      sourceType: Variable
+      source: Left-PartId-Data
+      operator: SetVariableToValue
+      variable: LeftPartData
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
       actionType: FillTemplate
       templateSourceType: Variable
       templateVariable: AxleTemplate
@@ -59,7 +106,7 @@
       sourceType: Variable
       source: Left-Print-Buffer
       addCrLf: Yes
-      device: Left-Axel-Printer
+      device: Left-Axle-Printer
       status: Error-Mesage
       name: Cell 0 2
 - gridRows: 3
@@ -84,7 +131,7 @@
       continueOnFailure: false
       name: Cell 0 5
 - gridRows: 3
-  gridColumns: 12
+  gridColumns: 15
   name: Left-Clear-Alert
   associatedDeviceName: Subroutine
   triggerMode: OnEvent
@@ -92,7 +139,7 @@
   steps:
   - action:
       actionType: NoOp
-      name: Cell 0 2
+      name: Cell 0 1
   - action:
       actionType: Math
       sourceType: Value
@@ -196,25 +243,36 @@
       clearStartIndex: 1
       clearLength: 1
       name: Cell 0 11
-- gridRows: 3
-  gridColumns: 10
-  name: Left-Side-Scanner-Diuplicate-Part-4
-  associatedDeviceName: Left-Side-Scanner-Net
-  triggerMode: OnEvent
-  order: 2
-  steps:
   - action:
-      actionType: NoOp
-      name: Cell 0 2
+      actionType: Sleep
+      durationType: Variable
+      duration: LIGHT_SLEEP
+      name: Cell 0 12
   - action:
-      actionType: Math
-      sourceType: Value
-      source: RED
-      operator: SetVariableToValue
-      variable: Left-Clear-Ack_Buitton-BGColorVariable
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 2
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0x00
+        format: Byte
+      - sourceType: Value
+        source: 0xA1
+        format: Byte
+      variable: Stack-Light-Cmd
+      status: Error-State
+      name: Cell 0 13
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: Yes
+      device: Left-Light
+      name: Cell 0 14
 - gridRows: 3
   gridColumns: 10
   name: Left-Side-Scanner-Logic-State-1
@@ -281,7 +339,7 @@
       continueOnFailure: false
       name: Cell 0 2
 - gridRows: 3
-  gridColumns: 33
+  gridColumns: 30
   name: Left-Side-Scanner_Logic
   associatedDeviceName: Left-Side-Scanner-Net
   triggerMode: OnEvent
@@ -301,7 +359,7 @@
   - action:
       actionType: If
       sourceType: Variable
-      source: Stack-Light
+      source: Left-Stack-Alert
       compareOperator: =
       containsStartPositionVariable: Date
       containsInstanceCountVariable: Date
@@ -346,16 +404,6 @@
           pattern: ^ESAT(?<LeftLblYear>\d{2})(?<LeftDayOfYear>\d{3})(?<LeftLine>\d)(?<LeftDailySequence>\d{4})(?<LeftGMPartNumber>\d{8})(?<SupPartNumber>\d*)$
           name: Cell 0 9
       - action:
-          actionType: SubString
-          sourceType: Variable
-          source: Left-PartId-Data
-          startCharType: Value
-          startChar: 15
-          lengthType: Value
-          length: 8
-          dest: Left-Part-Number
-          name: Cell 0 9
-      - action:
           actionType: Math
           sourceType: Value
           source: Part belongs on the other line
@@ -363,7 +411,7 @@
           variable: Error-Mesage
           clearStartIndex: 1
           clearLength: 1
-          name: Cell 0 10
+          name: Cell 0 8
       - action:
           actionType: Math
           sourceType: Value
@@ -387,7 +435,7 @@
         - action:
             actionType: ActionBirth
             partNumberType: Variable
-            partNumber: Left-Part-Number
+            partNumber: LeftGMPartNumber
             partProducerType: Constant
             partProducer: Angstrom
             partSerialNumberType: Variable
@@ -396,7 +444,7 @@
             lotQuantity: 1
             statusVariableType: Variable
             statusVariable: Left-DB-Result
-            name: Cell 0 14
+            name: Cell 0 12
         - action:
             actionType: Math
             sourceType: Value
@@ -424,8 +472,12 @@
             containsInstanceCountVariable: Date
             comparedToType: Value
             comparedTo: 0
-            name: Cell 0 16
+            name: Cell 0 15
           trueBranch:
+          - action:
+              actionType: CallSubroutine
+              continueOnFailure: false
+              name: Cell 0 15
           - action:
               actionType: Math
               operator: IncrementAsNumber
@@ -515,31 +567,18 @@
               trueBranch:
               - action:
                   actionType: FillTemplate
-                  templateSourceType: Inline
-                  name: Cell 0 27
+                  templateSourceType: Variable
+                  templateVariable: AxleTemplate
+                  outputVariable: Left-Print-Buffer
+                  name: Cell 0 26
               - action:
-                  actionType: PrintBarcode
-                  printerName: Left-WIP-Part-Label-Printer
-                  fields:
-                  - fieldName: Barcode
-                    fieldType: Text
-                    positionX: 0
-                    positionY: 0
-                    sourceType: Variable
-                    source: WIP-Part-Label-Template
-                    textFontName: 0
-                    textOrientation: Normal
-                    textHeight: 30
-                    textWidth: 30
-                  - fieldName: Human Readable
-                    fieldType: Data Matrix
-                    sourceType: Variable
-                    source: WIP-Part-Label-Template
-                    textFontName: 0
-                    textOrientation: Normal
-                    textHeight: 30
-                    textWidth: 30
-                  name: Cell 0 21
+                  actionType: ActionWriteToDevice
+                  sourceType: Variable
+                  source: Left-Print-Buffer
+                  addCrLf: Yes
+                  device: Left-Axel-Printer
+                  status: Error-Mesage
+                  name: Cell 0 27
               - action:
                   actionType: If
                   sourceType: Variable
@@ -552,60 +591,14 @@
                   name: Cell 0 28
                 trueBranch:
                 - action:
-                    actionType: PrintBarcode
-                    printerName: Left-WIP-Container-Label-Printer
-                    fields:
-                    - fieldName: Barcode
-                      fieldType: Data Matrix
-                      positionX: 0
-                      positionY: 0
-                      sourceType: Variable
-                      source: WIP-Part-Label-Template
-                      textFontName: 0
-                      textOrientation: Normal
-                      textHeight: 30
-                      textWidth: 30
-                    - fieldName: Human Readable
-                      fieldType: Text
-                      positionX: 0
-                      positionY: 0
-                      sourceType: Variable
-                      source: WIP-Part-Label-Template
-                      textFontName: 0
-                      textOrientation: Normal
-                      textHeight: 30
-                      textWidth: 30
-                    name: Cell 0 29
-                - action:
-                    actionType: Math
-                    sourceType: Value
-                    source: 0
-                    operator: SetVariableToValue
-                    variable: Left-Container-Count
-                    clearStartIndex: 1
-                    clearLength: 1
-                    name: Cell 0 30
-                - action:
-                    actionType: Math
-                    sourceType: Value
-                    source: 0
-                    operator: SetVariableToValue
-                    variable: Stack-Light
-                    clearStartIndex: 1
-                    clearLength: 1
-                    name: Cell 0 31
-                - action:
-                    actionType: Math
-                    sourceType: Value
-                    source: Container Label Printed
-                    operator: SetVariableToValue
-                    variable: Error-Mesage
-                    clearStartIndex: 1
-                    clearLength: 1
+                    actionType: CallSubroutine
+                    subroutineName: Box-Print-Label
+                    continueOnFailure: false
                     name: Cell 0 32
         falseBranch:
         - action:
             actionType: NoOp
+            name: Cell 1 10
     falseBranch:
     - action:
         actionType: NoOp
@@ -755,49 +748,6 @@
       name: Cell 0 11
 - gridRows: 3
   gridColumns: 10
-  name: Leftt-Side-Scanner-Clear-Fault-2
-  associatedDeviceName: Left-Side-Scanner-Net
-  triggerMode: OnEvent
-  order: 8
-  steps:
-  - action:
-      actionType: NoOp
-      name: Cell 0 2
-  - action:
-      actionType: Math
-      sourceType: Value
-      source: RED
-      operator: SetVariableToValue
-      variable: Left-Clear-Ack_Buitton-BGColorVariable
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 3
-  - action:
-      actionType: PackBytes
-      fields:
-      - sourceType: Value
-        source: 0xA0
-        format: Byte
-      - sourceType: Value
-        source: 0x03
-        format: Byte
-      - sourceType: Value
-        source: 0x01
-        format: Byte
-      - sourceType: Value
-        source: 0xA4
-        format: Byte
-      variable: Stack-Light-Cmd
-      name: Cell 0 4
-  - action:
-      actionType: ActionWriteToDevice
-      sourceType: Variable
-      source: Stack-Light-Cmd
-      addCrLf: Yes
-      device: Left-Light
-      name: Cell 0 5
-- gridRows: 3
-  gridColumns: 10
   name: LoadPrintTemplates
   associatedDeviceName: Subroutine
   triggerMode: OnEvent
@@ -826,6 +776,36 @@
       fileSpecFileExtensionType: Value
       fileSpecFileExtension: zpl
       readMode: EntireFile
+      name: Cell 0 2
+- gridRows: 3
+  gridColumns: 10
+  name: PrintLeftAxleLable
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: Math
+      sourceType: Variable
+      source: Left-PartId-Data
+      operator: SetVariableToValue
+      variable: LeftPartIdData
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
+      actionType: FillTemplate
+      templateSourceType: Variable
+      templateVariable: AxleTemplate
+      outputVariable: Left-Print-Buffer
+      name: Cell 0 1
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Left-Print-Buffer
+      addCrLf: Yes
+      device: Left-Axle-Printer
+      status: Error-Mesage
       name: Cell 0 2
 - gridRows: 3
   gridColumns: 10
@@ -901,7 +881,7 @@
       status: Error-Mesage
       name: Cell 0 2
 - gridRows: 3
-  gridColumns: 11
+  gridColumns: 14
   name: Right-Clear-Alert
   associatedDeviceName: Subroutine
   triggerMode: OnEvent
@@ -1003,7 +983,37 @@
       source: Stack-Light-Cmd
       addCrLf: No
       device: Right-Light
-      name: Cell 0 8
+      name: Cell 0 10
+  - action:
+      actionType: Sleep
+      durationType: Variable
+      duration: LIGHT_SLEEP
+      name: Cell 0 11
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0x00
+        format: Byte
+      - sourceType: Value
+        source: 0xA1
+        format: Byte
+      variable: Stack-Light-Cmd
+      status: Error-State
+      name: Cell 0 11
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: No
+      device: Right-Light
+      name: Cell 0 13
 - gridRows: 3
   gridColumns: 11
   name: RightAlert
