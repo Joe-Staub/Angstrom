@@ -1,168 +1,169 @@
-- variableType: Local
-  name: AxleTemplate
+- name: AxleTemplate
   isArray: false
   dataType: String
+  variableType: Local
 - variableType: Constant
   name: BLANK
   description: 'Constant: '
   isArray: false
   dataType: String
   defaultValue: '  '
-- variableType: Local
-  name: Display-Error-Message
+- name: BoxPrintBuffer
   isArray: false
   dataType: String
-- variableType: Local
-  name: Error-Mesage
+  variableType: Local
+- name: BoxTemplate
   isArray: false
   dataType: String
-- variableType: Local
-  name: BoxPrintBuffer
+  variableType: Local
+- name: Display-Error-Message
   isArray: false
   dataType: String
-- variableType: Local
-  name: BoxTemplate
+  variableType: Local
+- name: Error-Mesage
   isArray: false
   dataType: String
-- variableType: Local
-  name: Error-State
+  variableType: Local
+- name: Error-State
   isArray: false
   dataType: String
-- variableType: Local
-  name: Left-Clear-Ack_Buitton-BGColorVariable
-  isArray: false
-  dataType: String
-- variableType: Local
-  name: Error-State
-  isArray: false
-  dataType: String
+  variableType: Local
 - variableType: Constant
   name: LIGHT_SLEEP
   description: 'Constant: 10'
   isArray: false
   dataType: Integer
   defaultValue: 10
-- variableType: Local
-  name: LblBoxId
+- name: LblBoxId
   isArray: false
   dataType: String
   defaultValue: 1234567
-- variableType: Local
-  name: Left-Clear-Ack_Buitton-BGColorVariable
+  variableType: Local
+- name: Left-Clear-Ack_Buitton-BGColorVariable
   isArray: false
   dataType: String
-  defaultValue: Wheat
-- variableType: Local
-  name: Left-Container-Count
-  isArray: false
-  dataType: String
-  persistenceGroup: Angstrom-Axle-Tube
-- variableType: Local
-  name: Left-Current-Container
-  isArray: false
-  dataType: String
-- variableType: Local
-  name: Left-DB-Result
-  isArray: false
-  dataType: String
-- variableType: Local
-  name: Left-Part-Number
-  isArray: false
-  dataType: String
-- variableType: Local
-  name: Left-PartId-Data
-  isArray: false
-  dataType: String
-- variableType: Local
-  name: Left-PartId-Scan-Time
-  isArray: false
-  dataType: String
-- variableType: Local
-  name: Left-Persist-Status
-  isArray: false
-  dataType: String
-- variableType: Local
-  name: Left-Production-Count
+  variableType: Local
+- name: Left-Container-Count
   isArray: false
   dataType: String
   persistenceGroup: Angstrom-Axle-Tube
+  variableType: Local
+- name: Left-Current-Container
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Left-DB-Result
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Left-Part-Number
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Left-PartId-Data
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Left-PartId-Scan-Time
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Left-Persist-Status
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Left-Production-Count
+  isArray: false
+  dataType: String
+  persistenceGroup: Angstrom-Axle-Tube
+  variableType: Local
+- name: Left-Stack-Alert
+  isArray: false
+  dataType: Integer
+  variableType: Local
 - variableType: Constant
   name: Left-Supplier-Part-No-Constant
   description: 'Constant: 85545338'
   isArray: false
   dataType: String
   defaultValue: 85545338
-- variableType: Local
-  name: LeftDailySequence
+- name: LeftDailySequence
   isArray: false
   dataType: String
-- variableType: Local
-  name: LeftDayOfYear
+  variableType: Local
+- name: LeftDayOfYear
   isArray: false
   dataType: String
-- variableType: Local
-  name: LeftGMPartNumber
+  variableType: Local
+- name: LeftGMPartNumber
   isArray: false
   dataType: String
-- variableType: Local
-  name: LeftLblYear
+  variableType: Local
+- name: LeftLblYear
   isArray: false
   dataType: String
-- variableType: Local
-  name: LeftLine
+  variableType: Local
+- name: LeftLine
   isArray: false
   dataType: String
-- variableType: Local
-  name: LeftSupPartNumber>
+  variableType: Local
+- name: LeftSupPartNumber>
   isArray: false
   dataType: String
-- variableType: Local
-  name: Part-No.-Select
+  variableType: Local
+- variableType: Constant
+  name: NOREAD
+  description: 'Constant: NoRead'
   isArray: false
   dataType: String
-- variableType: Array
-  name: Part-Numbers
+  defaultValue: NoRead
+- name: Part-No.-Select
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Part-Numbers
   isArray: true
   dataType: String
-- variableType: Local
-  name: Right-Ack
+  variableType: Array
+- name: Right-Ack
   isArray: false
   dataType: String
-- variableType: Local
-  name: Right-Container-Count
+  variableType: Local
+- name: Right-Container-Count
   isArray: false
   dataType: String
-- variableType: Local
-  name: Right-Current-Container
+  variableType: Local
+- name: Right-Current-Container
   isArray: false
   dataType: String
-- variableType: Local
-  name: Right-PartId-Data
+  variableType: Local
+- name: Right-PartId-Data
   isArray: false
   dataType: String
-- variableType: Local
-  name: Right-PartId-Scan-Time
+  variableType: Local
+- name: Right-PartId-Scan-Time
   isArray: false
   dataType: String
-- variableType: Local
-  name: Right-Production-Count
+  variableType: Local
+- name: Right-Production-Count
   isArray: false
   dataType: String
+  variableType: Local
 - variableType: Constant
   name: Right-Supplier-Part-No-Constant
   description: 'Constant: 85545339'
   isArray: false
   dataType: String
   defaultValue: 85545339
-- variableType: Local
-  name: Stack-Light
+- name: Stack-Light
   isArray: false
   dataType: Integer
-- variableType: Local
-  name: Stack-Light-Cmd
+  variableType: Local
+- name: Stack-Light-Cmd
   isArray: false
   dataType: String
-- variableType: Local
-  name: WIP-Part-Label-Template
+  variableType: Local
+- name: WIP-Part-Label-Template
   isArray: false
   dataType: String
+  variableType: Local

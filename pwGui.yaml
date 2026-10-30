@@ -37,26 +37,26 @@ screens:
   labels:
   - name: Label1
     description: Last Data Scanned
-    xposition: 60
+    xposition: 20
     yposition: 240
     width: 244
     height: 22
     fGColor: Black
-    bGColor: White
-    font: Arial, 14pt, style=Bold
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
     source: Last Data Scanned
     sourceType: Constant
     textAlign: Left
     verticalAlign: Top
   - name: Label1_1
     description: Time of Last Scan
-    xposition: 60
+    xposition: 20
     yposition: 280
     width: 244
     height: 22
     fGColor: Black
-    bGColor: White
-    font: Arial, 14pt, style=Bold
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
     source: Time of Last Scan
     sourceType: Constant
     textAlign: Left
@@ -68,8 +68,8 @@ screens:
     width: 241
     height: 22
     fGColor: Black
-    bGColor: White
-    font: Arial, 14pt, style=Bold
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
     source: Last Data Scanned
     sourceType: Constant
     textAlign: Left
@@ -81,8 +81,8 @@ screens:
     width: 241
     height: 22
     fGColor: Black
-    bGColor: White
-    font: Arial, 14pt, style=Bold
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
     source: Time of Last Scan
     sourceType: Constant
     textAlign: Left
@@ -94,21 +94,21 @@ screens:
     width: 241
     height: 22
     fGColor: Black
-    bGColor: White
-    font: Arial, 14pt, style=Bold
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
     source: Production Count
     sourceType: Constant
     textAlign: Left
     verticalAlign: Top
   - name: Label1_1_1_1_1
     description: Production Count
-    xposition: 60
+    xposition: 20
     yposition: 320
     width: 244
     height: 22
     fGColor: Black
-    bGColor: White
-    font: Arial, 14pt, style=Bold
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
     source: Production Count
     sourceType: Constant
     textAlign: Left
@@ -120,21 +120,21 @@ screens:
     width: 241
     height: 22
     fGColor: Black
-    bGColor: White
-    font: Arial, 14pt, style=Bold
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
     source: Current Container
     sourceType: Constant
     textAlign: Left
     verticalAlign: Top
   - name: Label1_1_1_1_1_1
     description: Current Container
-    xposition: 60
+    xposition: 20
     yposition: 360
     width: 244
     height: 22
     fGColor: Black
-    bGColor: White
-    font: Arial, 14pt, style=Bold
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
     source: Current Container
     sourceType: Constant
     textAlign: Left
@@ -147,7 +147,7 @@ screens:
     height: 20
     fGColor: SteelBlue
     bGColor: Silver
-    font: Arial, 14pt, style=Bold
+    font: Arial, 12pt, style=Bold
     source: 'Production Part No.: 85545338'
     sourceType: Constant
     textAlign: Left
@@ -160,7 +160,7 @@ screens:
     height: 20
     fGColor: SteelBlue
     bGColor: Silver
-    font: Arial, 14pt, style=Bold
+    font: Arial, 12pt, style=Bold
     source: 'Production Part No.: 85545339'
     sourceType: Constant
     textAlign: Left
@@ -198,21 +198,21 @@ screens:
     width: 241
     height: 22
     fGColor: Black
-    bGColor: White
-    font: Arial, 14pt, style=Bold
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
     source: Current Container Count
     sourceType: Constant
     textAlign: Left
     verticalAlign: Top
   - name: Label1_1_1_1_1_1_1
     description: Current Container Count
-    xposition: 60
+    xposition: 20
     yposition: 400
     width: 244
     height: 22
     fGColor: Black
-    bGColor: White
-    font: Arial, 14pt, style=Bold
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
     source: Current Container Count
     sourceType: Constant
     textAlign: Left
@@ -233,13 +233,13 @@ screens:
   outputTexts:
   - name: OutputText2
     description: ${Left-PartId-Data}
-    xposition: 320
+    xposition: 260
     yposition: 240
-    width: 183
+    width: 251
     height: 20
     fGColor: Black
-    bGColor: Silver
-    font: Arial, 14pt, style=Bold
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
     variable: Left-PartId-Data
     textAlign: Left
     verticalAlign: Top
@@ -257,109 +257,109 @@ screens:
     verticalAlign: Middle
   - name: OutputText2_1
     description: ${Left-PartId-Scan-Time}
-    xposition: 320
+    xposition: 260
     yposition: 280
-    width: 183
+    width: 251
     height: 20
     fGColor: Black
-    bGColor: Silver
-    font: Arial, 14pt, style=Bold
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
     variable: Left-PartId-Scan-Time
     textAlign: Left
     verticalAlign: Top
   - name: OutputText2_2
     description: ${Right-PartId-Data}
-    xposition: 800
+    xposition: 780
     yposition: 240
-    width: 183
+    width: 264
     height: 20
     fGColor: Black
-    bGColor: Silver
-    font: Arial, 14pt, style=Bold
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
     variable: Right-PartId-Data
     textAlign: Left
     verticalAlign: Top
   - name: OutputText2_1_1
     description: ${Right-PartId-Scan-Time}
-    xposition: 800
+    xposition: 780
     yposition: 280
-    width: 183
+    width: 264
     height: 20
     fGColor: Black
-    bGColor: Silver
-    font: Arial, 14pt, style=Bold
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
     variable: Right-PartId-Scan-Time
     textAlign: Left
     verticalAlign: Top
   - name: OutputText2_1_1_1
     description: ${Right-Production-Count}
-    xposition: 800
+    xposition: 780
     yposition: 320
-    width: 183
+    width: 264
     height: 20
     fGColor: Black
-    bGColor: Silver
-    font: Arial, 14pt, style=Bold
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
     variable: Right-Production-Count
     textAlign: Left
     verticalAlign: Top
   - name: OutputText2_1_1_1_1
     description: ${Left-Production-Count}
-    xposition: 320
+    xposition: 260
     yposition: 320
-    width: 183
+    width: 251
     height: 20
     fGColor: Black
-    bGColor: Silver
-    font: Arial, 14pt, style=Bold
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
     variable: Left-Production-Count
     textAlign: Left
     verticalAlign: Top
   - name: OutputText2_1_1_1_1_1
     description: ${Left-Container-Count}
-    xposition: 313
+    xposition: 260
     yposition: 360
-    width: 183
+    width: 251
     height: 20
     fGColor: Black
-    bGColor: Silver
-    font: Arial, 14pt, style=Bold
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
     variable: Left-Container-Count
     textAlign: Left
     verticalAlign: Top
   - name: OutputText2_1_1_1_2
     description: ${Right-Current-Container}
-    xposition: 800
+    xposition: 780
     yposition: 360
-    width: 183
+    width: 264
     height: 20
     fGColor: Black
-    bGColor: Silver
-    font: Arial, 14pt, style=Bold
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
     variable: Right-Current-Container
     textAlign: Left
     verticalAlign: Top
   - name: OutputText2_1_1_1_1_1_1
     description: ${Left-Current-Container}
-    xposition: 313
+    xposition: 260
     yposition: 400
-    width: 183
+    width: 251
     height: 20
     fGColor: Black
-    bGColor: Silver
-    font: Arial, 14pt, style=Bold
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
     variable: Left-Current-Container
     textAlign: Left
     verticalAlign: Top
   - name: OutputText2_1_1_1_2_1
     description: ${Right-Container-Count}
-    xposition: 800
+    xposition: 780
     yposition: 400
-    width: 183
+    width: 264
     height: 20
     fGColor: Black
-    bGColor: Silver
-    font: Arial, 14pt, style=Bold
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
     variable: Right-Container-Count
     textAlign: Left
     verticalAlign: Top

@@ -21,6 +21,49 @@
       name: Cell 0 2
 - gridRows: 3
   gridColumns: 10
+  name: Initialize
+  associatedDeviceName: Application
+  triggerMode: OnStart
+  order: 0
+  steps:
+  - action:
+      actionType: CallSubroutine
+      subroutineName: LoadPrintTemplates
+      continueOnFailure: false
+      name: Cell 0 1
+  - action:
+      actionType: CallSubroutine
+      subroutineName: Right-Clear-Alert
+      continueOnFailure: false
+      name: Cell 0 2
+  - action:
+      actionType: CallSubroutine
+      subroutineName: Left-Clear-Alert
+      continueOnFailure: false
+      name: Cell 0 3
+- gridRows: 3
+  gridColumns: 10
+  name: Left-Axle-Print-Label
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: FillTemplate
+      templateSourceType: Variable
+      templateVariable: AxleTemplate
+      outputVariable: Left-Print-Buffer
+      name: Cell 0 1
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Left-Print-Buffer
+      addCrLf: Yes
+      device: Left-Axel-Printer
+      status: Error-Mesage
+      name: Cell 0 2
+- gridRows: 3
+  gridColumns: 10
   name: Left-Clear-Ack-Button_Logic_1
   associatedDeviceName: Screen:Operator-Main/Left-Clear-Ack-Button
   triggerMode: OnEvent
@@ -36,40 +79,12 @@
       clearLength: 1
       name: Cell 0 1
   - action:
-      actionType: Math
-      sourceType: Value
-      source: 0
-      operator: SetVariableToValue
-      variable: Stack-Light
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 2
-  - action:
-      actionType: PackBytes
-      fields:
-      - sourceType: Value
-        source: 0xA0
-        format: Byte
-      - sourceType: Value
-        source: 0x01
-        format: Byte
-      - sourceType: Value
-        source: 0x00
-        format: Byte
-      - sourceType: Value
-        source: 0xA1
-        format: Byte
-      variable: Stack-Light-Cmd
-      name: Cell 0 3
-  - action:
-      actionType: ActionWriteToDevice
-      sourceType: Variable
-      source: Stack-Light-Cmd
-      addCrLf: Yes
-      device: Stack-Light
-      name: Cell 0 4
+      actionType: CallSubroutine
+      subroutineName: Left-Clear-Alert
+      continueOnFailure: false
+      name: Cell 0 5
 - gridRows: 3
-  gridColumns: 11
+  gridColumns: 12
   name: Left-Clear-Alert
   associatedDeviceName: Subroutine
   triggerMode: OnEvent
@@ -172,12 +187,21 @@
       addCrLf: No
       device: Left-Light
       name: Cell 0 8
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: 0
+      operator: SetVariableToValue
+      variable: Left-Stack-Alert
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 11
 - gridRows: 3
   gridColumns: 10
   name: Left-Side-Scanner-Diuplicate-Part-4
-  associatedDeviceName: Left-Side-Scanner
+  associatedDeviceName: Left-Side-Scanner-Net
   triggerMode: OnEvent
-  order: 5
+  order: 2
   steps:
   - action:
       actionType: NoOp
@@ -191,36 +215,12 @@
       clearStartIndex: 1
       clearLength: 1
       name: Cell 0 2
-  - action:
-      actionType: PackBytes
-      fields:
-      - sourceType: Value
-        source: 0xA0
-        format: Byte
-      - sourceType: Value
-        source: 0x01
-        format: Byte
-      - sourceType: Value
-        source: 0x01
-        format: Byte
-      - sourceType: Value
-        source: 0xB3
-        format: Byte
-      variable: Stack-Light-Cmd
-      name: Cell 0 4
-  - action:
-      actionType: ActionWriteToDevice
-      sourceType: Variable
-      source: Stack-Light-Cmd
-      addCrLf: Yes
-      device: Stack-Light
-      name: Cell 0 5
 - gridRows: 3
   gridColumns: 10
   name: Left-Side-Scanner-Logic-State-1
-  associatedDeviceName: Left-Side-Scanner
+  associatedDeviceName: Left-Side-Scanner-Net
   triggerMode: OnEvent
-  order: 2
+  order: 3
   steps:
   - action:
       actionType: Math
@@ -234,9 +234,9 @@
 - gridRows: 3
   gridColumns: 10
   name: Left-Side-Scanner-Logic-State-6
-  associatedDeviceName: Left-Side-Scanner
+  associatedDeviceName: Left-Side-Scanner-Net
   triggerMode: OnEvent
-  order: 7
+  order: 4
   steps:
   - action:
       actionType: NoOp
@@ -271,9 +271,9 @@
 - gridRows: 3
   gridColumns: 10
   name: Left-Side-Scanner-Part-Wrong-Side-3
-  associatedDeviceName: Left-Side-Scanner
+  associatedDeviceName: Left-Side-Scanner-Net
   triggerMode: OnEvent
-  order: 4
+  order: 5
   steps:
   - action:
       actionType: CallSubroutine
@@ -281,46 +281,9 @@
       continueOnFailure: false
       name: Cell 0 2
 - gridRows: 3
-  gridColumns: 10
-  name: Left-Side-Scanner-Persist-Data-Error-5
-  associatedDeviceName: Left-Side-Scanner
-  triggerMode: OnEvent
-  order: 6
-  steps:
-  - action:
-      actionType: NoOp
-      name: Cell 0 2
-  - action:
-      actionType: NoOp
-      name: Cell 0 3
-  - action:
-      actionType: PackBytes
-      fields:
-      - sourceType: Value
-        source: 0xA0
-        format: Byte
-      - sourceType: Value
-        source: 0x01
-        format: Byte
-      - sourceType: Value
-        source: 0x01
-        format: Byte
-      - sourceType: Value
-        source: 0xB3
-        format: Byte
-      variable: Stack-Light-Cmd
-      name: Cell 0 4
-  - action:
-      actionType: ActionWriteToDevice
-      sourceType: Variable
-      source: Stack-Light-Cmd
-      addCrLf: Yes
-      device: Stack-Light
-      name: Cell 0 5
-- gridRows: 3
-  gridColumns: 35
+  gridColumns: 33
   name: Left-Side-Scanner_Logic
-  associatedDeviceName: Left-Side-Scanner
+  associatedDeviceName: Left-Side-Scanner-Net
   triggerMode: OnEvent
   order: 1
   steps:
@@ -335,24 +298,6 @@
       clearStartIndex: 1
       clearLength: 1
       name: Cell 0 2
-  - action:
-      actionType: Math
-      sourceType: Value
-      source: Clear the fault
-      operator: SetVariableToValue
-      variable: Error-Mesage
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 3
-  - action:
-      actionType: Math
-      sourceType: Value
-      source: 1
-      operator: SetVariableToValue
-      variable: Error-State
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 4
   - action:
       actionType: If
       sourceType: Variable
@@ -389,7 +334,7 @@
         compareOperator: <>
         containsStartPositionVariable: Date
         containsInstanceCountVariable: Date
-        comparedToType: Value
+        comparedToType: Variable
         comparedTo: NOREAD
         name: Cell 0 8
       trueBranch:
@@ -666,7 +611,39 @@
         actionType: NoOp
         name: Cell 1 5
 - gridRows: 3
-  gridColumns: 11
+  gridColumns: 10
+  name: Left-Side-Scanner_Logic_Test
+  associatedDeviceName: Left-Side-Scanner-Net
+  triggerMode: OnEvent
+  order: 7
+  steps:
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: 0
+      operator: SetVariableToValue
+      variable: Stack-Light
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
+      actionType: SplitToNextLine
+  - action:
+      actionType: If
+      sourceType: Variable
+      source: Stack-Light
+      compareOperator: =
+      containsStartPositionVariable: BLANK
+      containsInstanceCountVariable: BLANK
+      comparedToType: Value
+      comparedTo: 1
+      name: Cell 0 3
+    trueBranch:
+    - action:
+        actionType: NoOp
+        name: Cell 0 4
+- gridRows: 3
+  gridColumns: 12
   name: LeftAlert
   associatedDeviceName: Subroutine
   triggerMode: OnEvent
@@ -767,44 +744,21 @@
       addCrLf: No
       device: Left-Light
       name: Cell 0 8
-- gridRows: 3
-  gridColumns: 10
-  name: Left-Side-Scanner_Logic_Test
-  associatedDeviceName: Left-Side-Scanner
-  triggerMode: OnEvent
-  order: 8
-  steps:
   - action:
       actionType: Math
       sourceType: Value
-      source: 0
+      source: 1
       operator: SetVariableToValue
-      variable: Stack-Light
+      variable: Left-Stack-Alert
       clearStartIndex: 1
       clearLength: 1
-      name: Cell 0 1
-  - action:
-      actionType: SplitToNextLine
-  - action:
-      actionType: If
-      sourceType: Variable
-      source: Stack-Light
-      compareOperator: =
-      containsStartPositionVariable: BLANK
-      containsInstanceCountVariable: BLANK
-      comparedToType: Value
-      comparedTo: 1
-      name: Cell 0 3
-    trueBranch:
-    - action:
-        actionType: NoOp
-        name: Cell 0 4
+      name: Cell 0 11
 - gridRows: 3
   gridColumns: 10
   name: Leftt-Side-Scanner-Clear-Fault-2
-  associatedDeviceName: Left-Side-Scanner
+  associatedDeviceName: Left-Side-Scanner-Net
   triggerMode: OnEvent
-  order: 3
+  order: 8
   steps:
   - action:
       actionType: NoOp
@@ -872,27 +826,6 @@
       fileSpecFileExtensionType: Value
       fileSpecFileExtension: zpl
       readMode: EntireFile
-      name: Cell 0 2
-- gridRows: 3
-  gridColumns: 10
-  name: Left-Axle-Print-Label
-  associatedDeviceName: Subroutine
-  triggerMode: OnEvent
-  order: 0
-  steps:
-  - action:
-      actionType: FillTemplate
-      templateSourceType: Variable
-      templateVariable: AxleTemplate
-      outputVariable: Left-Print-Buffer
-      name: Cell 0 1
-  - action:
-      actionType: ActionWriteToDevice
-      sourceType: Variable
-      source: Left-Print-Buffer
-      addCrLf: Yes
-      device: Left-Axel-Printer
-      status: Error-Mesage
       name: Cell 0 2
 - gridRows: 3
   gridColumns: 10

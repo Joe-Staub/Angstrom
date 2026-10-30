@@ -30,17 +30,6 @@
   name: Left-Light
   deviceType: COMPort
   disabled: false
-- portID: 7
-  baudRate: 19200
-  dataBits: 8
-  parity: n
-  stopBits: 1
-  portString: 19200,n,8,1
-  messageMode: Delimited
-  searchMethodNumberOfChars: 0
-  name: Left-Side-Scanner
-  deviceType: COMPort
-  disabled: false
 - portID: 9004
   iPAddress: 192.168.1.51
   connectionTimeoutMs: 5000
@@ -59,7 +48,7 @@
   name: Right-Axel-Printer
   deviceType: Socket
   disabled: false
-- portID: 4
+- portID: 5
   baudRate: 9600
   dataBits: 8
   parity: n
