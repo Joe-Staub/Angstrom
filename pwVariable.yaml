@@ -1,9 +1,21 @@
+- variableType: Local
+  name: AxleTemplate
+  isArray: false
+  dataType: String
 - variableType: Constant
   name: BLANK
   description: 'Constant: '
   isArray: false
   dataType: String
   defaultValue: '  '
+- variableType: Local
+  name: BoxPrintBuffer
+  isArray: false
+  dataType: String
+- variableType: Local
+  name: BoxTemplate
+  isArray: false
+  dataType: String
 - variableType: Local
   name: Display-Error-Message
   isArray: false
@@ -22,6 +34,11 @@
   isArray: false
   dataType: Integer
   defaultValue: 10
+- variableType: Local
+  name: LblBoxId
+  isArray: false
+  dataType: String
+  defaultValue: 1234567
 - variableType: Local
   name: Left-Clear-Ack_Buitton-BGColorVariable
   isArray: false
@@ -54,6 +71,10 @@
   dataType: String
 - variableType: Local
   name: Left-Persist-Status
+  isArray: false
+  dataType: String
+- variableType: Local
+  name: Left-Print-Buffer
   isArray: false
   dataType: String
 - variableType: Local

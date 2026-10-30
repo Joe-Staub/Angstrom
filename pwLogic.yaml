@@ -1,5 +1,26 @@
 - gridRows: 3
   gridColumns: 10
+  name: Box-Print-Label
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: FillTemplate
+      templateSourceType: Variable
+      templateVariable: BoxTemplate
+      outputVariable: BoxPrintBuffer
+      name: Cell 0 1
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: BoxPrintBuffer
+      addCrLf: Yes
+      device: Box-Printer
+      status: Error-Mesage
+      name: Cell 0 2
+- gridRows: 3
+  gridColumns: 10
   name: Left-Clear-Ack-Button_Logic_1
   associatedDeviceName: Screen:Operator-Main/Left-Clear-Ack-Button
   triggerMode: OnEvent
@@ -837,6 +858,58 @@
       name: Cell 0 5
 - gridRows: 3
   gridColumns: 10
+  name: LoadPrintTemplates
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: ActionReadFromFile
+      resultVariableType: Variable
+      resultVariable: AxleTemplate
+      fileSpecPathType: Variable
+      fileSpecPath: PW_ConfigFolder
+      fileSpecFilenameType: Value
+      fileSpecFilename: AxleLabelTemplate
+      fileSpecFileExtensionType: Value
+      fileSpecFileExtension: zpl
+      readMode: EntireFile
+      name: Cell 0 1
+  - action:
+      actionType: ActionReadFromFile
+      resultVariableType: Variable
+      resultVariable: BoxTemplate
+      fileSpecPathType: Variable
+      fileSpecPath: PW_ConfigFolder
+      fileSpecFilenameType: Value
+      fileSpecFilename: BoxLabelTemplate
+      fileSpecFileExtensionType: Value
+      fileSpecFileExtension: zpl
+      readMode: EntireFile
+      name: Cell 0 2
+- gridRows: 3
+  gridColumns: 10
+  name: Left-Axle-Print-Label
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: FillTemplate
+      templateSourceType: Variable
+      templateVariable: AxleTemplate
+      outputVariable: Left-Print-Buffer
+      name: Cell 0 1
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Left-Print-Buffer
+      addCrLf: Yes
+      device: Left-Axel-Printer
+      status: Error-Mesage
+      name: Cell 0 2
+- gridRows: 3
+  gridColumns: 10
   name: Reset-ProductionCounts_Logic_1
   associatedDeviceName: Screen:Operator-Main/Reset-ProductionCounts
   triggerMode: OnEvent
@@ -887,6 +960,27 @@
       clearStartIndex: 1
       clearLength: 1
       name: Cell 0 5
+- gridRows: 3
+  gridColumns: 10
+  name: Right-Axle-Print-Label
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: FillTemplate
+      templateSourceType: Variable
+      templateVariable: AxleTemplate
+      outputVariable: Left-Print-Buffer
+      name: Cell 0 1
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Left-Print-Buffer
+      addCrLf: Yes
+      device: Right-Axel-Printer
+      status: Error-Mesage
+      name: Cell 0 2
 - gridRows: 3
   gridColumns: 11
   name: Right-Clear-Alert

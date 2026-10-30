@@ -1,6 +1,6 @@
 - name: Left-WIP-Container-Label-Printer
-  type: Network
-  disabled: Yes
+  type: COMPort
+  disabled: No
 - name: Left-WIP-Part-Label-Printer
   type: Network
   disabled: Yes
