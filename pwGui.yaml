@@ -34,6 +34,16 @@ screens:
     bGColor: DarkSeaGreen
     font: Arial, 14pt, style=Bold
     type: SetToValue
+  - name: BTNCreateCSV
+    description: Generate CSV
+    xposition: 800
+    yposition: 740
+    width: 4340
+    height: 35
+    fGColor: Black
+    bGColor: White
+    font: Arial, 14pt, style=Bold
+    type: SetToValue
   labels:
   - name: Label1
     description: Last Data Scanned
@@ -217,6 +227,19 @@ screens:
     sourceType: Constant
     textAlign: Left
     verticalAlign: Top
+  - name: Label2
+    description: Reports automatically go into C:\AxleReports at midnight.
+    xposition: 740
+    yposition: 720
+    width: 396
+    height: 20
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 9.75pt, style=Bold
+    source: Reports automatically go into C:\AxleReports at midnight.
+    sourceType: Constant
+    textAlign: Left
+    verticalAlign: Top
   inputs: []
   images:
   - name: Image11
@@ -395,3 +418,5 @@ screens:
   - Label1_1_1_1_1_1_1
   - OutputText2_1_1_1_1_1_1
   - OutputText2_1_1_1_2_1
+  - BTNCreateCSV
+  - Label2

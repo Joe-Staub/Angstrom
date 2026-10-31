@@ -39,6 +39,10 @@
   name: Left-Side-Scanner-Net
   deviceType: Socket
   disabled: false
+- scheduleExpression: 0 0 * * *
+  name: ReportingScheduler
+  deviceType: Scheduled
+  disabled: false
 - portID: 9100
   iPAddress: 192.168.1.54
   connectionTimeoutMs: 5000

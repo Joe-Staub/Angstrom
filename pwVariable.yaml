@@ -16,6 +16,10 @@
   isArray: false
   dataType: String
   variableType: Local
+- name: CSV_Rowvount
+  isArray: false
+  dataType: Integer
+  variableType: Local
 - name: Display-Error-Message
   isArray: false
   dataType: String
@@ -134,6 +138,12 @@
   isArray: false
   dataType: String
   defaultValue: NoRead
+- variableType: Constant
+  name: OUTPUT_FOLDER
+  description: 'Constant: C:\AxleReports'
+  isArray: false
+  dataType: String
+  defaultValue: C:\AxleReports
 - name: Part-No.-Select
   isArray: false
   dataType: String
@@ -142,6 +152,10 @@
   isArray: true
   dataType: String
   variableType: Array
+- name: ReportFolder
+  isArray: false
+  dataType: String
+  variableType: Local
 - name: Right-Ack
   isArray: false
   dataType: String
