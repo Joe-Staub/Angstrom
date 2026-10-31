@@ -818,15 +818,24 @@
   order: 0
   steps:
   - action:
+      actionType: Math
+      sourceType: Variable
+      source: Right-PartId-Data
+      operator: SetVariableToValue
+      variable: RightPartData
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
       actionType: FillTemplate
       templateSourceType: Variable
       templateVariable: AxleTemplate
-      outputVariable: Left-Print-Buffer
+      outputVariable: Right-Print-Buffer
       name: Cell 0 1
   - action:
       actionType: ActionWriteToDevice
       sourceType: Variable
-      source: Left-Print-Buffer
+      source: Right-Print-Buffer
       addCrLf: Yes
       device: Right-Axle-Printer
       status: Error-Mesage
@@ -853,7 +862,7 @@
       continueOnFailure: false
       name: Cell 0 5
 - gridRows: 3
-  gridColumns: 14
+  gridColumns: 15
   name: Right-Clear-Alert
   associatedDeviceName: Subroutine
   triggerMode: OnEvent
@@ -861,7 +870,7 @@
   steps:
   - action:
       actionType: NoOp
-      name: Cell 0 2
+      name: Cell 0 1
   - action:
       actionType: Math
       sourceType: Value
@@ -955,12 +964,21 @@
       source: Stack-Light-Cmd
       addCrLf: No
       device: Right-Light
-      name: Cell 0 10
+      name: Cell 0 8
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: 0
+      operator: SetVariableToValue
+      variable: Right-Stack-Alert
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 11
   - action:
       actionType: Sleep
       durationType: Variable
       duration: LIGHT_SLEEP
-      name: Cell 0 11
+      name: Cell 0 12
   - action:
       actionType: PackBytes
       fields:
@@ -978,16 +996,16 @@
         format: Byte
       variable: Stack-Light-Cmd
       status: Error-State
-      name: Cell 0 11
+      name: Cell 0 13
   - action:
       actionType: ActionWriteToDevice
       sourceType: Variable
       source: Stack-Light-Cmd
-      addCrLf: No
+      addCrLf: Yes
       device: Right-Light
-      name: Cell 0 13
+      name: Cell 0 14
 - gridRows: 3
-  gridColumns: 30
+  gridColumns: 21
   name: Right-Side-Scanner_Logic
   associatedDeviceName: Right-Side-Scanner-Net
   triggerMode: OnEvent
@@ -1022,24 +1040,6 @@
       name: Cell 0 5
     trueBranch:
     - action:
-        actionType: Math
-        sourceType: Value
-        source: No Read Barcode.
-        operator: SetVariableToValue
-        variable: Error-Mesage
-        clearStartIndex: 1
-        clearLength: 1
-        name: Cell 0 6
-    - action:
-        actionType: Math
-        sourceType: Value
-        source: 2
-        operator: SetVariableToValue
-        variable: Error-Mesage
-        clearStartIndex: 1
-        clearLength: 1
-        name: Cell 0 7
-    - action:
         actionType: If
         sourceType: Variable
         source: Right-PartId-Data
@@ -1057,24 +1057,6 @@
           patternType: Value
           pattern: (esat|ESAT)(?<RightLblYear>\d{2})(?<RightDayOfYear>\d{3})(?<RightLine>\d)(?<RightDailySequence>\d{4})(?<RightGMPartNumber>\d{8})(?<RightSupPartNumber>\d*)
           name: Cell 0 9
-      - action:
-          actionType: Math
-          sourceType: Value
-          source: Part belongs on the other line
-          operator: SetVariableToValue
-          variable: Error-Mesage
-          clearStartIndex: 1
-          clearLength: 1
-          name: Cell 0 8
-      - action:
-          actionType: Math
-          sourceType: Value
-          source: 3
-          operator: SetVariableToValue
-          variable: Error-State
-          clearStartIndex: 1
-          clearLength: 1
-          name: Cell 0 11
       - action:
           actionType: If
           sourceType: Variable
@@ -1099,24 +1081,6 @@
             statusVariableType: Variable
             statusVariable: Right-DB-Result
             name: Cell 0 12
-        - action:
-            actionType: Math
-            sourceType: Value
-            source: Duplicate Part, already in the database
-            operator: SetVariableToValue
-            variable: Error-Mesage
-            clearStartIndex: 1
-            clearLength: 1
-            name: Cell 0 13
-        - action:
-            actionType: Math
-            sourceType: Value
-            source: 4
-            operator: SetVariableToValue
-            variable: Error-State
-            clearStartIndex: 1
-            clearLength: 1
-            name: Cell 0 15
         - action:
             actionType: If
             sourceType: Variable
@@ -1149,24 +1113,6 @@
               clearLength: 1
               name: Cell 0 18
           - action:
-              actionType: Math
-              sourceType: Value
-              source: Can't save persistent data, CALL IT1
-              operator: SetVariableToValue
-              variable: Error-Mesage
-              clearStartIndex: 1
-              clearLength: 1
-              name: Cell 0 19
-          - action:
-              actionType: Math
-              sourceType: Value
-              source: 5
-              operator: SetVariableToValue
-              variable: Error-State
-              clearStartIndex: 1
-              clearLength: 1
-              name: Cell 0 20
-          - action:
               actionType: PersistVars
               mode: Save
               group: Angstrom-Axle-Tube
@@ -1184,24 +1130,6 @@
               name: Cell 0 20
             trueBranch:
             - action:
-                actionType: Math
-                sourceType: Value
-                source: Can't Add to Lot
-                operator: SetVariableToValue
-                variable: Error-Mesage
-                clearStartIndex: 1
-                clearLength: 1
-                name: Cell 0 23
-            - action:
-                actionType: Math
-                sourceType: Value
-                source: 6
-                operator: SetVariableToValue
-                variable: Error-State
-                clearStartIndex: 1
-                clearLength: 1
-                name: Cell 0 24
-            - action:
                 actionType: ActionConsumeMaterial
                 consumedMaterialPartNumberType: Variable
                 consumedMaterialPartNumber: Right-Supplier-Part-No-Constant
@@ -1211,7 +1139,7 @@
                 consumedMaterialSerialNumberArrayLengthType: Constant
                 bOMCheck: False
                 statusVariable: Right-DB-Result
-                name: Cell 0 25
+                name: Cell 0 14
                 description: Add to Batch
             - action:
                 actionType: If
@@ -1254,16 +1182,71 @@
                     subroutineName: Box-Print-Label
                     continueOnFailure: false
                     name: Cell 0 32
+                - action:
+                    actionType: Math
+                    sourceType: Variable
+                    source: BLANK
+                    operator: SetVariableToValue
+                    variable: Error-Mesage
+                    clearStartIndex: 1
+                    clearLength: 1
+              falseBranch:
+              - action:
+                  actionType: Math
+                  sourceType: Value
+                  source: Can't Add to Lot
+                  operator: SetVariableToValue
+                  variable: Error-Mesage
+                  clearStartIndex: 1
+                  clearLength: 1
+                  name: Cell 1 17
+            falseBranch:
+            - action:
+                actionType: Math
+                sourceType: Value
+                source: Can't save persistent data, CALL IT1
+                operator: SetVariableToValue
+                variable: Error-Mesage
+                clearStartIndex: 1
+                clearLength: 1
+                name: Cell 1 15
+          falseBranch:
+          - action:
+              actionType: Math
+              sourceType: Value
+              source: Duplicate Part, already in the database
+              operator: SetVariableToValue
+              variable: Error-Mesage
+              clearStartIndex: 1
+              clearLength: 1
+              name: Cell 1 9
         falseBranch:
         - action:
-            actionType: NoOp
-            name: Cell 1 10
+            actionType: Math
+            sourceType: Value
+            source: Part belongs on the other line
+            operator: SetVariableToValue
+            variable: Error-Mesage
+            clearStartIndex: 1
+            clearLength: 1
+            name: Cell 1 8
+      falseBranch:
+      - action: &o1
+          actionType: Math
+          sourceType: Value
+          source: No Read Barcode.
+          operator: SetVariableToValue
+          variable: Error-Mesage
+          clearStartIndex: 1
+          clearLength: 1
+          name: Cell 1 6
     falseBranch:
     - action:
         actionType: NoOp
         name: Cell 1 5
+    - action: *o1
 - gridRows: 3
-  gridColumns: 11
+  gridColumns: 12
   name: RightAlert
   associatedDeviceName: Subroutine
   triggerMode: OnEvent
@@ -1364,3 +1347,12 @@
       addCrLf: No
       device: Right-Light
       name: Cell 0 8
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: 1
+      operator: SetVariableToValue
+      variable: Right-Stack-Alert
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 11

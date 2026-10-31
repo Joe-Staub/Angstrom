@@ -233,6 +233,10 @@
   isArray: false
   dataType: String
   variableType: Local
+- name: RightPartData
+  isArray: false
+  dataType: String
+  variableType: Local
 - name: RightSupPartNumber
   isArray: false
   dataType: String
