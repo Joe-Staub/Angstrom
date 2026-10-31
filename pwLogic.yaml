@@ -1,5 +1,17 @@
 - gridRows: 3
   gridColumns: 10
+  name: BTNCreateCSV_Logic_1
+  associatedDeviceName: Screen:Operator-Main/BTNCreateCSV
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: CallSubroutine
+      subroutineName: CreateCSV
+      continueOnFailure: false
+      name: Cell 0 1
+- gridRows: 3
+  gridColumns: 10
   name: Box-Print-Label
   associatedDeviceName: Subroutine
   triggerMode: OnEvent
@@ -47,52 +59,13 @@
   - action:
       actionType: FillTemplate
       templateSourceType: Inline
-      templateText: C:\AxleReports\${TImestamp}.csv
+      templateText: C:\AxleReports\${TimeStamp}.csv
       outputVariable: ReportFolder
       name: Cell 0 1
   - action:
       actionType: DBExportCsv
       databaseConnection: PWDatabase
-      sql: >2-
-
-        John Green <johngreen49@gmail.com>
-
-        9:35 AM (0 minutes ago)
-
-        to me
-
-
-        SELECT
-
-        parent.Serial_Nbr                             AS ParentSerial,
-
-        pp.Part_Number                              AS ParentPart,
-
-        parent.Birth_DateTime                       AS ParentBorn,
-
-        g.Child_Part_Number                         AS ChildPart,
-
-        g.Child_Serial_Number                       AS ChildSerial,
-
-        child.Birth_DateTime                        AS ChildBorn
-
-        FROM dbo.Item parent
-
-        INNER JOIN dbo.Part pp        ON pp.Part_Key = parent.Part_Key
-
-        LEFT  JOIN dbo.Item_Gene g    ON g.Parent_Item_Key = parent.Item_Key
-
-        LEFT  JOIN dbo.Item child     ON child.Item_Key = g.Child_Item_Key
-
-        WHERE pp.Part_Number IN ("85545338","85545339")  
-         AND  parent.Birth_DateTime >= CAST(GETDATE() AS date)
-        ORDER BY parent.Birth_DateTime,
-
-        parent.Serial_Nbr,
-
-        g.Child_Part_Number,
-
-        g.Child_Serial_Number
+      sql: "SELECT\nparent.Serial_Nbr                             AS ParentSerial,\n\r\npp.Part_Number                              AS ParentPart,\r\n\nparent.Birth_DateTime                       AS ParentBorn,\r\n\ng.Child_Part_Number                         AS ChildPart,\n\r\ng.Child_Serial_Number                       AS ChildSerial,\r\n\nchild.Birth_DateTime                        AS ChildBorn\r\n\nFROM dbo.Item parent\r\n\nINNER JOIN dbo.Part pp        ON pp.Part_Key = parent.Part_Key\r\n\nLEFT  JOIN dbo.Item_Gene g    ON g.Parent_Item_Key = parent.Item_Key\r\n\nLEFT  JOIN dbo.Item child     ON child.Item_Key = g.Child_Item_Key\r\n\nWHERE pp.Part_Number IN ('85545338','85545339')  \n \r\nAND  parent.Birth_DateTime >= CAST(GETDATE() AS date)\r\n\nORDER BY parent.Birth_DateTime,\nparent.Serial_Nbr,\ng.Child_Part_Number,\ng.Child_Serial_Number"
       parameters: []
       filePathType: Variable
       filePath: ReportFolder
@@ -103,6 +76,91 @@
       status: Error-Mesage
       rowCountVariable: CSV_Rowvount
       name: Cell 0 1
+- gridRows: 3
+  gridColumns: 10
+  name: CreateLeftLot
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: Math
+      operator: IncrementAsNumber
+      variable: LeftLotNumber
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
+      actionType: FillTemplate
+      templateSourceType: Inline
+      templateText: L${LeftLotNumber:%06d}
+      outputVariable: LeftLotLabel
+      name: Cell 0 1
+  - action:
+      actionType: ActionBirth
+      partNumberType: Variable
+      partNumber: LEFT_CONTAINER
+      partProducerType: Constant
+      partProducer: Angstrom
+      partSerialNumberType: Variable
+      partSerialNumber: LeftLotNumber
+      lotQuantityType: Value
+      lotQuantity: 18
+      statusVariableType: Variable
+      statusVariable: Left-DB-Result
+      name: Cell 0 2
+  - action:
+      actionType: PersistVars
+      mode: Save
+      group: Angstrom-Axle-Tube
+      name: Cell 0 3
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: 0
+      operator: SetVariableToValue
+      variable: Left-Container-Count
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 5
+- gridRows: 3
+  gridColumns: 10
+  name: CreateRightLot
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: Math
+      operator: IncrementAsNumber
+      variable: RightLotNumber
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
+      actionType: FillTemplate
+      templateSourceType: Inline
+      templateText: L${RightLotNumber:%06d}
+      outputVariable: RightLotLabel
+      name: Cell 0 1
+  - action:
+      actionType: ActionBirth
+      partNumberType: Variable
+      partNumber: RIGHT_CONTAINER
+      partProducerType: Constant
+      partProducer: Angstrom
+      partSerialNumberType: Variable
+      partSerialNumber: RightLotLabel
+      lotQuantityType: Value
+      lotQuantity: 18
+      statusVariableType: Variable
+      statusVariable: Right-DB-Result
+      name: Cell 0 2
+  - action:
+      actionType: PersistVars
+      mode: Save
+      group: Angstrom-Axle-Tube
+      name: Cell 0 3
 - gridRows: 3
   gridColumns: 10
   name: ExtractLeftData
@@ -334,7 +392,7 @@
       device: Left-Light
       name: Cell 0 14
 - gridRows: 3
-  gridColumns: 21
+  gridColumns: 23
   name: Left-Side-Scanner_Logic
   associatedDeviceName: Left-Side-Scanner-Net
   triggerMode: OnEvent
@@ -423,8 +481,9 @@
           trueBranch:
           - action:
               actionType: CallSubroutine
+              subroutineName: Left-Axle-Print-Label
               continueOnFailure: false
-              name: Cell 0 15
+              name: Cell 0 9
           - action:
               actionType: Math
               operator: IncrementAsNumber
@@ -459,15 +518,9 @@
               name: Cell 0 20
             trueBranch:
             - action:
-                actionType: ActionConsumeMaterial
-                consumedMaterialPartNumberType: Variable
-                consumedMaterialPartNumber: Left-Supplier-Part-No-Constant
-                consumedMaterialSerialNumberType: Variable
-                consumedMaterialSerialNumber: LeftPartIdData
-                consumedMaterialSerialNumberArrayStartIndexType: Constant
-                consumedMaterialSerialNumberArrayLengthType: Constant
-                bOMCheck: False
-                statusVariable: Left-DB-Result
+                actionType: CallSubroutine
+                subroutineName: LeftAddToBatch
+                continueOnFailure: false
                 name: Cell 0 14
                 description: Add to Batch
             - action:
@@ -499,12 +552,12 @@
                   actionType: If
                   sourceType: Variable
                   source: Left-Container-Count
-                  compareOperator: =
+                  compareOperator: '>'
                   containsStartPositionVariable: Date
                   containsInstanceCountVariable: Date
                   comparedToType: Value
-                  comparedTo: 18
-                  name: Cell 0 28
+                  comparedTo: 17
+                  name: Cell 0 18
                 trueBranch:
                 - action:
                     actionType: CallSubroutine
@@ -514,11 +567,26 @@
                 - action:
                     actionType: Math
                     sourceType: Variable
+                    source: LeftLotLabel
+                    operator: SetVariableToValue
+                    variable: LblBoxId
+                    clearStartIndex: 1
+                    clearLength: 1
+                    name: Cell 0 20
+                - action:
+                    actionType: CallSubroutine
+                    subroutineName: CreateLeftLot
+                    continueOnFailure: false
+                    name: Cell 0 20
+                - action:
+                    actionType: Math
+                    sourceType: Variable
                     source: BLANK
                     operator: SetVariableToValue
                     variable: Error-Mesage
                     clearStartIndex: 1
                     clearLength: 1
+                    name: Cell 0 20
               falseBranch:
               - action:
                   actionType: Math
@@ -549,6 +617,11 @@
               clearStartIndex: 1
               clearLength: 1
               name: Cell 1 9
+          - action:
+              actionType: CallSubroutine
+              subroutineName: LeftAlert
+              continueOnFailure: false
+              name: Cell 1 9
         falseBranch:
         - action:
             actionType: Math
@@ -574,6 +647,36 @@
         actionType: NoOp
         name: Cell 1 5
     - action: *o0
+- gridRows: 3
+  gridColumns: 10
+  name: LeftAddToBatch
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: ActionConsumeMaterial
+      consumedMaterialPartNumberType: Variable
+      consumedMaterialPartNumber: Left-Supplier-Part-No-Constant
+      consumedMaterialSerialNumberType: Variable
+      consumedMaterialSerialNumber: Left-PartId-Data
+      consumedMaterialSerialNumberArrayStartIndexType: Constant
+      consumedMaterialSerialNumberArrayLengthType: Constant
+      bOMCheck: False
+      parentPartNumberType: Variable
+      parentPartNumber: LEFT_CONTAINER
+      parentSerialNumberType: Variable
+      parentSerialNumber: LeftLotLabel
+      statusVariable: Left-DB-Result
+      name: Cell 0 1
+      description: Add to Batch
+  - action:
+      actionType: Math
+      operator: IncrementAsNumber
+      variable: Left-Container-Count
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 2
 - gridRows: 3
   gridColumns: 12
   name: LeftAlert

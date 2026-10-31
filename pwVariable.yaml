@@ -33,6 +33,12 @@
   dataType: String
   variableType: Local
 - variableType: Constant
+  name: LEFT_CONTAINER
+  description: 'Constant: LOT85545338'
+  isArray: false
+  dataType: String
+  defaultValue: LOT85545338
+- variableType: Constant
   name: LIGHT_SLEEP
   description: 'Constant: 100'
   isArray: false
@@ -116,6 +122,25 @@
   isArray: false
   dataType: String
   variableType: Local
+- name: LeftLotLabel
+  isArray: false
+  dataType: String
+  persistenceGroup: Angstrom-Axle-Tube
+  variableType: Local
+- name: LeftLotNumbe
+  isArray: false
+  dataType: Integer
+  variableType: Local
+- name: LeftLotNumber
+  isArray: false
+  dataType: Integer
+  persistenceGroup: Angstrom-Axle-Tube
+  variableType: Local
+- name: LeftLotNumer
+  isArray: false
+  dataType: Integer
+  persistenceGroup: Angstrom-Axle-Tube
+  variableType: Local
 - name: LeftPartData
   isArray: false
   dataType: String
@@ -152,6 +177,12 @@
   isArray: true
   dataType: String
   variableType: Array
+- variableType: Constant
+  name: RIGHT_CONTAINER
+  description: 'Constant: LOT85545339'
+  isArray: false
+  dataType: String
+  defaultValue: LOT85545339
 - name: ReportFolder
   isArray: false
   dataType: String
@@ -232,6 +263,16 @@
 - name: RightLine
   isArray: false
   dataType: String
+  variableType: Local
+- name: RightLotLabel
+  isArray: false
+  dataType: String
+  persistenceGroup: Angstrom-Axle-Tube
+  variableType: Local
+- name: RightLotNumber
+  isArray: false
+  dataType: Integer
+  persistenceGroup: Angstrom-Axle-Tube
   variableType: Local
 - name: RightSupPartNumber
   isArray: false

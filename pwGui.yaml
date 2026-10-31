@@ -340,7 +340,7 @@ screens:
     textAlign: Left
     verticalAlign: Top
   - name: OutputText2_1_1_1_1_1
-    description: ${Left-Container-Count}
+    description: ${LeftLotLabel}
     xposition: 260
     yposition: 360
     width: 251
@@ -348,11 +348,11 @@ screens:
     fGColor: Black
     bGColor: Lavender
     font: Arial, 12pt, style=Bold
-    variable: Left-Container-Count
+    variable: LeftLotLabel
     textAlign: Left
     verticalAlign: Top
   - name: OutputText2_1_1_1_2
-    description: ${Right-Current-Container}
+    description: ${RightLotLabel}
     xposition: 780
     yposition: 360
     width: 264
@@ -360,11 +360,11 @@ screens:
     fGColor: Black
     bGColor: Lavender
     font: Arial, 12pt, style=Bold
-    variable: Right-Current-Container
+    variable: RightLotLabel
     textAlign: Left
     verticalAlign: Top
   - name: OutputText2_1_1_1_1_1_1
-    description: ${Left-Current-Container}
+    description: ${Left-Container-Count}
     xposition: 260
     yposition: 400
     width: 251
@@ -372,7 +372,7 @@ screens:
     fGColor: Black
     bGColor: Lavender
     font: Arial, 12pt, style=Bold
-    variable: Left-Current-Container
+    variable: Left-Container-Count
     textAlign: Left
     verticalAlign: Top
   - name: OutputText2_1_1_1_2_1
