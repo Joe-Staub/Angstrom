@@ -128,7 +128,7 @@
   isArray: false
   dataType: String
   variableType: Local
-- name: LeftSupPartNumber>
+- name: LeftSupPartNumber
   isArray: false
   dataType: String
   variableType: Local
@@ -160,11 +160,24 @@
   isArray: false
   dataType: String
   variableType: Local
-- name: Right-Container-Count
+- name: Right-Clear-Ack-Button-BGColorVariable
   isArray: false
   dataType: String
   variableType: Local
+- name: Right-Container-Count
+  isArray: false
+  dataType: Integer
+  persistenceGroup: Angstrom-Axle-Tube
+  variableType: Local
 - name: Right-Current-Container
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Right-DB-Result
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Right-Part-Number
   isArray: false
   dataType: String
   variableType: Local
@@ -176,9 +189,23 @@
   isArray: false
   dataType: String
   variableType: Local
-- name: Right-Production-Count
+- name: Right-Persist-Status
   isArray: false
   dataType: String
+  variableType: Local
+- name: Right-Print-Buffer
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Right-Production-Count
+  isArray: false
+  dataType: Integer
+  persistenceGroup: Angstrom-Axle-Tube
+  variableType: Local
+- name: Right-Stack-Alert
+  isArray: false
+  dataType: Integer
+  defaultValue: 0
   variableType: Local
 - variableType: Constant
   name: Right-Supplier-Part-No-Constant
@@ -186,6 +213,30 @@
   isArray: false
   dataType: String
   defaultValue: 85545339
+- name: RightDailySequence
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: RightDayOfYear
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: RightGMPartNumber
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: RightLblYear
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: RightLine
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: RightSupPartNumber
+  isArray: false
+  dataType: String
+  variableType: Local
 - name: Stack-Light
   isArray: false
   dataType: Integer

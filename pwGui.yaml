@@ -13,6 +13,7 @@ screens:
     bGColor: Wheat
     font: Arial, 14pt, style=Bold
     type: SetToValue
+    bGColorVariable: Right-Clear-Ack-Button-BGColorVariable
   - name: Left-Clear-Ack-Button
     description: Clear Error
     xposition: 160

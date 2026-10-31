@@ -115,7 +115,7 @@
       sourceType: Variable
       source: Left-PartId-Data
       patternType: Value
-      pattern: ESAT(?<LeftLblYear>\d{2})(?<LeftDayOfYear>\d{3})(?<LeftLine>\d)(?<LeftDailySequence>\d{4})(?<LeftGMPartNumber>\d{8})(?<SupPartNumber>\d*)
+      pattern: ESAT(?<LeftLblYear>\d{2})(?<LeftDayOfYear>\d{3})(?<LeftLine>\d)(?<LeftDailySequence>\d{4})(?<LeftGMPartNumber>\d{8})(?<LeftSupPartNumber>\d*)
       name: Cell 0 1
 - gridRows: 3
   gridColumns: 10
@@ -384,7 +384,7 @@
           sourceType: Variable
           source: Left-PartId-Data
           patternType: Value
-          pattern: (esat|ESAT)(?<LeftLblYear>\d{2})(?<LeftDayOfYear>\d{3})(?<LeftLine>\d)(?<LeftDailySequence>\d{4})(?<LeftGMPartNumber>\d{8})(?<SupPartNumber>\d*)
+          pattern: (esat|ESAT)(?<LeftLblYear>\d{2})(?<LeftDayOfYear>\d{3})(?<LeftLine>\d)(?<LeftDailySequence>\d{4})(?<LeftGMPartNumber>\d{8})(?<LeftSupPartNumber>\d*)
           name: Cell 0 9
       - action:
           actionType: If
@@ -801,6 +801,15 @@
       clearStartIndex: 1
       clearLength: 1
       name: Cell 0 5
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: WHEAT
+      operator: SetVariableToValue
+      variable: Right-Clear-Ack-Button-BGColorVariable
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 6
 - gridRows: 3
   gridColumns: 10
   name: Right-Axle-Print-Label
@@ -819,9 +828,30 @@
       sourceType: Variable
       source: Left-Print-Buffer
       addCrLf: Yes
-      device: Right-Axel-Printer
+      device: Right-Axle-Printer
       status: Error-Mesage
       name: Cell 0 2
+- gridRows: 3
+  gridColumns: 10
+  name: Right-Clear-Ack-Button_Logic_1
+  associatedDeviceName: Screen:Operator-Main/Right-Clear-Ack-Button
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: Math
+      sourceType: Variable
+      source: BLANK
+      operator: SetVariableToValue
+      variable: Error-Mesage
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
+      actionType: CallSubroutine
+      subroutineName: Right-Clear-Alert
+      continueOnFailure: false
+      name: Cell 0 5
 - gridRows: 3
   gridColumns: 14
   name: Right-Clear-Alert
@@ -837,7 +867,7 @@
       sourceType: Value
       source: RED
       operator: SetVariableToValue
-      variable: Left-Clear-Ack_Buitton-BGColorVariable
+      variable: Right-Clear-Ack-Button-BGColorVariable
       clearStartIndex: 1
       clearLength: 1
       name: Cell 0 2
@@ -1025,7 +1055,7 @@
           sourceType: Variable
           source: Right-PartId-Data
           patternType: Value
-          pattern: (esat|ESAT)(?<LeftLblYear>\d{2})(?<LeftDayOfYear>\d{3})(?<LeftLine>\d)(?<LeftDailySequence>\d{4})(?<LeftGMPartNumber>\d{8})(?<SupPartNumber>\d*)
+          pattern: (esat|ESAT)(?<RightLblYear>\d{2})(?<RightDayOfYear>\d{3})(?<RightLine>\d)(?<RightDailySequence>\d{4})(?<RightGMPartNumber>\d{8})(?<RightSupPartNumber>\d*)
           name: Cell 0 9
       - action:
           actionType: Math
@@ -1173,9 +1203,14 @@
                 name: Cell 0 24
             - action:
                 actionType: ActionConsumeMaterial
+                consumedMaterialPartNumberType: Variable
+                consumedMaterialPartNumber: Right-Supplier-Part-No-Constant
+                consumedMaterialSerialNumberType: Variable
+                consumedMaterialSerialNumber: Right-PartId-Data
                 consumedMaterialSerialNumberArrayStartIndexType: Constant
                 consumedMaterialSerialNumberArrayLengthType: Constant
                 bOMCheck: False
+                statusVariable: Right-DB-Result
                 name: Cell 0 25
                 description: Add to Batch
             - action:
@@ -1200,7 +1235,7 @@
                   sourceType: Variable
                   source: Right-Print-Buffer
                   addCrLf: Yes
-                  device: Right-Axel-Printer
+                  device: Right-Axle-Printer
                   status: Error-Mesage
                   name: Cell 0 27
               - action:
@@ -1242,7 +1277,7 @@
       sourceType: Value
       source: RED
       operator: SetVariableToValue
-      variable: Left-Clear-Ack_Buitton-BGColorVariable
+      variable: Right-Clear-Ack-Button-BGColorVariable
       clearStartIndex: 1
       clearLength: 1
       name: Cell 0 2
