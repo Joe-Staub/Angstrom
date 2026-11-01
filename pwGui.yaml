@@ -152,7 +152,7 @@ screens:
     verticalAlign: Top
   - name: Label1_3
     description: 'Production Part No.: 85545338'
-    xposition: 633
+    xposition: 640
     yposition: 160
     width: 292
     height: 20
@@ -257,9 +257,9 @@ screens:
   outputTexts:
   - name: OutputText2
     description: ${Left-PartId-Data}
-    xposition: 260
+    xposition: 220
     yposition: 240
-    width: 251
+    width: 306
     height: 20
     fGColor: Black
     bGColor: Lavender
@@ -281,9 +281,9 @@ screens:
     verticalAlign: Middle
   - name: OutputText2_1
     description: ${Left-PartId-Scan-Time}
-    xposition: 260
+    xposition: 220
     yposition: 280
-    width: 251
+    width: 306
     height: 20
     fGColor: Black
     bGColor: Lavender
@@ -293,9 +293,9 @@ screens:
     verticalAlign: Top
   - name: OutputText2_2
     description: ${Right-PartId-Data}
-    xposition: 780
+    xposition: 740
     yposition: 240
-    width: 264
+    width: 322
     height: 20
     fGColor: Black
     bGColor: Lavender
@@ -305,9 +305,9 @@ screens:
     verticalAlign: Top
   - name: OutputText2_1_1
     description: ${Right-PartId-Scan-Time}
-    xposition: 780
+    xposition: 740
     yposition: 280
-    width: 264
+    width: 322
     height: 20
     fGColor: Black
     bGColor: Lavender
@@ -317,9 +317,9 @@ screens:
     verticalAlign: Top
   - name: OutputText2_1_1_1
     description: ${Right-Production-Count}
-    xposition: 780
+    xposition: 740
     yposition: 320
-    width: 264
+    width: 322
     height: 20
     fGColor: Black
     bGColor: Lavender
@@ -329,9 +329,9 @@ screens:
     verticalAlign: Top
   - name: OutputText2_1_1_1_1
     description: ${Left-Production-Count}
-    xposition: 260
+    xposition: 220
     yposition: 320
-    width: 251
+    width: 306
     height: 20
     fGColor: Black
     bGColor: Lavender
@@ -341,9 +341,9 @@ screens:
     verticalAlign: Top
   - name: OutputText2_1_1_1_1_1
     description: ${LeftLotLabel}
-    xposition: 260
+    xposition: 220
     yposition: 360
-    width: 251
+    width: 306
     height: 20
     fGColor: Black
     bGColor: Lavender
@@ -353,9 +353,9 @@ screens:
     verticalAlign: Top
   - name: OutputText2_1_1_1_2
     description: ${RightLotLabel}
-    xposition: 780
+    xposition: 740
     yposition: 360
-    width: 264
+    width: 322
     height: 20
     fGColor: Black
     bGColor: Lavender
@@ -365,9 +365,9 @@ screens:
     verticalAlign: Top
   - name: OutputText2_1_1_1_1_1_1
     description: ${Left-Container-Count}
-    xposition: 260
+    xposition: 220
     yposition: 400
-    width: 251
+    width: 306
     height: 20
     fGColor: Black
     bGColor: Lavender
@@ -377,9 +377,9 @@ screens:
     verticalAlign: Top
   - name: OutputText2_1_1_1_2_1
     description: ${Right-Container-Count}
-    xposition: 780
+    xposition: 740
     yposition: 400
-    width: 264
+    width: 322
     height: 20
     fGColor: Black
     bGColor: Lavender

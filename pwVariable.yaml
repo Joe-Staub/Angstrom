@@ -3,6 +3,12 @@
   dataType: String
   variableType: Local
 - variableType: Constant
+  name: BATCH_SIZE
+  description: 'Constant: 2'
+  isArray: false
+  dataType: Integer
+  defaultValue: 2
+- variableType: Constant
   name: BLANK
   description: 'Constant: '
   isArray: false
@@ -98,10 +104,9 @@
   variableType: Local
 - variableType: Constant
   name: Left-Supplier-Part-No-Constant
-  description: 'Constant: 85545338'
+  description: 'Constant: '
   isArray: false
   dataType: String
-  defaultValue: 85545338
 - name: LeftDailySequence
   isArray: false
   dataType: String
