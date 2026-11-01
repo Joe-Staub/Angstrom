@@ -51,6 +51,31 @@
       name: Cell 0 4
 - gridRows: 3
   gridColumns: 10
+  name: ClearProductionCounts
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: 0
+      operator: SetVariableToValue
+      variable: Left-Production-Count
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: 0
+      operator: SetVariableToValue
+      variable: Right-Production-Count
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 3
+- gridRows: 3
+  gridColumns: 10
   name: CreateCSV
   associatedDeviceName: Subroutine
   triggerMode: OnEvent
@@ -445,7 +470,7 @@
         actionType: If
         sourceType: Variable
         source: LeftGMPartNumber
-        compareOperator: <>
+        compareOperator: =
         containsStartPositionVariable: Date
         containsInstanceCountVariable: Date
         comparedToType: Variable
@@ -620,7 +645,8 @@
           continueOnFailure: false
           name: Cell 1 6
       - action:
-          actionType: NoOp
+          actionType: Stop
+          stopped: true
           name: Cell 1 7
       - action: *o0
       - action: *o1
@@ -1124,8 +1150,8 @@
     - action:
         actionType: If
         sourceType: Variable
-        source: Right-Part-Number
-        compareOperator: <>
+        source: RightGMPartNumber
+        compareOperator: =
         containsStartPositionVariable: Date
         containsInstanceCountVariable: Date
         comparedToType: Variable
@@ -1300,7 +1326,8 @@
           continueOnFailure: false
           name: Cell 1 7
       - action: &o8
-          actionType: NoOp
+          actionType: Stop
+          stopped: false
           name: Cell 1 7
       - action: *o3
       - action: *o4

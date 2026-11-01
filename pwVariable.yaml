@@ -104,9 +104,10 @@
   variableType: Local
 - variableType: Constant
   name: Left-Supplier-Part-No-Constant
-  description: 'Constant: '
+  description: 'Constant: 84455338'
   isArray: false
   dataType: String
+  defaultValue: 84455338
 - name: LeftDailySequence
   isArray: false
   dataType: String

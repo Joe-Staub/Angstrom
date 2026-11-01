@@ -1,7 +1,7 @@
-enabled: no
-logicChartEnabled: no
+enabled: yes
+logicChartEnabled: yes
 detailedLogicChartEnabled: no
 stackEnabled: no
-deviceEnabled: no
-variableEnabled: no
+deviceEnabled: yes
+variableEnabled: yes
 logLevel: Debug
