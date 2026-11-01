@@ -147,7 +147,7 @@
   - action:
       actionType: FillTemplate
       templateSourceType: Inline
-      templateText: L${RightLotNumber:%06d}
+      templateText: R${RightLotNumber:%06d}
       outputVariable: RightLotLabel
       name: Cell 0 1
   - action:
@@ -312,14 +312,6 @@
       subroutineName: Left-Clear-Alert
       continueOnFailure: false
       name: Cell 0 5
-  - action:
-      actionType: Math
-      sourceType: Value
-      source: 0
-      operator: SetVariableToValue
-      variable: Stack-Light
-      clearStartIndex: 1
-      clearLength: 1
 - gridRows: 3
   gridColumns: 15
   name: Left-Clear-Alert
@@ -934,33 +926,6 @@
       clearStartIndex: 1
       clearLength: 1
       name: Cell 0 2
-  - action:
-      actionType: Math
-      sourceType: Value
-      source: 0
-      operator: SetVariableToValue
-      variable: Stack-Light
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 3
-  - action:
-      actionType: Math
-      sourceType: Value
-      source: WHEAT
-      operator: SetVariableToValue
-      variable: Left-Clear-Ack_Buitton-BGColorVariable
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 5
-  - action:
-      actionType: Math
-      sourceType: Value
-      source: WHEAT
-      operator: SetVariableToValue
-      variable: Right-Clear-Ack-Button-BGColorVariable
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 6
 - gridRows: 3
   gridColumns: 10
   name: Right-Axle-Print-Label
@@ -1026,7 +991,7 @@
       sourceType: Value
       source: 0
       operator: SetVariableToValue
-      variable: Left-Container-Count
+      variable: Right-Container-Count
       clearStartIndex: 1
       clearLength: 1
       name: Cell 0 3
@@ -1199,7 +1164,7 @@
       sourceType: Value
       source: 0
       operator: SetVariableToValue
-      variable: Stack-Light
+      variable: Right-Stack-Alert
       clearStartIndex: 1
       clearLength: 1
 - gridRows: 3
@@ -1431,8 +1396,9 @@
       - action: *o5
     falseBranch:
     - action:
-        actionType: NoOp
-        name: Cell 1 5
+        actionType: Stop
+        stopped: false
+        name: Cell 1 3
     - action:
         actionType: NoOp
         name: Cell 1 4
@@ -1579,6 +1545,6 @@
       sourceType: Value
       source: 1
       operator: SetVariableToValue
-      variable: Stack-Light
+      variable: Right-Stack-Alert
       clearStartIndex: 1
       clearLength: 1
