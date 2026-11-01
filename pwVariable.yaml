@@ -4,10 +4,10 @@
   variableType: Local
 - variableType: Constant
   name: BATCH_SIZE
-  description: 'Constant: 2'
+  description: 'Constant: 3'
   isArray: false
   dataType: Integer
-  defaultValue: 2
+  defaultValue: 3
 - variableType: Constant
   name: BLANK
   description: 'Constant: '
@@ -50,6 +50,10 @@
   isArray: false
   dataType: Integer
   defaultValue: 100
+- name: LabelData
+  isArray: false
+  dataType: String
+  variableType: Local
 - name: LblBoxId
   isArray: false
   dataType: String
@@ -104,10 +108,10 @@
   variableType: Local
 - variableType: Constant
   name: Left-Supplier-Part-No-Constant
-  description: 'Constant: 84455338'
+  description: 'Constant: 85545338'
   isArray: false
   dataType: String
-  defaultValue: 84455338
+  defaultValue: 85545338
 - name: LeftDailySequence
   isArray: false
   dataType: String
@@ -133,16 +137,7 @@
   dataType: String
   persistenceGroup: Angstrom-Axle-Tube
   variableType: Local
-- name: LeftLotNumbe
-  isArray: false
-  dataType: Integer
-  variableType: Local
 - name: LeftLotNumber
-  isArray: false
-  dataType: Integer
-  persistenceGroup: Angstrom-Axle-Tube
-  variableType: Local
-- name: LeftLotNumer
   isArray: false
   dataType: Integer
   persistenceGroup: Angstrom-Axle-Tube

@@ -12,43 +12,25 @@
       name: Cell 0 1
 - gridRows: 3
   gridColumns: 10
-  name: Box-Print-Label
+  name: CheckLeftNoRead
   associatedDeviceName: Subroutine
   triggerMode: OnEvent
   order: 0
   steps:
   - action:
-      actionType: FillTemplate
-      templateSourceType: Variable
-      templateVariable: BoxTemplate
-      outputVariable: BoxPrintBuffer
-      name: Cell 0 1
-  - action:
-      actionType: ActionWriteToDevice
+      actionType: If
       sourceType: Variable
-      source: BoxPrintBuffer
-      addCrLf: Yes
-      device: Box-Printer
-      status: Error-Mesage
-      name: Cell 0 2
-  - action:
-      actionType: Math
-      sourceType: Value
-      source: 0
-      operator: SetVariableToValue
-      variable: Left-Container-Count
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 3
-  - action:
-      actionType: Math
-      sourceType: Value
-      source: Container Label Printed
-      operator: SetVariableToValue
-      variable: Error-Mesage
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 4
+      source: Left-PartId-Data
+      compareOperator: =
+      containsStartPositionVariable: AxleTemplate
+      containsInstanceCountVariable: AxleTemplate
+      comparedToType: Variable
+      comparedTo: NOREAD
+      name: Cell 0 1
+    trueBranch:
+    - action:
+        actionType: Stop
+        stopped: false
 - gridRows: 3
   gridColumns: 10
   name: ClearProductionCounts
@@ -128,7 +110,7 @@
       partProducerType: Constant
       partProducer: Angstrom
       partSerialNumberType: Variable
-      partSerialNumber: LeftLotNumber
+      partSerialNumber: LeftLotLabel
       lotQuantityType: Value
       lotQuantity: 18
       statusVariableType: Variable
@@ -186,6 +168,15 @@
       mode: Save
       group: Angstrom-Axle-Tube
       name: Cell 0 3
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: 0
+      operator: SetVariableToValue
+      variable: Right-Container-Count
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 5
 - gridRows: 3
   gridColumns: 10
   name: ExtractLeftData
@@ -234,7 +225,7 @@
       sourceType: Variable
       source: Left-PartId-Data
       operator: SetVariableToValue
-      variable: LeftPartData
+      variable: LabelData
       clearStartIndex: 1
       clearLength: 1
       name: Cell 0 1
@@ -252,6 +243,54 @@
       device: Left-Axle-Printer
       status: Error-Mesage
       name: Cell 0 2
+- gridRows: 3
+  gridColumns: 10
+  name: Left-Box-Print-Label
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: Math
+      sourceType: Variable
+      source: LeftLotLabel
+      operator: SetVariableToValue
+      variable: LblBoxId
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
+      actionType: FillTemplate
+      templateSourceType: Variable
+      templateVariable: BoxTemplate
+      outputVariable: BoxPrintBuffer
+      name: Cell 0 1
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: BoxPrintBuffer
+      addCrLf: Yes
+      device: Box-Printer
+      status: Error-Mesage
+      name: Cell 0 2
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: 0
+      operator: SetVariableToValue
+      variable: Left-Container-Count
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 3
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: Container Label Printed
+      operator: SetVariableToValue
+      variable: Error-Mesage
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 4
 - gridRows: 3
   gridColumns: 10
   name: Left-Clear-Ack-Button_Logic_1
@@ -584,9 +623,9 @@
             trueBranch:
             - action:
                 actionType: CallSubroutine
-                subroutineName: Box-Print-Label
+                subroutineName: Left-Box-Print-Label
                 continueOnFailure: false
-                name: Cell 0 32
+                name: Cell 0 21
             - action:
                 actionType: CallSubroutine
                 subroutineName: CreateLeftLot
@@ -653,7 +692,8 @@
       - action: *o2
     falseBranch:
     - action:
-        actionType: NoOp
+        actionType: Stop
+        stopped: true
         name: Cell 1 3
 - gridRows: 3
   gridColumns: 10
@@ -929,19 +969,76 @@
   order: 0
   steps:
   - action:
+      actionType: Math
+      sourceType: Variable
+      source: Right-PartId-Data
+      operator: SetVariableToValue
+      variable: LabelData
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
       actionType: FillTemplate
       templateSourceType: Variable
       templateVariable: AxleTemplate
-      outputVariable: Left-Print-Buffer
-      name: Cell 0 1
+      outputVariable: Right-Print-Buffer
+      name: Cell 0 2
   - action:
       actionType: ActionWriteToDevice
       sourceType: Variable
-      source: Left-Print-Buffer
+      source: Right-Print-Buffer
       addCrLf: Yes
       device: Right-Axle-Printer
       status: Error-Mesage
       name: Cell 0 2
+- gridRows: 3
+  gridColumns: 10
+  name: Right-Box-Print-Label
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: Math
+      sourceType: Variable
+      source: RightLotLabel
+      operator: SetVariableToValue
+      variable: LblBoxId
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
+      actionType: FillTemplate
+      templateSourceType: Variable
+      templateVariable: BoxTemplate
+      outputVariable: BoxPrintBuffer
+      name: Cell 0 1
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: BoxPrintBuffer
+      addCrLf: Yes
+      device: Box-Printer
+      status: Error-Mesage
+      name: Cell 0 2
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: 0
+      operator: SetVariableToValue
+      variable: Left-Container-Count
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 3
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: Container Label Printed
+      operator: SetVariableToValue
+      variable: Error-Mesage
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 4
 - gridRows: 3
   gridColumns: 10
   name: Right-Clear-Ack-Button_Logic_1
@@ -1265,7 +1362,7 @@
             trueBranch:
             - action:
                 actionType: CallSubroutine
-                subroutineName: Box-Print-Label
+                subroutineName: Right-Box-Print-Label
                 continueOnFailure: false
                 name: Cell 0 32
             - action:
@@ -1327,7 +1424,7 @@
           name: Cell 1 7
       - action: &o8
           actionType: Stop
-          stopped: false
+          stopped: true
           name: Cell 1 7
       - action: *o3
       - action: *o4

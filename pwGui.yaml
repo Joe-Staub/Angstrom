@@ -152,7 +152,7 @@ screens:
     verticalAlign: Top
   - name: Label1_3
     description: 'Production Part No.: 85545338'
-    xposition: 640
+    xposition: 160
     yposition: 160
     width: 292
     height: 20
@@ -165,7 +165,7 @@ screens:
     verticalAlign: Top
   - name: Label1_3_1
     description: 'Production Part No.: 85545339'
-    xposition: 153
+    xposition: 740
     yposition: 160
     width: 292
     height: 20
@@ -178,7 +178,7 @@ screens:
     verticalAlign: Top
   - name: Label3
     description: Left Side Line
-    xposition: 155
+    xposition: 160
     yposition: 120
     width: 292
     height: 37
@@ -187,11 +187,11 @@ screens:
     font: Arial, 20.25pt, style=Bold
     source: Left Side Line
     sourceType: Constant
-    textAlign: Center
+    textAlign: Left
     verticalAlign: Top
   - name: Label3_1
     description: Right Side Line
-    xposition: 627
+    xposition: 740
     yposition: 120
     width: 292
     height: 37
@@ -200,7 +200,7 @@ screens:
     font: Arial, 20.25pt, style=Bold
     source: Right Side Line
     sourceType: Constant
-    textAlign: Center
+    textAlign: Left
     verticalAlign: Top
   - name: Label1_1_1_1_2_1
     description: Current Container Count
