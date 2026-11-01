@@ -6,10 +6,6 @@
 ^BXN,10,200,18,18
 ^FD${LabelData}^FS
 ^FO10,230
-^A0N,20,20
+^A0N,36,20
 ^FB350,1,0,L,0
 ^FD${LabelData}^FS
-^CI28
-^PW406
-^LL609
-^LH0,0

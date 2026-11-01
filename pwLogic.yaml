@@ -147,7 +147,7 @@
   - action:
       actionType: FillTemplate
       templateSourceType: Inline
-      templateText: R${RightLotNumber:%06d}
+      templateText: L${RightLotNumber:%06d}
       outputVariable: RightLotLabel
       name: Cell 0 1
   - action:
@@ -482,211 +482,220 @@
   - action:
       actionType: If
       sourceType: Variable
-      source: Left-Stack-Alert
-      compareOperator: =
-      containsStartPositionVariable: Date
-      containsInstanceCountVariable: Date
+      source: Left-PartId-Data
+      compareOperator: <>
+      containsStartPositionVariable: AxleTemplate
+      containsInstanceCountVariable: AxleTemplate
       comparedToType: Value
-      comparedTo: 0
-      name: Cell 0 5
+      comparedTo: NoRead
+      name: Cell 0 3
     trueBranch:
-    - action:
-        actionType: RegexExtract
-        sourceType: Variable
-        source: Left-PartId-Data
-        patternType: Value
-        pattern: (esat|ESAT)(?<LeftLblYear>\d{2})(?<LeftDayOfYear>\d{3})(?<LeftLine>\d)(?<LeftDailySequence>\d{4})(?<LeftGMPartNumber>\d{8})(?<LeftSupPartNumber>\d*)
-        name: Cell 0 4
     - action:
         actionType: If
         sourceType: Variable
-        source: LeftGMPartNumber
+        source: Left-Stack-Alert
         compareOperator: =
         containsStartPositionVariable: Date
         containsInstanceCountVariable: Date
-        comparedToType: Variable
-        comparedTo: Left-Supplier-Part-No-Constant
+        comparedToType: Value
+        comparedTo: 0
         name: Cell 0 5
       trueBranch:
       - action:
-          actionType: NoOp
-          name: Cell 0 6
-      - action:
-          actionType: ActionBirth
-          partNumberType: Variable
-          partNumber: LeftGMPartNumber
-          partProducerType: Constant
-          partProducer: Angstrom
-          partSerialNumberType: Variable
-          partSerialNumber: Left-PartId-Data
-          lotQuantityType: Value
-          lotQuantity: 1
-          statusVariableType: Variable
-          statusVariable: Left-DB-Result
-          name: Cell 0 7
+          actionType: RegexExtract
+          sourceType: Variable
+          source: Left-PartId-Data
+          patternType: Value
+          pattern: (esat|ESAT)(?<LeftLblYear>\d{2})(?<LeftDayOfYear>\d{3})(?<LeftLine>\d)(?<LeftDailySequence>\d{4})(?<LeftGMPartNumber>\d{8})(?<LeftSupPartNumber>\d*)
+          name: Cell 0 4
       - action:
           actionType: If
           sourceType: Variable
-          source: Left-DB-Result
+          source: LeftGMPartNumber
           compareOperator: =
           containsStartPositionVariable: Date
           containsInstanceCountVariable: Date
-          comparedToType: Value
-          comparedTo: 0
-          name: Cell 0 8
+          comparedToType: Variable
+          comparedTo: Left-Supplier-Part-No-Constant
+          name: Cell 0 5
         trueBranch:
         - action:
             actionType: NoOp
-            name: Cell 0 9
+            name: Cell 0 6
         - action:
-            actionType: NoOp
-            name: Cell 0 10
-        - action:
-            actionType: CallSubroutine
-            subroutineName: Left-Axle-Print-Label
-            continueOnFailure: false
-            name: Cell 0 9
-        - action:
-            actionType: Math
-            operator: IncrementAsNumber
-            variable: Left-Container-Count
-            clearStartIndex: 1
-            clearLength: 1
-            name: Cell 0 17
-        - action:
-            actionType: Math
-            sourceType: Variable
-            source: Left-Current-Container
-            operator: IncrementAsNumber
-            variable: Left-Production-Count
-            clearStartIndex: 1
-            clearLength: 1
-            name: Cell 0 18
-        - action:
-            actionType: PersistVars
-            mode: Save
-            group: Angstrom-Axle-Tube
-            status: Left-Persist-Status
-            name: Cell 0 19
-        - action:
-            actionType: NoOp
-            name: Cell 0 20
-        - action:
-            actionType: CallSubroutine
-            subroutineName: LeftAddToBatch
-            continueOnFailure: false
-            name: Cell 0 14
-            description: Add to Batch
+            actionType: ActionBirth
+            partNumberType: Variable
+            partNumber: LeftGMPartNumber
+            partProducerType: Constant
+            partProducer: Angstrom
+            partSerialNumberType: Variable
+            partSerialNumber: Left-PartId-Data
+            lotQuantityType: Value
+            lotQuantity: 1
+            statusVariableType: Variable
+            statusVariable: Left-DB-Result
+            name: Cell 0 7
         - action:
             actionType: If
             sourceType: Variable
             source: Left-DB-Result
             compareOperator: =
-            containsStartPositionVariable: BLANK
-            containsInstanceCountVariable: BLANK
+            containsStartPositionVariable: Date
+            containsInstanceCountVariable: Date
             comparedToType: Value
             comparedTo: 0
-            name: Cell 0 26
+            name: Cell 0 8
           trueBranch:
           - action:
-              actionType: FillTemplate
-              templateSourceType: Variable
-              templateVariable: AxleTemplate
-              outputVariable: Left-Print-Buffer
-              name: Cell 0 26
+              actionType: NoOp
+              name: Cell 0 9
           - action:
-              actionType: ActionWriteToDevice
+              actionType: NoOp
+              name: Cell 0 10
+          - action:
+              actionType: CallSubroutine
+              subroutineName: Left-Axle-Print-Label
+              continueOnFailure: false
+              name: Cell 0 9
+          - action:
+              actionType: NoOp
+              name: Cell 0 12
+          - action:
+              actionType: Math
               sourceType: Variable
-              source: Left-Print-Buffer
-              addCrLf: Yes
-              device: Left-Axle-Printer
-              status: Error-Mesage
-              name: Cell 0 27
+              source: Left-Current-Container
+              operator: IncrementAsNumber
+              variable: Left-Production-Count
+              clearStartIndex: 1
+              clearLength: 1
+              name: Cell 0 18
+          - action:
+              actionType: PersistVars
+              mode: Save
+              group: Angstrom-Axle-Tube
+              status: Left-Persist-Status
+              name: Cell 0 19
+          - action:
+              actionType: NoOp
+              name: Cell 0 20
+          - action:
+              actionType: CallSubroutine
+              subroutineName: LeftAddToBatch
+              continueOnFailure: false
+              name: Cell 0 14
+              description: Add to Batch
           - action:
               actionType: If
               sourceType: Variable
-              source: Left-Container-Count
-              compareOperator: '>'
-              containsStartPositionVariable: Date
-              containsInstanceCountVariable: Date
-              comparedToType: Variable
-              comparedTo: BATCH_SIZE
-              name: Cell 0 18
+              source: Left-DB-Result
+              compareOperator: =
+              containsStartPositionVariable: BLANK
+              containsInstanceCountVariable: BLANK
+              comparedToType: Value
+              comparedTo: 0
+              name: Cell 0 26
             trueBranch:
             - action:
-                actionType: CallSubroutine
-                subroutineName: Left-Box-Print-Label
-                continueOnFailure: false
-                name: Cell 0 21
+                actionType: FillTemplate
+                templateSourceType: Variable
+                templateVariable: AxleTemplate
+                outputVariable: Left-Print-Buffer
+                name: Cell 0 26
             - action:
-                actionType: CallSubroutine
-                subroutineName: CreateLeftLot
-                continueOnFailure: false
-                name: Cell 0 20
+                actionType: If
+                sourceType: Variable
+                source: Left-Container-Count
+                compareOperator: '>'
+                containsStartPositionVariable: Date
+                containsInstanceCountVariable: Date
+                comparedToType: Variable
+                comparedTo: BATCH_SIZE
+                name: Cell 0 19
+              trueBranch:
+              - action:
+                  actionType: CallSubroutine
+                  subroutineName: Left-Box-Print-Label
+                  continueOnFailure: false
+                  name: Cell 0 21
+              - action:
+                  actionType: CallSubroutine
+                  subroutineName: CreateLeftLot
+                  continueOnFailure: false
+                  name: Cell 0 20
+              - action:
+                  actionType: Math
+                  sourceType: Variable
+                  source: BLANK
+                  operator: SetVariableToValue
+                  variable: Error-Mesage
+                  clearStartIndex: 1
+                  clearLength: 1
+                  name: Cell 0 20
+              falseBranch:
+              - action:
+                  actionType: Stop
+                  stopped: false
+            falseBranch:
             - action:
                 actionType: Math
-                sourceType: Variable
-                source: BLANK
+                sourceType: Value
+                source: Can't Add to Lot
                 operator: SetVariableToValue
                 variable: Error-Mesage
                 clearStartIndex: 1
                 clearLength: 1
-                name: Cell 0 20
+                name: Cell 1 17
           falseBranch:
-          - action:
+          - action: &o0
+              actionType: CallSubroutine
+              subroutineName: LeftAlert
+              continueOnFailure: false
+              name: Cell 1 8
+          - action: &o1
               actionType: Math
               sourceType: Value
-              source: Can't Add to Lot
+              source: Duplicate Part, already in the database
               operator: SetVariableToValue
               variable: Error-Mesage
               clearStartIndex: 1
               clearLength: 1
-              name: Cell 1 17
+              name: Cell 1 9
+          - action: &o2
+              actionType: NoOp
+              name: Cell 1 10
         falseBranch:
-        - action: &o0
-            actionType: CallSubroutine
-            subroutineName: LeftAlert
-            continueOnFailure: false
-            name: Cell 1 8
-        - action: &o1
+        - action:
             actionType: Math
             sourceType: Value
-            source: Duplicate Part, already in the database
+            source: Part belongs on the other line
             operator: SetVariableToValue
             variable: Error-Mesage
             clearStartIndex: 1
             clearLength: 1
-            name: Cell 1 9
-        - action: &o2
-            actionType: NoOp
-            name: Cell 1 10
+            name: Cell 1 5
+        - action:
+            actionType: CallSubroutine
+            subroutineName: LeftAlert
+            continueOnFailure: false
+            name: Cell 1 6
+        - action:
+            actionType: Stop
+            stopped: true
+            name: Cell 1 7
+        - action: *o0
+        - action: *o1
+        - action: *o2
       falseBranch:
-      - action:
-          actionType: Math
-          sourceType: Value
-          source: Part belongs on the other line
-          operator: SetVariableToValue
-          variable: Error-Mesage
-          clearStartIndex: 1
-          clearLength: 1
-          name: Cell 1 5
-      - action:
-          actionType: CallSubroutine
-          subroutineName: LeftAlert
-          continueOnFailure: false
-          name: Cell 1 6
-      - action:
+      - action: &o3
           actionType: Stop
           stopped: true
-          name: Cell 1 7
-      - action: *o0
-      - action: *o1
-      - action: *o2
+          name: Cell 1 3
     falseBranch:
     - action:
         actionType: Stop
         stopped: true
         name: Cell 1 3
+    - action: *o3
 - gridRows: 3
   gridColumns: 10
   name: LeftAddToBatch
@@ -1168,7 +1177,7 @@
       clearStartIndex: 1
       clearLength: 1
 - gridRows: 3
-  gridColumns: 24
+  gridColumns: 25
   name: Right-Side-Scanner_Logic
   associatedDeviceName: Right-Side-Scanner-Net
   triggerMode: OnEvent
@@ -1194,220 +1203,235 @@
   - action:
       actionType: If
       sourceType: Variable
-      source: Right-Stack-Alert
-      compareOperator: =
-      containsStartPositionVariable: Date
-      containsInstanceCountVariable: Date
+      source: Right-PartId-Data
+      compareOperator: <>
+      containsStartPositionVariable: AxleTemplate
+      containsInstanceCountVariable: AxleTemplate
       comparedToType: Value
-      comparedTo: 0
-      name: Cell 0 5
+      comparedTo: NoRead
+      name: Cell 0 3
     trueBranch:
-    - action:
-        actionType: RegexExtract
-        sourceType: Variable
-        source: Right-PartId-Data
-        patternType: Value
-        pattern: (esat|ESAT)(?<RightLblYear>\d{2})(?<RightDayOfYear>\d{3})(?<RightLine>\d)(?<RightDailySequence>\d{4})(?<RightGMPartNumber>\d{8})(?<RightSupPartNumber>\d*)
-        name: Cell 0 4
     - action:
         actionType: If
         sourceType: Variable
-        source: RightGMPartNumber
+        source: Right-Stack-Alert
         compareOperator: =
         containsStartPositionVariable: Date
         containsInstanceCountVariable: Date
-        comparedToType: Variable
-        comparedTo: Right-Supplier-Part-No-Constant
-        name: Cell 0 6
+        comparedToType: Value
+        comparedTo: 0
+        name: Cell 0 5
       trueBranch:
       - action:
-          actionType: NoOp
-          name: Cell 0 5
-      - action:
-          actionType: ActionBirth
-          partNumberType: Variable
-          partNumber: RightGMPartNumber
-          partProducerType: Constant
-          partProducer: Angstrom
-          partSerialNumberType: Variable
-          partSerialNumber: Right-PartId-Data
-          lotQuantityType: Value
-          lotQuantity: 1
-          statusVariableType: Variable
-          statusVariable: Right-DB-Result
-          name: Cell 0 12
+          actionType: RegexExtract
+          sourceType: Variable
+          source: Right-PartId-Data
+          patternType: Value
+          pattern: (esat|ESAT)(?<RightLblYear>\d{2})(?<RightDayOfYear>\d{3})(?<RightLine>\d)(?<RightDailySequence>\d{4})(?<RightGMPartNumber>\d{8})(?<RightSupPartNumber>\d*)
+          name: Cell 0 4
       - action:
           actionType: If
           sourceType: Variable
-          source: Right-DB-Result
+          source: RightGMPartNumber
           compareOperator: =
           containsStartPositionVariable: Date
           containsInstanceCountVariable: Date
-          comparedToType: Value
-          comparedTo: 0
-          name: Cell 0 8
+          comparedToType: Variable
+          comparedTo: Right-Supplier-Part-No-Constant
+          name: Cell 0 6
         trueBranch:
         - action:
             actionType: NoOp
-            name: Cell 0 9
+            name: Cell 0 5
         - action:
-            actionType: NoOp
-            name: Cell 0 10
-        - action:
-            actionType: CallSubroutine
-            subroutineName: Right-Axle-Print-Label
-            continueOnFailure: false
-            name: Cell 0 9
-        - action:
-            actionType: Math
-            operator: IncrementAsNumber
-            variable: Right-Container-Count
-            clearStartIndex: 1
-            clearLength: 1
-            name: Cell 0 17
-        - action:
-            actionType: Math
-            sourceType: Variable
-            source: Right-Current-Container
-            operator: IncrementAsNumber
-            variable: Right-Production-Count
-            clearStartIndex: 1
-            clearLength: 1
-            name: Cell 0 18
-        - action:
-            actionType: PersistVars
-            mode: Save
-            group: Angstrom-Axle-Tube
-            status: Right-Persist-Status
-            name: Cell 0 19
-        - action:
-            actionType: NoOp
-            name: Cell 0 15
-        - action:
-            actionType: CallSubroutine
-            subroutineName: RightAddToBatch
-            continueOnFailure: false
-            name: Cell 0 14
-            description: Add to Batch
+            actionType: ActionBirth
+            partNumberType: Variable
+            partNumber: RightGMPartNumber
+            partProducerType: Constant
+            partProducer: Angstrom
+            partSerialNumberType: Variable
+            partSerialNumber: Right-PartId-Data
+            lotQuantityType: Value
+            lotQuantity: 1
+            statusVariableType: Variable
+            statusVariable: Right-DB-Result
+            name: Cell 0 12
         - action:
             actionType: If
             sourceType: Variable
             source: Right-DB-Result
             compareOperator: =
-            containsStartPositionVariable: BLANK
-            containsInstanceCountVariable: BLANK
+            containsStartPositionVariable: Date
+            containsInstanceCountVariable: Date
             comparedToType: Value
             comparedTo: 0
-            name: Cell 0 26
+            name: Cell 0 8
           trueBranch:
           - action:
-              actionType: FillTemplate
-              templateSourceType: Variable
-              templateVariable: AxleTemplate
-              outputVariable: Right-Print-Buffer
-              name: Cell 0 26
+              actionType: NoOp
+              name: Cell 0 9
           - action:
-              actionType: ActionWriteToDevice
+              actionType: NoOp
+              name: Cell 0 10
+          - action:
+              actionType: CallSubroutine
+              subroutineName: Right-Axle-Print-Label
+              continueOnFailure: false
+              name: Cell 0 9
+          - action:
+              actionType: Math
+              operator: IncrementAsNumber
+              variable: Right-Container-Count
+              clearStartIndex: 1
+              clearLength: 1
+              name: Cell 0 17
+          - action:
+              actionType: Math
               sourceType: Variable
-              source: Right-Print-Buffer
-              addCrLf: Yes
-              device: Right-Axle-Printer
-              status: Error-Mesage
-              name: Cell 0 27
+              source: Right-Current-Container
+              operator: IncrementAsNumber
+              variable: Right-Production-Count
+              clearStartIndex: 1
+              clearLength: 1
+              name: Cell 0 18
+          - action:
+              actionType: PersistVars
+              mode: Save
+              group: Angstrom-Axle-Tube
+              status: Right-Persist-Status
+              name: Cell 0 19
+          - action:
+              actionType: NoOp
+              name: Cell 0 15
+          - action:
+              actionType: CallSubroutine
+              subroutineName: RightAddToBatch
+              continueOnFailure: false
+              name: Cell 0 14
+              description: Add to Batch
           - action:
               actionType: If
               sourceType: Variable
-              source: Right-Container-Count
-              compareOperator: '>'
-              containsStartPositionVariable: Date
-              containsInstanceCountVariable: Date
-              comparedToType: Variable
-              comparedTo: BATCH_SIZE
-              name: Cell 0 18
+              source: Right-DB-Result
+              compareOperator: =
+              containsStartPositionVariable: BLANK
+              containsInstanceCountVariable: BLANK
+              comparedToType: Value
+              comparedTo: 0
+              name: Cell 0 26
             trueBranch:
             - action:
-                actionType: CallSubroutine
-                subroutineName: Right-Box-Print-Label
-                continueOnFailure: false
-                name: Cell 0 32
+                actionType: FillTemplate
+                templateSourceType: Variable
+                templateVariable: AxleTemplate
+                outputVariable: Right-Print-Buffer
+                name: Cell 0 26
             - action:
-                actionType: CallSubroutine
-                subroutineName: CreateRightLot
-                continueOnFailure: false
-                name: Cell 0 20
+                actionType: If
+                sourceType: Variable
+                source: Right-Container-Count
+                compareOperator: '>'
+                containsStartPositionVariable: Date
+                containsInstanceCountVariable: Date
+                comparedToType: Variable
+                comparedTo: BATCH_SIZE
+                name: Cell 0 18
+              trueBranch:
+              - action:
+                  actionType: CallSubroutine
+                  subroutineName: Right-Box-Print-Label
+                  continueOnFailure: false
+                  name: Cell 0 32
+              - action:
+                  actionType: CallSubroutine
+                  subroutineName: CreateRightLot
+                  continueOnFailure: false
+                  name: Cell 0 20
+              - action:
+                  actionType: Math
+                  sourceType: Variable
+                  source: BLANK
+                  operator: SetVariableToValue
+                  variable: Error-Mesage
+                  clearStartIndex: 1
+                  clearLength: 1
+                  name: Cell 0 20
+            falseBranch:
             - action:
                 actionType: Math
-                sourceType: Variable
-                source: BLANK
+                sourceType: Value
+                source: Can't Add to Lot
                 operator: SetVariableToValue
                 variable: Error-Mesage
                 clearStartIndex: 1
                 clearLength: 1
-                name: Cell 0 20
+                name: Cell 1 17
           falseBranch:
-          - action:
+          - action: &o4
+              actionType: CallSubroutine
+              subroutineName: RightAlert
+              continueOnFailure: false
+              name: Cell 1 9
+          - action: &o5
               actionType: Math
               sourceType: Value
-              source: Can't Add to Lot
+              source: Duplicate Part, already in the database
               operator: SetVariableToValue
               variable: Error-Mesage
               clearStartIndex: 1
               clearLength: 1
-              name: Cell 1 17
+              name: Cell 1 9
+          - action: &o6
+              actionType: NoOp
+              name: Cell 1 10
         falseBranch:
-        - action: &o3
-            actionType: CallSubroutine
-            subroutineName: RightAlert
-            continueOnFailure: false
-            name: Cell 1 9
-        - action: &o4
+        - action: &o7
             actionType: Math
             sourceType: Value
-            source: Duplicate Part, already in the database
+            source: Part belongs on the other line
             operator: SetVariableToValue
             variable: Error-Mesage
             clearStartIndex: 1
             clearLength: 1
-            name: Cell 1 9
-        - action: &o5
-            actionType: NoOp
-            name: Cell 1 10
+            name: Cell 1 6
+        - action: &o8
+            actionType: CallSubroutine
+            subroutineName: RightAlert
+            continueOnFailure: false
+            name: Cell 1 7
+        - action: &o9
+            actionType: Stop
+            stopped: true
+            name: Cell 1 7
+        - action: *o4
+        - action: *o5
+        - action: *o6
       falseBranch:
-      - action: &o6
-          actionType: Math
-          sourceType: Value
-          source: Part belongs on the other line
-          operator: SetVariableToValue
-          variable: Error-Mesage
-          clearStartIndex: 1
-          clearLength: 1
-          name: Cell 1 6
-      - action: &o7
-          actionType: CallSubroutine
-          subroutineName: RightAlert
-          continueOnFailure: false
-          name: Cell 1 7
-      - action: &o8
+      - action: &o10
           actionType: Stop
-          stopped: true
-          name: Cell 1 7
-      - action: *o3
+          stopped: false
+          name: Cell 1 3
+      - action: &o11
+          actionType: NoOp
+          name: Cell 1 4
+      - action: *o7
+      - action: *o8
+      - action: *o9
       - action: *o4
       - action: *o5
+      - action: *o6
     falseBranch:
     - action:
         actionType: Stop
         stopped: false
-        name: Cell 1 3
-    - action:
-        actionType: NoOp
-        name: Cell 1 4
-    - action: *o6
+    - action: *o10
+    - action: *o11
     - action: *o7
     - action: *o8
-    - action: *o3
+    - action: *o9
     - action: *o4
     - action: *o5
+    - action: *o6
 - gridRows: 3
   gridColumns: 10
   name: RightAddToBatch
