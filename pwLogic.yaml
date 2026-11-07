@@ -1,5 +1,298 @@
 - gridRows: 3
   gridColumns: 10
+  name: BTNCreateCSV_Logic_1
+  associatedDeviceName: Screen:Operator-Main/BTNCreateCSV
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: CallSubroutine
+      subroutineName: CreateCSV
+      continueOnFailure: false
+      name: Cell 0 1
+- gridRows: 3
+  gridColumns: 10
+  name: CheckLeftNoRead
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: If
+      sourceType: Variable
+      source: Left-PartId-Data
+      compareOperator: =
+      containsStartPositionVariable: AxleTemplate
+      containsInstanceCountVariable: AxleTemplate
+      comparedToType: Variable
+      comparedTo: NOREAD
+      name: Cell 0 1
+    trueBranch:
+    - action:
+        actionType: Stop
+        stopped: false
+- gridRows: 3
+  gridColumns: 10
+  name: ClearProductionCounts
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: 0
+      operator: SetVariableToValue
+      variable: Left-Production-Count
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: 0
+      operator: SetVariableToValue
+      variable: Right-Production-Count
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 3
+- gridRows: 3
+  gridColumns: 10
+  name: CreateCSV
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: FillTemplate
+      templateSourceType: Inline
+      templateText: C:\AxleReports\${TimeStamp}.csv
+      outputVariable: ReportFolder
+      name: Cell 0 1
+  - action:
+      actionType: DBExportCsv
+      databaseConnection: PWDatabase
+      sql: "SELECT\nparent.Serial_Nbr                             AS ParentSerial,\n\r\npp.Part_Number                              AS ParentPart,\r\n\nparent.Birth_DateTime                       AS ParentBorn,\r\n\ng.Child_Part_Number                         AS ChildPart,\n\r\ng.Child_Serial_Number                       AS ChildSerial,\r\n\nchild.Birth_DateTime                        AS ChildBorn\r\n\nFROM dbo.Item parent\r\n\nINNER JOIN dbo.Part pp        ON pp.Part_Key = parent.Part_Key\r\n\nLEFT  JOIN dbo.Item_Gene g    ON g.Parent_Item_Key = parent.Item_Key\r\n\nLEFT  JOIN dbo.Item child     ON child.Item_Key = g.Child_Item_Key\r\n\nWHERE pp.Part_Number IN ('85545338','85545339')  \n \r\nAND  parent.Birth_DateTime >= CAST(GETDATE() AS date)\r\n\nORDER BY parent.Birth_DateTime,\nparent.Serial_Nbr,\ng.Child_Part_Number,\ng.Child_Serial_Number"
+      parameters: []
+      filePathType: Variable
+      filePath: ReportFolder
+      append: No
+      includeHeader: Yes
+      delimiter: Comma
+      commandTimeoutSeconds: 60
+      status: Error-Mesage
+      rowCountVariable: CSV_Rowvount
+      name: Cell 0 1
+- gridRows: 3
+  gridColumns: 10
+  name: CreateLeftLot
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: Math
+      operator: IncrementAsNumber
+      variable: LeftLotNumber
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
+      actionType: FillTemplate
+      templateSourceType: Inline
+      templateText: L${LeftLotNumber:%06d}
+      outputVariable: LeftLotLabel
+      name: Cell 0 1
+  - action:
+      actionType: ActionBirth
+      partNumberType: Variable
+      partNumber: LEFT_CONTAINER
+      partProducerType: Constant
+      partProducer: Angstrom
+      partSerialNumberType: Variable
+      partSerialNumber: LeftLotLabel
+      lotQuantityType: Value
+      lotQuantity: 18
+      statusVariableType: Variable
+      statusVariable: Left-DB-Result
+      name: Cell 0 3
+  - action:
+      actionType: PersistVars
+      mode: Save
+      group: Angstrom-Axle-Tube
+      name: Cell 0 3
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: 0
+      operator: SetVariableToValue
+      variable: Left-Container-Count
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 5
+- gridRows: 3
+  gridColumns: 10
+  name: CreateRightLot
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: Math
+      operator: IncrementAsNumber
+      variable: RightLotNumber
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
+      actionType: FillTemplate
+      templateSourceType: Inline
+      templateText: L${RightLotNumber:%06d}
+      outputVariable: RightLotLabel
+      name: Cell 0 1
+  - action:
+      actionType: ActionBirth
+      partNumberType: Variable
+      partNumber: RIGHT_CONTAINER
+      partProducerType: Constant
+      partProducer: Angstrom
+      partSerialNumberType: Variable
+      partSerialNumber: RightLotLabel
+      lotQuantityType: Value
+      lotQuantity: 18
+      statusVariableType: Variable
+      statusVariable: Right-DB-Result
+      name: Cell 0 2
+  - action:
+      actionType: PersistVars
+      mode: Save
+      group: Angstrom-Axle-Tube
+      name: Cell 0 3
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: 0
+      operator: SetVariableToValue
+      variable: Right-Container-Count
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 5
+- gridRows: 3
+  gridColumns: 10
+  name: ExtractLeftData
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: RegexExtract
+      sourceType: Variable
+      source: Left-PartId-Data
+      patternType: Value
+      pattern: ESAT(?<LeftLblYear>\d{2})(?<LeftDayOfYear>\d{3})(?<LeftLine>\d)(?<LeftDailySequence>\d{4})(?<LeftGMPartNumber>\d{8})(?<LeftSupPartNumber>\d*)
+      name: Cell 0 1
+- gridRows: 3
+  gridColumns: 10
+  name: Initialize
+  associatedDeviceName: Application
+  triggerMode: OnStart
+  order: 0
+  steps:
+  - action:
+      actionType: CallSubroutine
+      subroutineName: LoadPrintTemplates
+      continueOnFailure: false
+      name: Cell 0 1
+  - action:
+      actionType: CallSubroutine
+      subroutineName: Right-Clear-Alert
+      continueOnFailure: false
+      name: Cell 0 2
+  - action:
+      actionType: CallSubroutine
+      subroutineName: Left-Clear-Alert
+      continueOnFailure: false
+      name: Cell 0 3
+- gridRows: 3
+  gridColumns: 10
+  name: Left-Axle-Print-Label
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: Math
+      sourceType: Variable
+      source: Left-PartId-Data
+      operator: SetVariableToValue
+      variable: LabelData
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
+      actionType: FillTemplate
+      templateSourceType: Variable
+      templateVariable: AxleTemplate
+      outputVariable: Left-Print-Buffer
+      name: Cell 0 1
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Left-Print-Buffer
+      addCrLf: Yes
+      device: Left-Axle-Printer
+      status: Error-Mesage
+      name: Cell 0 2
+- gridRows: 3
+  gridColumns: 10
+  name: Left-Box-Print-Label
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: Math
+      sourceType: Variable
+      source: LeftLotLabel
+      operator: SetVariableToValue
+      variable: LblBoxId
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
+      actionType: FillTemplate
+      templateSourceType: Variable
+      templateVariable: BoxTemplate
+      outputVariable: BoxPrintBuffer
+      name: Cell 0 1
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: BoxPrintBuffer
+      addCrLf: Yes
+      device: Box-Printer
+      status: Error-Mesage
+      name: Cell 0 2
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: 0
+      operator: SetVariableToValue
+      variable: Left-Container-Count
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 3
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: Container Label Printed
+      operator: SetVariableToValue
+      variable: Error-Mesage
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 4
+- gridRows: 3
+  gridColumns: 10
   name: Left-Clear-Ack-Button_Logic_1
   associatedDeviceName: Screen:Operator-Main/Left-Clear-Ack-Button
   triggerMode: OnEvent
@@ -15,11 +308,26 @@
       clearLength: 1
       name: Cell 0 1
   - action:
+      actionType: CallSubroutine
+      subroutineName: Left-Clear-Alert
+      continueOnFailure: false
+      name: Cell 0 5
+- gridRows: 3
+  gridColumns: 15
+  name: Left-Clear-Alert
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: NoOp
+      name: Cell 0 1
+  - action:
       actionType: Math
       sourceType: Value
-      source: 0
+      source: RED
       operator: SetVariableToValue
-      variable: Stack-Light
+      variable: Left-Clear-Ack_Buitton-BGColorVariable
       clearStartIndex: 1
       clearLength: 1
       name: Cell 0 2
@@ -39,33 +347,89 @@
         source: 0xA1
         format: Byte
       variable: Stack-Light-Cmd
+      status: Error-State
       name: Cell 0 3
   - action:
       actionType: ActionWriteToDevice
       sourceType: Variable
       source: Stack-Light-Cmd
       addCrLf: Yes
-      device: Stack-Light
+      device: Left-Light
       name: Cell 0 4
-- gridRows: 3
-  gridColumns: 10
-  name: Left-Side-Scanner-Diuplicate-Part-4
-  associatedDeviceName: Left-Side-Scanner
-  triggerMode: OnEvent
-  order: 5
-  steps:
   - action:
-      actionType: NoOp
-      name: Cell 0 2
+      actionType: Sleep
+      durationType: Variable
+      duration: LIGHT_SLEEP
+      name: Cell 0 6
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x02
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0xA3
+        format: Byte
+      variable: Stack-Light-Cmd
+      status: Error-State
+      name: Cell 0 5
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: Yes
+      device: Left-Light
+      name: Cell 0 6
+  - action:
+      actionType: Sleep
+      durationType: Variable
+      duration: LIGHT_SLEEP
+      name: Cell 0 8
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x04
+        format: Byte
+      - sourceType: Value
+        source: 0x00
+        format: Byte
+      - sourceType: Value
+        source: 0xA4
+        format: Byte
+      variable: Stack-Light-Cmd
+      status: Error-State
+      name: Cell 0 8
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: No
+      device: Left-Light
+      name: Cell 0 8
   - action:
       actionType: Math
       sourceType: Value
-      source: RED
+      source: 0
       operator: SetVariableToValue
-      variable: Left-Clear-Ack_Buitton-BGColorVariable
+      variable: Left-Stack-Alert
       clearStartIndex: 1
       clearLength: 1
-      name: Cell 0 2
+      name: Cell 0 11
+  - action:
+      actionType: Sleep
+      durationType: Variable
+      duration: LIGHT_SLEEP
+      name: Cell 0 12
   - action:
       actionType: PackBytes
       fields:
@@ -76,162 +440,36 @@
         source: 0x01
         format: Byte
       - sourceType: Value
-        source: 0x01
+        source: 0x00
         format: Byte
       - sourceType: Value
-        source: 0xB3
+        source: 0xA1
         format: Byte
       variable: Stack-Light-Cmd
-      name: Cell 0 4
+      status: Error-State
+      name: Cell 0 13
   - action:
       actionType: ActionWriteToDevice
       sourceType: Variable
       source: Stack-Light-Cmd
       addCrLf: Yes
-      device: Stack-Light
-      name: Cell 0 5
+      device: Left-Light
+      name: Cell 0 14
 - gridRows: 3
-  gridColumns: 10
-  name: Left-Side-Scanner-Logic-State-1
-  associatedDeviceName: Left-Side-Scanner
-  triggerMode: OnEvent
-  order: 2
-  steps:
-  - action:
-      actionType: Math
-      sourceType: Value
-      source: RED
-      operator: SetVariableToValue
-      variable: Left-Clear-Ack_Buitton-BGColorVariable
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 1
-- gridRows: 3
-  gridColumns: 10
-  name: Left-Side-Scanner-Logic-State-6
-  associatedDeviceName: Left-Side-Scanner
-  triggerMode: OnEvent
-  order: 7
-  steps:
-  - action:
-      actionType: NoOp
-      name: Cell 0 2
-  - action:
-      actionType: NoOp
-      name: Cell 0 3
-  - action:
-      actionType: PackBytes
-      fields:
-      - sourceType: Value
-        source: 0xA0
-        format: Byte
-      - sourceType: Value
-        source: 0x01
-        format: Byte
-      - sourceType: Value
-        source: 0x01
-        format: Byte
-      - sourceType: Value
-        source: 0xB3
-        format: Byte
-      variable: Stack-Light-Cmd
-      name: Cell 0 4
-  - action:
-      actionType: ActionWriteToDevice
-      sourceType: Variable
-      source: Stack-Light-Cmd
-      addCrLf: Yes
-      device: Stack-Light
-      name: Cell 0 5
-- gridRows: 3
-  gridColumns: 10
-  name: Left-Side-Scanner-Part-Wrong-Side-3
-  associatedDeviceName: Left-Side-Scanner
-  triggerMode: OnEvent
-  order: 4
-  steps:
-  - action:
-      actionType: NoOp
-      name: Cell 0 2
-  - action:
-      actionType: Math
-      sourceType: Value
-      source: RED
-      operator: SetVariableToValue
-      variable: Left-Clear-Ack_Buitton-BGColorVariable
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 2
-  - action:
-      actionType: PackBytes
-      fields:
-      - sourceType: Value
-        source: 0xA0
-        format: Byte
-      - sourceType: Value
-        source: 0x01
-        format: Byte
-      - sourceType: Value
-        source: 0x01
-        format: Byte
-      - sourceType: Value
-        source: 0xB3
-        format: Byte
-      variable: Stack-Light-Cmd
-      name: Cell 0 4
-  - action:
-      actionType: ActionWriteToDevice
-      sourceType: Variable
-      source: Stack-Light-Cmd
-      addCrLf: Yes
-      device: Stack-Light
-      name: Cell 0 5
-- gridRows: 3
-  gridColumns: 10
-  name: Left-Side-Scanner-Persist-Data-Error-5
-  associatedDeviceName: Left-Side-Scanner
-  triggerMode: OnEvent
-  order: 6
-  steps:
-  - action:
-      actionType: NoOp
-      name: Cell 0 2
-  - action:
-      actionType: NoOp
-      name: Cell 0 3
-  - action:
-      actionType: PackBytes
-      fields:
-      - sourceType: Value
-        source: 0xA0
-        format: Byte
-      - sourceType: Value
-        source: 0x01
-        format: Byte
-      - sourceType: Value
-        source: 0x01
-        format: Byte
-      - sourceType: Value
-        source: 0xB3
-        format: Byte
-      variable: Stack-Light-Cmd
-      name: Cell 0 4
-  - action:
-      actionType: ActionWriteToDevice
-      sourceType: Variable
-      source: Stack-Light-Cmd
-      addCrLf: Yes
-      device: Stack-Light
-      name: Cell 0 5
-- gridRows: 3
-  gridColumns: 35
+  gridColumns: 24
   name: Left-Side-Scanner_Logic
-  associatedDeviceName: Left-Side-Scanner
+  associatedDeviceName: Left-Side-Scanner-Net
   triggerMode: OnEvent
   order: 1
   steps:
   - action:
-      actionType: NoOp
+      actionType: Math
+      sourceType: Variable
+      source: FormattedTimeStamp
+      operator: SetVariableToValue
+      variable: Left-PartId-Scan-Time
+      clearStartIndex: 1
+      clearLength: 1
       name: Cell 0 1
   - action:
       actionType: Math
@@ -242,113 +480,52 @@
       clearLength: 1
       name: Cell 0 2
   - action:
-      actionType: Math
-      sourceType: Value
-      source: Clear the fault
-      operator: SetVariableToValue
-      variable: Error-Mesage
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 3
-  - action:
-      actionType: Math
-      sourceType: Value
-      source: 1
-      operator: SetVariableToValue
-      variable: Error-State
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 4
-  - action:
       actionType: If
       sourceType: Variable
-      source: Stack-Light
-      compareOperator: =
-      containsStartPositionVariable: Date
-      containsInstanceCountVariable: Date
+      source: Left-PartId-Data
+      compareOperator: <>
+      containsStartPositionVariable: AxleTemplate
+      containsInstanceCountVariable: AxleTemplate
       comparedToType: Value
-      comparedTo: 0
-      name: Cell 0 5
+      comparedTo: NoRead
+      name: Cell 0 3
     trueBranch:
-    - action:
-        actionType: Math
-        sourceType: Value
-        source: No Read Barcode.
-        operator: SetVariableToValue
-        variable: Error-Mesage
-        clearStartIndex: 1
-        clearLength: 1
-        name: Cell 0 6
-    - action:
-        actionType: Math
-        sourceType: Value
-        source: 2
-        operator: SetVariableToValue
-        variable: Error-Mesage
-        clearStartIndex: 1
-        clearLength: 1
-        name: Cell 0 7
     - action:
         actionType: If
         sourceType: Variable
-        source: Left-PartId-Data
-        compareOperator: <>
+        source: Left-Stack-Alert
+        compareOperator: =
         containsStartPositionVariable: Date
         containsInstanceCountVariable: Date
         comparedToType: Value
-        comparedTo: NOREAD
-        name: Cell 0 8
+        comparedTo: 0
+        name: Cell 0 5
       trueBranch:
       - action:
           actionType: RegexExtract
           sourceType: Variable
           source: Left-PartId-Data
           patternType: Value
-          pattern: ^ESAT(?<LeftLblYear>\d{2})(?<LeftDayOfYear>\d{3})(?<LeftLine>\d)(?<LeftDailySequence>\d{4})(?<LeftGMPartNumber>\d{8})(?<SupPartNumber>\d*)$
-          name: Cell 0 9
-      - action:
-          actionType: SubString
-          sourceType: Variable
-          source: Left-PartId-Data
-          startCharType: Value
-          startChar: 15
-          lengthType: Value
-          length: 8
-          dest: Left-Part-Number
-          name: Cell 0 9
-      - action:
-          actionType: Math
-          sourceType: Value
-          source: Part belongs on the other line
-          operator: SetVariableToValue
-          variable: Error-Mesage
-          clearStartIndex: 1
-          clearLength: 1
-          name: Cell 0 10
-      - action:
-          actionType: Math
-          sourceType: Value
-          source: 3
-          operator: SetVariableToValue
-          variable: Error-State
-          clearStartIndex: 1
-          clearLength: 1
-          name: Cell 0 11
+          pattern: (esat|ESAT)(?<LeftLblYear>\d{2})(?<LeftDayOfYear>\d{3})(?<LeftLine>\d)(?<LeftDailySequence>\d{4})(?<LeftGMPartNumber>\d{8})(?<LeftSupPartNumber>\d*)
+          name: Cell 0 4
       - action:
           actionType: If
           sourceType: Variable
-          source: Left-Part-Number
-          compareOperator: <>
+          source: LeftGMPartNumber
+          compareOperator: =
           containsStartPositionVariable: Date
           containsInstanceCountVariable: Date
           comparedToType: Variable
           comparedTo: Left-Supplier-Part-No-Constant
-          name: Cell 0 11
+          name: Cell 0 5
         trueBranch:
+        - action:
+            actionType: NoOp
+            name: Cell 0 6
         - action:
             actionType: ActionBirth
             partNumberType: Variable
-            partNumber: Left-Part-Number
+            partNumber: LeftGMPartNumber
             partProducerType: Constant
             partProducer: Angstrom
             partSerialNumberType: Variable
@@ -357,25 +534,7 @@
             lotQuantity: 1
             statusVariableType: Variable
             statusVariable: Left-DB-Result
-            name: Cell 0 14
-        - action:
-            actionType: Math
-            sourceType: Value
-            source: Duplicate Part, already in the database
-            operator: SetVariableToValue
-            variable: Error-Mesage
-            clearStartIndex: 1
-            clearLength: 1
-            name: Cell 0 13
-        - action:
-            actionType: Math
-            sourceType: Value
-            source: 4
-            operator: SetVariableToValue
-            variable: Error-State
-            clearStartIndex: 1
-            clearLength: 1
-            name: Cell 0 15
+            name: Cell 0 7
         - action:
             actionType: If
             sourceType: Variable
@@ -385,15 +544,22 @@
             containsInstanceCountVariable: Date
             comparedToType: Value
             comparedTo: 0
-            name: Cell 0 16
+            name: Cell 0 8
           trueBranch:
           - action:
-              actionType: Math
-              operator: IncrementAsNumber
-              variable: Left-Container-Count
-              clearStartIndex: 1
-              clearLength: 1
-              name: Cell 0 17
+              actionType: NoOp
+              name: Cell 0 9
+          - action:
+              actionType: NoOp
+              name: Cell 0 10
+          - action:
+              actionType: CallSubroutine
+              subroutineName: Left-Axle-Print-Label
+              continueOnFailure: false
+              name: Cell 0 9
+          - action:
+              actionType: NoOp
+              name: Cell 0 12
           - action:
               actionType: Math
               sourceType: Variable
@@ -404,40 +570,72 @@
               clearLength: 1
               name: Cell 0 18
           - action:
-              actionType: Math
-              sourceType: Value
-              source: Can't save persistent data, CALL IT1
-              operator: SetVariableToValue
-              variable: Error-Mesage
-              clearStartIndex: 1
-              clearLength: 1
-              name: Cell 0 19
-          - action:
-              actionType: Math
-              sourceType: Value
-              source: 5
-              operator: SetVariableToValue
-              variable: Error-State
-              clearStartIndex: 1
-              clearLength: 1
-              name: Cell 0 20
-          - action:
               actionType: PersistVars
               mode: Save
               group: Angstrom-Axle-Tube
               status: Left-Persist-Status
               name: Cell 0 19
           - action:
+              actionType: NoOp
+              name: Cell 0 20
+          - action:
+              actionType: CallSubroutine
+              subroutineName: LeftAddToBatch
+              continueOnFailure: false
+              name: Cell 0 14
+              description: Add to Batch
+          - action:
               actionType: If
               sourceType: Variable
-              source: Left-Persist-Status
+              source: Left-DB-Result
               compareOperator: =
-              containsStartPositionVariable: Date
-              containsInstanceCountVariable: Date
+              containsStartPositionVariable: BLANK
+              containsInstanceCountVariable: BLANK
               comparedToType: Value
-              comparedTo: Success
-              name: Cell 0 20
+              comparedTo: 0
+              name: Cell 0 26
             trueBranch:
+            - action:
+                actionType: FillTemplate
+                templateSourceType: Variable
+                templateVariable: AxleTemplate
+                outputVariable: Left-Print-Buffer
+                name: Cell 0 26
+            - action:
+                actionType: If
+                sourceType: Variable
+                source: Left-Container-Count
+                compareOperator: '>'
+                containsStartPositionVariable: Date
+                containsInstanceCountVariable: Date
+                comparedToType: Variable
+                comparedTo: BATCH_SIZE
+                name: Cell 0 19
+              trueBranch:
+              - action:
+                  actionType: CallSubroutine
+                  subroutineName: Left-Box-Print-Label
+                  continueOnFailure: false
+                  name: Cell 0 21
+              - action:
+                  actionType: CallSubroutine
+                  subroutineName: CreateLeftLot
+                  continueOnFailure: false
+                  name: Cell 0 20
+              - action:
+                  actionType: Math
+                  sourceType: Variable
+                  source: BLANK
+                  operator: SetVariableToValue
+                  variable: Error-Mesage
+                  clearStartIndex: 1
+                  clearLength: 1
+                  name: Cell 0 20
+              falseBranch:
+              - action:
+                  actionType: Stop
+                  stopped: false
+            falseBranch:
             - action:
                 actionType: Math
                 sourceType: Value
@@ -446,169 +644,94 @@
                 variable: Error-Mesage
                 clearStartIndex: 1
                 clearLength: 1
-                name: Cell 0 23
-            - action:
-                actionType: Math
-                sourceType: Value
-                source: 6
-                operator: SetVariableToValue
-                variable: Error-State
-                clearStartIndex: 1
-                clearLength: 1
-                name: Cell 0 24
-            - action:
-                actionType: ActionConsumeMaterial
-                consumedMaterialSerialNumberArrayStartIndexType: Constant
-                consumedMaterialSerialNumberArrayLengthType: Constant
-                bOMCheck: False
-                name: Cell 0 25
-                description: Add to Batch
-            - action:
-                actionType: If
-                sourceType: Variable
-                source: Left-DB-Result
-                compareOperator: =
-                containsStartPositionVariable: BLANK
-                containsInstanceCountVariable: BLANK
-                comparedToType: Value
-                comparedTo: 0
-                name: Cell 0 26
-              trueBranch:
-              - action:
-                  actionType: FillTemplate
-                  templateSourceType: Inline
-                  name: Cell 0 27
-              - action:
-                  actionType: PrintBarcode
-                  printerName: Left-WIP-Part-Label-Printer
-                  fields:
-                  - fieldName: Barcode
-                    fieldType: Text
-                    positionX: 0
-                    positionY: 0
-                    sourceType: Variable
-                    source: WIP-Part-Label-Template
-                    textFontName: 0
-                    textOrientation: Normal
-                    textHeight: 30
-                    textWidth: 30
-                  - fieldName: Human Readable
-                    fieldType: Data Matrix
-                    sourceType: Variable
-                    source: WIP-Part-Label-Template
-                    textFontName: 0
-                    textOrientation: Normal
-                    textHeight: 30
-                    textWidth: 30
-                  name: Cell 0 21
-              - action:
-                  actionType: If
-                  sourceType: Variable
-                  source: Left-Container-Count
-                  compareOperator: =
-                  containsStartPositionVariable: Date
-                  containsInstanceCountVariable: Date
-                  comparedToType: Value
-                  comparedTo: 18
-                  name: Cell 0 28
-                trueBranch:
-                - action:
-                    actionType: PrintBarcode
-                    printerName: Left-WIP-Container-Label-Printer
-                    fields:
-                    - fieldName: Barcode
-                      fieldType: Data Matrix
-                      positionX: 0
-                      positionY: 0
-                      sourceType: Variable
-                      source: WIP-Part-Label-Template
-                      textFontName: 0
-                      textOrientation: Normal
-                      textHeight: 30
-                      textWidth: 30
-                    - fieldName: Human Readable
-                      fieldType: Text
-                      positionX: 0
-                      positionY: 0
-                      sourceType: Variable
-                      source: WIP-Part-Label-Template
-                      textFontName: 0
-                      textOrientation: Normal
-                      textHeight: 30
-                      textWidth: 30
-                    name: Cell 0 29
-                - action:
-                    actionType: Math
-                    sourceType: Value
-                    source: 0
-                    operator: SetVariableToValue
-                    variable: Left-Container-Count
-                    clearStartIndex: 1
-                    clearLength: 1
-                    name: Cell 0 30
-                - action:
-                    actionType: Math
-                    sourceType: Value
-                    source: 0
-                    operator: SetVariableToValue
-                    variable: Stack-Light
-                    clearStartIndex: 1
-                    clearLength: 1
-                    name: Cell 0 31
-                - action:
-                    actionType: Math
-                    sourceType: Value
-                    source: Container Label Printed
-                    operator: SetVariableToValue
-                    variable: Error-Mesage
-                    clearStartIndex: 1
-                    clearLength: 1
-                    name: Cell 0 32
+                name: Cell 1 17
+          falseBranch:
+          - action: &o0
+              actionType: CallSubroutine
+              subroutineName: LeftAlert
+              continueOnFailure: false
+              name: Cell 1 8
+          - action: &o1
+              actionType: Math
+              sourceType: Value
+              source: Duplicate Part, already in the database
+              operator: SetVariableToValue
+              variable: Error-Mesage
+              clearStartIndex: 1
+              clearLength: 1
+              name: Cell 1 9
+          - action: &o2
+              actionType: NoOp
+              name: Cell 1 10
         falseBranch:
         - action:
-            actionType: NoOp
+            actionType: Math
+            sourceType: Value
+            source: Part belongs on the other line
+            operator: SetVariableToValue
+            variable: Error-Mesage
+            clearStartIndex: 1
+            clearLength: 1
+            name: Cell 1 5
+        - action:
+            actionType: CallSubroutine
+            subroutineName: LeftAlert
+            continueOnFailure: false
+            name: Cell 1 6
+        - action:
+            actionType: Stop
+            stopped: true
+            name: Cell 1 7
+        - action: *o0
+        - action: *o1
+        - action: *o2
+      falseBranch:
+      - action: &o3
+          actionType: Stop
+          stopped: true
+          name: Cell 1 3
     falseBranch:
     - action:
-        actionType: NoOp
-        name: Cell 1 5
+        actionType: Stop
+        stopped: true
+        name: Cell 1 3
+    - action: *o3
 - gridRows: 3
   gridColumns: 10
-  name: Left-Side-Scanner_Logic_Test
-  associatedDeviceName: Left-Side-Scanner
+  name: LeftAddToBatch
+  associatedDeviceName: Subroutine
   triggerMode: OnEvent
-  order: 8
+  order: 0
   steps:
   - action:
+      actionType: ActionConsumeMaterial
+      consumedMaterialPartNumberType: Variable
+      consumedMaterialPartNumber: Left-Supplier-Part-No-Constant
+      consumedMaterialSerialNumberType: Variable
+      consumedMaterialSerialNumber: Left-PartId-Data
+      consumedMaterialSerialNumberArrayStartIndexType: Constant
+      consumedMaterialSerialNumberArrayLengthType: Constant
+      bOMCheck: False
+      parentPartNumberType: Variable
+      parentPartNumber: LEFT_CONTAINER
+      parentSerialNumberType: Variable
+      parentSerialNumber: LeftLotLabel
+      statusVariable: Left-DB-Result
+      name: Cell 0 1
+      description: Add to Batch
+  - action:
       actionType: Math
-      sourceType: Value
-      source: 0
-      operator: SetVariableToValue
-      variable: Stack-Light
+      operator: IncrementAsNumber
+      variable: Left-Container-Count
       clearStartIndex: 1
       clearLength: 1
-      name: Cell 0 1
-  - action:
-      actionType: SplitToNextLine
-  - action:
-      actionType: If
-      sourceType: Variable
-      source: Stack-Light
-      compareOperator: =
-      containsStartPositionVariable: BLANK
-      containsInstanceCountVariable: BLANK
-      comparedToType: Value
-      comparedTo: 1
-      name: Cell 0 3
-    trueBranch:
-    - action:
-        actionType: NoOp
-        name: Cell 0 4
+      name: Cell 0 2
 - gridRows: 3
-  gridColumns: 10
-  name: Leftt-Side-Scanner-Clear-Fault-2
-  associatedDeviceName: Left-Side-Scanner
+  gridColumns: 12
+  name: LeftAlert
+  associatedDeviceName: Subroutine
   triggerMode: OnEvent
-  order: 3
+  order: 0
   steps:
   - action:
       actionType: NoOp
@@ -621,7 +744,7 @@
       variable: Left-Clear-Ack_Buitton-BGColorVariable
       clearStartIndex: 1
       clearLength: 1
-      name: Cell 0 3
+      name: Cell 0 2
   - action:
       actionType: PackBytes
       fields:
@@ -629,23 +752,164 @@
         source: 0xA0
         format: Byte
       - sourceType: Value
-        source: 0x03
+        source: 0x01
         format: Byte
       - sourceType: Value
         source: 0x01
         format: Byte
       - sourceType: Value
-        source: 0xA4
+        source: 0xB3
         format: Byte
       variable: Stack-Light-Cmd
-      name: Cell 0 4
+      name: Cell 0 3
   - action:
       actionType: ActionWriteToDevice
       sourceType: Variable
       source: Stack-Light-Cmd
       addCrLf: Yes
-      device: Stack-Light
+      device: Left-Light
+      name: Cell 0 4
+  - action:
+      actionType: Sleep
+      durationType: Variable
+      duration: LIGHT_SLEEP
+      name: Cell 0 4
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x02
+        format: Byte
+      - sourceType: Value
+        source: 0x00
+        format: Byte
+      - sourceType: Value
+        source: 0xA2
+        format: Byte
+      variable: Stack-Light-Cmd
       name: Cell 0 5
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: Yes
+      device: Left-Light
+      name: Cell 0 6
+  - action:
+      actionType: Sleep
+      durationType: Variable
+      duration: LIGHT_SLEEP
+      name: Cell 0 8
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x04
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0xD8
+        format: Byte
+      variable: Stack-Light-Cmd
+      status: Error-State
+      name: Cell 0 7
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: No
+      device: Left-Light
+      name: Cell 0 8
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: 1
+      operator: SetVariableToValue
+      variable: Left-Stack-Alert
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 11
+- gridRows: 3
+  gridColumns: 10
+  name: LoadPrintTemplates
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: ActionReadFromFile
+      resultVariableType: Variable
+      resultVariable: AxleTemplate
+      fileSpecPathType: Variable
+      fileSpecPath: PW_ConfigFolder
+      fileSpecFilenameType: Value
+      fileSpecFilename: AxleLabelTemplate
+      fileSpecFileExtensionType: Value
+      fileSpecFileExtension: zpl
+      readMode: EntireFile
+      name: Cell 0 1
+  - action:
+      actionType: ActionReadFromFile
+      resultVariableType: Variable
+      resultVariable: BoxTemplate
+      fileSpecPathType: Variable
+      fileSpecPath: PW_ConfigFolder
+      fileSpecFilenameType: Value
+      fileSpecFilename: BoxLabelTemplate
+      fileSpecFileExtensionType: Value
+      fileSpecFileExtension: zpl
+      readMode: EntireFile
+      name: Cell 0 2
+- gridRows: 3
+  gridColumns: 10
+  name: NightlyReport
+  associatedDeviceName: ReportingScheduler
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: CallSubroutine
+      subroutineName: CreateCSV
+      continueOnFailure: false
+      name: Cell 0 1
+- gridRows: 3
+  gridColumns: 10
+  name: PrintLeftAxleLable
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: Math
+      sourceType: Variable
+      source: Left-PartId-Data
+      operator: SetVariableToValue
+      variable: LeftPartIdData
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
+      actionType: FillTemplate
+      templateSourceType: Variable
+      templateVariable: AxleTemplate
+      outputVariable: Left-Print-Buffer
+      name: Cell 0 1
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Left-Print-Buffer
+      addCrLf: Yes
+      device: Left-Axle-Printer
+      status: Error-Mesage
+      name: Cell 0 2
 - gridRows: 3
   gridColumns: 10
   name: Reset-ProductionCounts_Logic_1
@@ -671,30 +935,640 @@
       clearStartIndex: 1
       clearLength: 1
       name: Cell 0 2
+- gridRows: 3
+  gridColumns: 10
+  name: Right-Axle-Print-Label
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: Math
+      sourceType: Variable
+      source: Right-PartId-Data
+      operator: SetVariableToValue
+      variable: LabelData
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
+      actionType: FillTemplate
+      templateSourceType: Variable
+      templateVariable: AxleTemplate
+      outputVariable: Right-Print-Buffer
+      name: Cell 0 2
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Right-Print-Buffer
+      addCrLf: Yes
+      device: Right-Axle-Printer
+      status: Error-Mesage
+      name: Cell 0 2
+- gridRows: 3
+  gridColumns: 10
+  name: Right-Box-Print-Label
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: Math
+      sourceType: Variable
+      source: RightLotLabel
+      operator: SetVariableToValue
+      variable: LblBoxId
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
+      actionType: FillTemplate
+      templateSourceType: Variable
+      templateVariable: BoxTemplate
+      outputVariable: BoxPrintBuffer
+      name: Cell 0 1
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: BoxPrintBuffer
+      addCrLf: Yes
+      device: Box-Printer
+      status: Error-Mesage
+      name: Cell 0 2
   - action:
       actionType: Math
       sourceType: Value
       source: 0
       operator: SetVariableToValue
-      variable: Stack-Light
+      variable: Right-Container-Count
       clearStartIndex: 1
       clearLength: 1
       name: Cell 0 3
   - action:
       actionType: Math
       sourceType: Value
-      source: 0
+      source: Container Label Printed
       operator: SetVariableToValue
-      variable: Error-State
+      variable: Error-Mesage
       clearStartIndex: 1
       clearLength: 1
       name: Cell 0 4
+- gridRows: 3
+  gridColumns: 10
+  name: Right-Clear-Ack-Button_Logic_1
+  associatedDeviceName: Screen:Operator-Main/Right-Clear-Ack-Button
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: Math
+      sourceType: Variable
+      source: BLANK
+      operator: SetVariableToValue
+      variable: Error-Mesage
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
+      actionType: CallSubroutine
+      subroutineName: Right-Clear-Alert
+      continueOnFailure: false
+      name: Cell 0 5
+- gridRows: 3
+  gridColumns: 15
+  name: Right-Clear-Alert
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: NoOp
+      name: Cell 0 2
   - action:
       actionType: Math
       sourceType: Value
-      source: WHEAT
+      source: RED
       operator: SetVariableToValue
-      variable: Left-Clear-Ack_Buitton-BGColorVariable
+      variable: Right-Clear-Ack-Button-BGColorVariable
       clearStartIndex: 1
       clearLength: 1
+      name: Cell 0 2
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0x00
+        format: Byte
+      - sourceType: Value
+        source: 0xA1
+        format: Byte
+      variable: Stack-Light-Cmd
+      status: Error-State
+      name: Cell 0 3
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: Yes
+      device: Right-Light
+      name: Cell 0 4
+  - action:
+      actionType: Sleep
+      durationType: Variable
+      duration: LIGHT_SLEEP
+      name: Cell 0 6
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x02
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0xA3
+        format: Byte
+      variable: Stack-Light-Cmd
+      status: Error-State
       name: Cell 0 5
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: Yes
+      device: Right-Light
+      name: Cell 0 6
+  - action:
+      actionType: Sleep
+      durationType: Variable
+      duration: LIGHT_SLEEP
+      name: Cell 0 8
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x04
+        format: Byte
+      - sourceType: Value
+        source: 0x00
+        format: Byte
+      - sourceType: Value
+        source: 0xA4
+        format: Byte
+      variable: Stack-Light-Cmd
+      status: Error-State
+      name: Cell 0 8
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: No
+      device: Right-Light
+      name: Cell 0 10
+  - action:
+      actionType: Sleep
+      durationType: Variable
+      duration: LIGHT_SLEEP
+      name: Cell 0 11
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0x00
+        format: Byte
+      - sourceType: Value
+        source: 0xA1
+        format: Byte
+      variable: Stack-Light-Cmd
+      status: Error-State
+      name: Cell 0 11
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: No
+      device: Right-Light
+      name: Cell 0 13
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: 0
+      operator: SetVariableToValue
+      variable: Right-Stack-Alert
+      clearStartIndex: 1
+      clearLength: 1
+- gridRows: 3
+  gridColumns: 25
+  name: Right-Side-Scanner_Logic
+  associatedDeviceName: Right-Side-Scanner-Net
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: Math
+      sourceType: Variable
+      source: FormattedTimeStamp
+      operator: SetVariableToValue
+      variable: Right-PartId-Scan-Time
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
+      actionType: Math
+      sourceType: Device
+      operator: SetVariableToValue
+      variable: Right-PartId-Data
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 2
+  - action:
+      actionType: If
+      sourceType: Variable
+      source: Right-PartId-Data
+      compareOperator: <>
+      containsStartPositionVariable: AxleTemplate
+      containsInstanceCountVariable: AxleTemplate
+      comparedToType: Value
+      comparedTo: NoRead
+      name: Cell 0 3
+    trueBranch:
+    - action:
+        actionType: If
+        sourceType: Variable
+        source: Right-Stack-Alert
+        compareOperator: =
+        containsStartPositionVariable: Date
+        containsInstanceCountVariable: Date
+        comparedToType: Value
+        comparedTo: 0
+        name: Cell 0 5
+      trueBranch:
+      - action:
+          actionType: RegexExtract
+          sourceType: Variable
+          source: Right-PartId-Data
+          patternType: Value
+          pattern: (esat|ESAT)(?<RightLblYear>\d{2})(?<RightDayOfYear>\d{3})(?<RightLine>\d)(?<RightDailySequence>\d{4})(?<RightGMPartNumber>\d{8})(?<RightSupPartNumber>\d*)
+          name: Cell 0 4
+      - action:
+          actionType: If
+          sourceType: Variable
+          source: RightGMPartNumber
+          compareOperator: =
+          containsStartPositionVariable: Date
+          containsInstanceCountVariable: Date
+          comparedToType: Variable
+          comparedTo: Right-Supplier-Part-No-Constant
+          name: Cell 0 6
+        trueBranch:
+        - action:
+            actionType: NoOp
+            name: Cell 0 5
+        - action:
+            actionType: ActionBirth
+            partNumberType: Variable
+            partNumber: RightGMPartNumber
+            partProducerType: Constant
+            partProducer: Angstrom
+            partSerialNumberType: Variable
+            partSerialNumber: Right-PartId-Data
+            lotQuantityType: Value
+            lotQuantity: 1
+            statusVariableType: Variable
+            statusVariable: Right-DB-Result
+            name: Cell 0 12
+        - action:
+            actionType: If
+            sourceType: Variable
+            source: Right-DB-Result
+            compareOperator: =
+            containsStartPositionVariable: Date
+            containsInstanceCountVariable: Date
+            comparedToType: Value
+            comparedTo: 0
+            name: Cell 0 8
+          trueBranch:
+          - action:
+              actionType: NoOp
+              name: Cell 0 9
+          - action:
+              actionType: NoOp
+              name: Cell 0 10
+          - action:
+              actionType: CallSubroutine
+              subroutineName: Right-Axle-Print-Label
+              continueOnFailure: false
+              name: Cell 0 9
+          - action:
+              actionType: Math
+              operator: IncrementAsNumber
+              variable: Right-Container-Count
+              clearStartIndex: 1
+              clearLength: 1
+              name: Cell 0 17
+          - action:
+              actionType: Math
+              sourceType: Variable
+              source: Right-Current-Container
+              operator: IncrementAsNumber
+              variable: Right-Production-Count
+              clearStartIndex: 1
+              clearLength: 1
+              name: Cell 0 18
+          - action:
+              actionType: PersistVars
+              mode: Save
+              group: Angstrom-Axle-Tube
+              status: Right-Persist-Status
+              name: Cell 0 19
+          - action:
+              actionType: NoOp
+              name: Cell 0 15
+          - action:
+              actionType: CallSubroutine
+              subroutineName: RightAddToBatch
+              continueOnFailure: false
+              name: Cell 0 14
+              description: Add to Batch
+          - action:
+              actionType: If
+              sourceType: Variable
+              source: Right-DB-Result
+              compareOperator: =
+              containsStartPositionVariable: BLANK
+              containsInstanceCountVariable: BLANK
+              comparedToType: Value
+              comparedTo: 0
+              name: Cell 0 26
+            trueBranch:
+            - action:
+                actionType: FillTemplate
+                templateSourceType: Variable
+                templateVariable: AxleTemplate
+                outputVariable: Right-Print-Buffer
+                name: Cell 0 26
+            - action:
+                actionType: If
+                sourceType: Variable
+                source: Right-Container-Count
+                compareOperator: '>'
+                containsStartPositionVariable: Date
+                containsInstanceCountVariable: Date
+                comparedToType: Variable
+                comparedTo: BATCH_SIZE
+                name: Cell 0 18
+              trueBranch:
+              - action:
+                  actionType: CallSubroutine
+                  subroutineName: Right-Box-Print-Label
+                  continueOnFailure: false
+                  name: Cell 0 32
+              - action:
+                  actionType: CallSubroutine
+                  subroutineName: CreateRightLot
+                  continueOnFailure: false
+                  name: Cell 0 20
+              - action:
+                  actionType: Math
+                  sourceType: Variable
+                  source: BLANK
+                  operator: SetVariableToValue
+                  variable: Error-Mesage
+                  clearStartIndex: 1
+                  clearLength: 1
+                  name: Cell 0 20
+            falseBranch:
+            - action:
+                actionType: Math
+                sourceType: Value
+                source: Can't Add to Lot
+                operator: SetVariableToValue
+                variable: Error-Mesage
+                clearStartIndex: 1
+                clearLength: 1
+                name: Cell 1 17
+          falseBranch:
+          - action: &o4
+              actionType: CallSubroutine
+              subroutineName: RightAlert
+              continueOnFailure: false
+              name: Cell 1 9
+          - action: &o5
+              actionType: Math
+              sourceType: Value
+              source: Duplicate Part, already in the database
+              operator: SetVariableToValue
+              variable: Error-Mesage
+              clearStartIndex: 1
+              clearLength: 1
+              name: Cell 1 9
+          - action: &o6
+              actionType: NoOp
+              name: Cell 1 10
+        falseBranch:
+        - action: &o7
+            actionType: Math
+            sourceType: Value
+            source: Part belongs on the other line
+            operator: SetVariableToValue
+            variable: Error-Mesage
+            clearStartIndex: 1
+            clearLength: 1
+            name: Cell 1 6
+        - action: &o8
+            actionType: CallSubroutine
+            subroutineName: RightAlert
+            continueOnFailure: false
+            name: Cell 1 7
+        - action: &o9
+            actionType: Stop
+            stopped: true
+            name: Cell 1 7
+        - action: *o4
+        - action: *o5
+        - action: *o6
+      falseBranch:
+      - action: &o10
+          actionType: Stop
+          stopped: false
+          name: Cell 1 3
+      - action: &o11
+          actionType: NoOp
+          name: Cell 1 4
+      - action: *o7
+      - action: *o8
+      - action: *o9
+      - action: *o4
+      - action: *o5
+      - action: *o6
+    falseBranch:
+    - action:
+        actionType: Stop
+        stopped: false
+    - action: *o10
+    - action: *o11
+    - action: *o7
+    - action: *o8
+    - action: *o9
+    - action: *o4
+    - action: *o5
+    - action: *o6
+- gridRows: 3
+  gridColumns: 10
+  name: RightAddToBatch
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: ActionConsumeMaterial
+      consumedMaterialPartNumberType: Variable
+      consumedMaterialPartNumber: Right-Supplier-Part-No-Constant
+      consumedMaterialSerialNumberType: Variable
+      consumedMaterialSerialNumber: Right-PartId-Data
+      consumedMaterialSerialNumberArrayStartIndexType: Constant
+      consumedMaterialSerialNumberArrayLengthType: Constant
+      bOMCheck: False
+      parentPartNumberType: Variable
+      parentPartNumber: RIGHT_CONTAINER
+      parentSerialNumberType: Variable
+      parentSerialNumber: RightLotLabel
+      statusVariable: Right-DB-Result
+      name: Cell 0 1
+      description: Add to Batch
+  - action:
+      actionType: Math
+      operator: IncrementAsNumber
+      variable: Right-Container-Count
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 2
+- gridRows: 3
+  gridColumns: 12
+  name: RightAlert
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: NoOp
+      name: Cell 0 2
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: RED
+      operator: SetVariableToValue
+      variable: Right-Clear-Ack-Button-BGColorVariable
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 2
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0xB3
+        format: Byte
+      variable: Stack-Light-Cmd
+      name: Cell 0 3
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: Yes
+      device: Right-Light
+      name: Cell 0 4
+  - action:
+      actionType: Sleep
+      durationType: Variable
+      duration: LIGHT_SLEEP
+      name: Cell 0 4
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x02
+        format: Byte
+      - sourceType: Value
+        source: 0x00
+        format: Byte
+      - sourceType: Value
+        source: 0xA2
+        format: Byte
+      variable: Stack-Light-Cmd
+      name: Cell 0 5
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: Yes
+      device: Right-Light
+      name: Cell 0 6
+  - action:
+      actionType: Sleep
+      durationType: Variable
+      duration: LIGHT_SLEEP
+      name: Cell 0 8
+  - action:
+      actionType: PackBytes
+      fields:
+      - sourceType: Value
+        source: 0xA0
+        format: Byte
+      - sourceType: Value
+        source: 0x04
+        format: Byte
+      - sourceType: Value
+        source: 0x01
+        format: Byte
+      - sourceType: Value
+        source: 0xD8
+        format: Byte
+      variable: Stack-Light-Cmd
+      status: Error-State
+      name: Cell 0 7
+  - action:
+      actionType: ActionWriteToDevice
+      sourceType: Variable
+      source: Stack-Light-Cmd
+      addCrLf: No
+      device: Right-Light
+      name: Cell 0 8
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: 1
+      operator: SetVariableToValue
+      variable: Right-Stack-Alert
+      clearStartIndex: 1
+      clearLength: 1

@@ -1,137 +1,293 @@
+- name: AxleTemplate
+  isArray: false
+  dataType: String
+  variableType: Local
+- variableType: Constant
+  name: BATCH_SIZE
+  description: 'Constant: 19'
+  isArray: false
+  dataType: Integer
+  defaultValue: 19
 - variableType: Constant
   name: BLANK
   description: 'Constant: '
   isArray: false
   dataType: String
   defaultValue: '  '
-- variableType: Local
-  name: Display-Error-Message
+- name: BoxPrintBuffer
   isArray: false
   dataType: String
-- variableType: Local
-  name: Error-Mesage
+  variableType: Local
+- name: BoxTemplate
   isArray: false
   dataType: String
-- variableType: Local
-  name: Error-State
+  variableType: Local
+- name: CSV_Rowvount
+  isArray: false
+  dataType: Integer
+  variableType: Local
+- name: Display-Error-Message
   isArray: false
   dataType: String
-- variableType: Local
-  name: Left-Clear-Ack_Buitton-BGColorVariable
+  variableType: Local
+- name: Error-Mesage
   isArray: false
   dataType: String
-  defaultValue: Wheat
-- variableType: Local
-  name: Left-Container-Count
+  variableType: Local
+- name: Error-State
   isArray: false
   dataType: String
+  variableType: Local
+- variableType: Constant
+  name: LEFT_CONTAINER
+  description: 'Constant: LOT85545338'
+  isArray: false
+  dataType: String
+  defaultValue: LOT85545338
+- variableType: Constant
+  name: LIGHT_SLEEP
+  description: 'Constant: 100'
+  isArray: false
+  dataType: Integer
+  defaultValue: 100
+- name: LabelData
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: LblBoxId
+  isArray: false
+  dataType: String
+  defaultValue: 1234567
+  variableType: Local
+- name: Left-Clear-Ack_Buitton-BGColorVariable
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Left-Container-Count
+  isArray: false
+  dataType: Integer
   persistenceGroup: Angstrom-Axle-Tube
-- variableType: Local
-  name: Left-Current-Container
+  variableType: Local
+- name: Left-Current-Container
   isArray: false
   dataType: String
-- variableType: Local
-  name: Left-DB-Result
+  variableType: Local
+- name: Left-DB-Result
   isArray: false
   dataType: String
-- variableType: Local
-  name: Left-Part-Number
+  variableType: Local
+- name: Left-Part-Number
   isArray: false
   dataType: String
-- variableType: Local
-  name: Left-PartId-Data
+  variableType: Local
+- name: Left-PartId-Data
   isArray: false
   dataType: String
-- variableType: Local
-  name: Left-PartId-Scan-Time
+  variableType: Local
+- name: Left-PartId-Scan-Time
   isArray: false
   dataType: String
-- variableType: Local
-  name: Left-Persist-Status
+  variableType: Local
+- name: Left-Persist-Status
   isArray: false
   dataType: String
-- variableType: Local
-  name: Left-Production-Count
+  variableType: Local
+- name: Left-Print-Buffer
   isArray: false
   dataType: String
+  variableType: Local
+- name: Left-Production-Count
+  isArray: false
+  dataType: Integer
   persistenceGroup: Angstrom-Axle-Tube
+  variableType: Local
+- name: Left-Stack-Alert
+  isArray: false
+  dataType: Integer
+  defaultValue: 0
+  variableType: Local
 - variableType: Constant
   name: Left-Supplier-Part-No-Constant
   description: 'Constant: 85545338'
   isArray: false
   dataType: String
   defaultValue: 85545338
-- variableType: Local
-  name: LeftDailySequence
+- name: LeftDailySequence
   isArray: false
   dataType: String
-- variableType: Local
-  name: LeftDayOfYear
+  variableType: Local
+- name: LeftDayOfYear
   isArray: false
   dataType: String
-- variableType: Local
-  name: LeftGMPartNumber
+  variableType: Local
+- name: LeftGMPartNumber
   isArray: false
   dataType: String
-- variableType: Local
-  name: LeftLblYear
+  variableType: Local
+- name: LeftLblYear
   isArray: false
   dataType: String
-- variableType: Local
-  name: LeftLine
+  variableType: Local
+- name: LeftLine
   isArray: false
   dataType: String
-- variableType: Local
-  name: LeftSupPartNumber>
+  variableType: Local
+- name: LeftLotLabel
   isArray: false
   dataType: String
-- variableType: Local
-  name: Part-No.-Select
+  persistenceGroup: Angstrom-Axle-Tube
+  variableType: Local
+- name: LeftLotNumber
+  isArray: false
+  dataType: Integer
+  persistenceGroup: Angstrom-Axle-Tube
+  variableType: Local
+- name: LeftPartData
   isArray: false
   dataType: String
-- variableType: Array
-  name: Part-Numbers
+  variableType: Local
+- name: LeftPartIdData
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: LeftPrintBuffer
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: LeftSupPartNumber
+  isArray: false
+  dataType: String
+  variableType: Local
+- variableType: Constant
+  name: NOREAD
+  description: 'Constant: NoRead'
+  isArray: false
+  dataType: String
+  defaultValue: NoRead
+- variableType: Constant
+  name: OUTPUT_FOLDER
+  description: 'Constant: C:\AxleReports'
+  isArray: false
+  dataType: String
+  defaultValue: C:\AxleReports
+- name: Part-No.-Select
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Part-Numbers
   isArray: true
   dataType: String
-- variableType: Local
-  name: Right-Ack
+  variableType: Array
+- variableType: Constant
+  name: RIGHT_CONTAINER
+  description: 'Constant: LOT85545339'
   isArray: false
   dataType: String
-- variableType: Local
-  name: Right-Container-Count
+  defaultValue: LOT85545339
+- name: ReportFolder
   isArray: false
   dataType: String
-- variableType: Local
-  name: Right-Current-Container
+  variableType: Local
+- name: Right-Ack
   isArray: false
   dataType: String
-- variableType: Local
-  name: Right-PartId-Data
+  variableType: Local
+- name: Right-Clear-Ack-Button-BGColorVariable
   isArray: false
   dataType: String
-- variableType: Local
-  name: Right-PartId-Scan-Time
+  variableType: Local
+- name: Right-Container-Count
+  isArray: false
+  dataType: Integer
+  persistenceGroup: Angstrom-Axle-Tube
+  variableType: Local
+- name: Right-Current-Container
   isArray: false
   dataType: String
-- variableType: Local
-  name: Right-Production-Count
+  variableType: Local
+- name: Right-DB-Result
   isArray: false
   dataType: String
+  variableType: Local
+- name: Right-Part-Number
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Right-PartId-Data
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Right-PartId-Scan-Time
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Right-Persist-Status
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Right-Print-Buffer
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Right-Production-Count
+  isArray: false
+  dataType: Integer
+  persistenceGroup: Angstrom-Axle-Tube
+  variableType: Local
+- name: Right-Stack-Alert
+  isArray: false
+  dataType: Integer
+  defaultValue: 0
+  variableType: Local
 - variableType: Constant
   name: Right-Supplier-Part-No-Constant
   description: 'Constant: 85545339'
   isArray: false
   dataType: String
   defaultValue: 85545339
-- variableType: Local
-  name: Stack-Light
+- name: RightDailySequence
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: RightDayOfYear
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: RightGMPartNumber
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: RightLblYear
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: RightLine
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: RightLotLabel
+  isArray: false
+  dataType: String
+  persistenceGroup: Angstrom-Axle-Tube
+  variableType: Local
+- name: RightLotNumber
   isArray: false
   dataType: Integer
-- variableType: Local
-  name: Stack-Light-Cmd
+  persistenceGroup: Angstrom-Axle-Tube
+  variableType: Local
+- name: RightSupPartNumber
   isArray: false
   dataType: String
-- variableType: Local
-  name: WIP-Part-Label-Template
+  variableType: Local
+- name: Stack-Light
+  isArray: false
+  dataType: Integer
+  variableType: Local
+- name: Stack-Light-Cmd
   isArray: false
   dataType: String
+  variableType: Local
+- name: WIP-Part-Label-Template
+  isArray: false
+  dataType: String
+  variableType: Local

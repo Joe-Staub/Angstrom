@@ -1,3 +1,4 @@
+startupScreen: Operator-Main
 screens:
 - name: Operator-Main
   backgroundColor: Silver
@@ -12,6 +13,7 @@ screens:
     bGColor: Wheat
     font: Arial, 14pt, style=Bold
     type: SetToValue
+    bGColorVariable: Right-Clear-Ack-Button-BGColorVariable
   - name: Left-Clear-Ack-Button
     description: Clear Error
     xposition: 160
@@ -33,29 +35,39 @@ screens:
     bGColor: DarkSeaGreen
     font: Arial, 14pt, style=Bold
     type: SetToValue
+  - name: BTNCreateCSV
+    description: Generate CSV
+    xposition: 800
+    yposition: 740
+    width: 4340
+    height: 35
+    fGColor: Black
+    bGColor: White
+    font: Arial, 14pt, style=Bold
+    type: SetToValue
   labels:
   - name: Label1
     description: Last Data Scanned
-    xposition: 60
+    xposition: 20
     yposition: 240
     width: 244
     height: 22
     fGColor: Black
-    bGColor: White
-    font: Arial, 14pt, style=Bold
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
     source: Last Data Scanned
     sourceType: Constant
     textAlign: Left
     verticalAlign: Top
   - name: Label1_1
     description: Time of Last Scan
-    xposition: 60
+    xposition: 20
     yposition: 280
     width: 244
     height: 22
     fGColor: Black
-    bGColor: White
-    font: Arial, 14pt, style=Bold
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
     source: Time of Last Scan
     sourceType: Constant
     textAlign: Left
@@ -67,8 +79,8 @@ screens:
     width: 241
     height: 22
     fGColor: Black
-    bGColor: White
-    font: Arial, 14pt, style=Bold
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
     source: Last Data Scanned
     sourceType: Constant
     textAlign: Left
@@ -80,8 +92,8 @@ screens:
     width: 241
     height: 22
     fGColor: Black
-    bGColor: White
-    font: Arial, 14pt, style=Bold
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
     source: Time of Last Scan
     sourceType: Constant
     textAlign: Left
@@ -93,21 +105,21 @@ screens:
     width: 241
     height: 22
     fGColor: Black
-    bGColor: White
-    font: Arial, 14pt, style=Bold
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
     source: Production Count
     sourceType: Constant
     textAlign: Left
     verticalAlign: Top
   - name: Label1_1_1_1_1
     description: Production Count
-    xposition: 60
+    xposition: 20
     yposition: 320
     width: 244
     height: 22
     fGColor: Black
-    bGColor: White
-    font: Arial, 14pt, style=Bold
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
     source: Production Count
     sourceType: Constant
     textAlign: Left
@@ -119,54 +131,54 @@ screens:
     width: 241
     height: 22
     fGColor: Black
-    bGColor: White
-    font: Arial, 14pt, style=Bold
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
     source: Current Container
     sourceType: Constant
     textAlign: Left
     verticalAlign: Top
   - name: Label1_1_1_1_1_1
     description: Current Container
-    xposition: 60
+    xposition: 20
     yposition: 360
     width: 244
     height: 22
     fGColor: Black
-    bGColor: White
-    font: Arial, 14pt, style=Bold
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
     source: Current Container
     sourceType: Constant
     textAlign: Left
     verticalAlign: Top
   - name: Label1_3
     description: 'Production Part No.: 85545338'
-    xposition: 633
+    xposition: 160
     yposition: 160
     width: 292
     height: 20
     fGColor: SteelBlue
     bGColor: Silver
-    font: Arial, 14pt, style=Bold
+    font: Arial, 12pt, style=Bold
     source: 'Production Part No.: 85545338'
     sourceType: Constant
     textAlign: Left
     verticalAlign: Top
   - name: Label1_3_1
     description: 'Production Part No.: 85545339'
-    xposition: 153
+    xposition: 740
     yposition: 160
     width: 292
     height: 20
     fGColor: SteelBlue
     bGColor: Silver
-    font: Arial, 14pt, style=Bold
+    font: Arial, 12pt, style=Bold
     source: 'Production Part No.: 85545339'
     sourceType: Constant
     textAlign: Left
     verticalAlign: Top
   - name: Label3
     description: Left Side Line
-    xposition: 155
+    xposition: 160
     yposition: 120
     width: 292
     height: 37
@@ -175,11 +187,11 @@ screens:
     font: Arial, 20.25pt, style=Bold
     source: Left Side Line
     sourceType: Constant
-    textAlign: Center
+    textAlign: Left
     verticalAlign: Top
   - name: Label3_1
     description: Right Side Line
-    xposition: 627
+    xposition: 740
     yposition: 120
     width: 292
     height: 37
@@ -188,7 +200,7 @@ screens:
     font: Arial, 20.25pt, style=Bold
     source: Right Side Line
     sourceType: Constant
-    textAlign: Center
+    textAlign: Left
     verticalAlign: Top
   - name: Label1_1_1_1_2_1
     description: Current Container Count
@@ -197,22 +209,35 @@ screens:
     width: 241
     height: 22
     fGColor: Black
-    bGColor: White
-    font: Arial, 14pt, style=Bold
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
     source: Current Container Count
     sourceType: Constant
     textAlign: Left
     verticalAlign: Top
   - name: Label1_1_1_1_1_1_1
     description: Current Container Count
-    xposition: 60
+    xposition: 20
     yposition: 400
     width: 244
     height: 22
     fGColor: Black
-    bGColor: White
-    font: Arial, 14pt, style=Bold
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
     source: Current Container Count
+    sourceType: Constant
+    textAlign: Left
+    verticalAlign: Top
+  - name: Label2
+    description: Reports automatically go into C:\AxleReports at midnight.
+    xposition: 740
+    yposition: 720
+    width: 396
+    height: 20
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 9.75pt, style=Bold
+    source: Reports automatically go into C:\AxleReports at midnight.
     sourceType: Constant
     textAlign: Left
     verticalAlign: Top
@@ -232,13 +257,13 @@ screens:
   outputTexts:
   - name: OutputText2
     description: ${Left-PartId-Data}
-    xposition: 320
+    xposition: 220
     yposition: 240
-    width: 183
+    width: 306
     height: 20
     fGColor: Black
-    bGColor: Silver
-    font: Arial, 14pt, style=Bold
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
     variable: Left-PartId-Data
     textAlign: Left
     verticalAlign: Top
@@ -256,109 +281,109 @@ screens:
     verticalAlign: Middle
   - name: OutputText2_1
     description: ${Left-PartId-Scan-Time}
-    xposition: 320
+    xposition: 220
     yposition: 280
-    width: 183
+    width: 306
     height: 20
     fGColor: Black
-    bGColor: Silver
-    font: Arial, 14pt, style=Bold
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
     variable: Left-PartId-Scan-Time
     textAlign: Left
     verticalAlign: Top
   - name: OutputText2_2
     description: ${Right-PartId-Data}
-    xposition: 800
+    xposition: 740
     yposition: 240
-    width: 183
+    width: 322
     height: 20
     fGColor: Black
-    bGColor: Silver
-    font: Arial, 14pt, style=Bold
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
     variable: Right-PartId-Data
     textAlign: Left
     verticalAlign: Top
   - name: OutputText2_1_1
     description: ${Right-PartId-Scan-Time}
-    xposition: 800
+    xposition: 740
     yposition: 280
-    width: 183
+    width: 322
     height: 20
     fGColor: Black
-    bGColor: Silver
-    font: Arial, 14pt, style=Bold
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
     variable: Right-PartId-Scan-Time
     textAlign: Left
     verticalAlign: Top
   - name: OutputText2_1_1_1
     description: ${Right-Production-Count}
-    xposition: 800
+    xposition: 740
     yposition: 320
-    width: 183
+    width: 322
     height: 20
     fGColor: Black
-    bGColor: Silver
-    font: Arial, 14pt, style=Bold
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
     variable: Right-Production-Count
     textAlign: Left
     verticalAlign: Top
   - name: OutputText2_1_1_1_1
     description: ${Left-Production-Count}
-    xposition: 320
+    xposition: 220
     yposition: 320
-    width: 183
+    width: 306
     height: 20
     fGColor: Black
-    bGColor: Silver
-    font: Arial, 14pt, style=Bold
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
     variable: Left-Production-Count
     textAlign: Left
     verticalAlign: Top
   - name: OutputText2_1_1_1_1_1
-    description: ${Left-Container-Count}
-    xposition: 313
+    description: ${LeftLotLabel}
+    xposition: 220
     yposition: 360
-    width: 183
+    width: 306
     height: 20
     fGColor: Black
-    bGColor: Silver
-    font: Arial, 14pt, style=Bold
-    variable: Left-Container-Count
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
+    variable: LeftLotLabel
     textAlign: Left
     verticalAlign: Top
   - name: OutputText2_1_1_1_2
-    description: ${Right-Current-Container}
-    xposition: 800
+    description: ${RightLotLabel}
+    xposition: 740
     yposition: 360
-    width: 183
+    width: 322
     height: 20
     fGColor: Black
-    bGColor: Silver
-    font: Arial, 14pt, style=Bold
-    variable: Right-Current-Container
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
+    variable: RightLotLabel
     textAlign: Left
     verticalAlign: Top
   - name: OutputText2_1_1_1_1_1_1
-    description: ${Left-Current-Container}
-    xposition: 313
+    description: ${Left-Container-Count}
+    xposition: 220
     yposition: 400
-    width: 183
+    width: 306
     height: 20
     fGColor: Black
-    bGColor: Silver
-    font: Arial, 14pt, style=Bold
-    variable: Left-Current-Container
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
+    variable: Left-Container-Count
     textAlign: Left
     verticalAlign: Top
   - name: OutputText2_1_1_1_2_1
     description: ${Right-Container-Count}
-    xposition: 800
+    xposition: 740
     yposition: 400
-    width: 183
+    width: 322
     height: 20
     fGColor: Black
-    bGColor: Silver
-    font: Arial, 14pt, style=Bold
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
     variable: Right-Container-Count
     textAlign: Left
     verticalAlign: Top
@@ -394,3 +419,5 @@ screens:
   - Label1_1_1_1_1_1_1
   - OutputText2_1_1_1_1_1_1
   - OutputText2_1_1_1_2_1
+  - BTNCreateCSV
+  - Label2

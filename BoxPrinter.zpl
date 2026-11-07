@@ -1,0 +1,10 @@
+^XA
+^ND2,P,192.168.1.55,255.255.255.0,0.0.0.0
+^NBC
+^NC1
+^NPP
+^NNBoxPrinter
+^XZ
+^XA
+^JUS
+^XZ

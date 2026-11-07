@@ -1,0 +1,10 @@
+^XA
+^ND2,P,192.168.1.53,255.255.255.0,0.0.0.0
+^NBC
+^NC1
+^NPP
+^NNLeft-Axle-Printer
+^XZ
+^XA
+^JUS
+^XZ
