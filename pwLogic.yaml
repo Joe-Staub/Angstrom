@@ -634,7 +634,7 @@
               falseBranch:
               - action:
                   actionType: Stop
-                  stopped: false
+                  stopped: true
             falseBranch:
             - action:
                 actionType: Math
@@ -1177,7 +1177,7 @@
       clearStartIndex: 1
       clearLength: 1
 - gridRows: 3
-  gridColumns: 25
+  gridColumns: 24
   name: Right-Side-Scanner_Logic
   associatedDeviceName: Right-Side-Scanner-Net
   triggerMode: OnEvent

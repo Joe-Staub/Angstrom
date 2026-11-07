@@ -4,10 +4,10 @@
   variableType: Local
 - variableType: Constant
   name: BATCH_SIZE
-  description: 'Constant: 19'
+  description: 'Constant: 18'
   isArray: false
   dataType: Integer
-  defaultValue: 19
+  defaultValue: 18
 - variableType: Constant
   name: BLANK
   description: 'Constant: '
