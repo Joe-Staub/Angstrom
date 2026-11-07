@@ -18,7 +18,7 @@
   name: Left-Axle-Printer
   deviceType: Socket
   disabled: false
-- portID: 4
+- portID: 6
   baudRate: 9600
   dataBits: 8
   parity: n
@@ -53,7 +53,7 @@
   name: Right-Axle-Printer
   deviceType: Socket
   disabled: false
-- portID: 5
+- portID: 7
   baudRate: 9600
   dataBits: 8
   parity: n

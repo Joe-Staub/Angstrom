@@ -18,3 +18,5 @@ showGrid: True
 snapToGrid: True
 configuratorFontName: Arial
 configuratorFontSize: 10
+showDeviceStatus: True
+showsDeviceStatus: true

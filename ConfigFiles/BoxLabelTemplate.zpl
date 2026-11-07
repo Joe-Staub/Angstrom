@@ -1,4 +1,3 @@
-^XA
 ^PW203
 ^LL203
 ^LH0,0
@@ -7,4 +6,3 @@
 ^FO66,46^BXN,6,200,12,12^FD${LblBoxId}7^FS
 ^FO0,126^A0N,30,30^FB203,1,0,C^FD${LblBoxId}^FS
 ^PQ1
-^XZ
