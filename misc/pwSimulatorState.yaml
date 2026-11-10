@@ -1,0 +1,10 @@
+scanners:
+  Left-Side-Scanner-Net:
+    day: 2026-11-07
+    sequence: 8
+    supplier: 77
+  Right-Side-Scanner-Net:
+    day: 2026-11-07
+    sequence: 3
+    supplier: 73
+supplier: 77

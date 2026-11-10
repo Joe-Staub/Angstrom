@@ -1,0 +1,50 @@
+# PWSimulate profile: what pwDevice.yaml cannot say about this configuration's devices.
+# Read by PWSimulate (PlantWatch.Simulator in the PlantWatch solution); see its README.
+# The scanners are in Automatic message mode, so no terminator: PlantWatch hands the bytes to
+# the chart as they are, and the chart compares them to NoRead and births the serial verbatim.
+devices:
+  Left-Side-Scanner-Net:
+    role: Scanner
+    scanFormat: ESAT{yy}{ddd}{line}{seq:0000}{part}{supplier:000000000}
+    values:
+      line: "1"
+      part: "85545338"
+    noReadText: NoRead
+  Right-Side-Scanner-Net:
+    role: Scanner
+    scanFormat: ESAT{yy}{ddd}{line}{seq:0000}{part}{supplier:000000000}
+    values:
+      line: "2"
+      part: "85545339"
+    noReadText: NoRead
+  Left-Light:
+    role: StackLight
+    protocol: FramedChannel
+    lamps: [red, green]
+    source: file
+    path: \\Mac\Home\PlantWatchSim\COM6.bin
+  Right-Light:
+    role: StackLight
+    protocol: FramedChannel
+    lamps: [red, green]
+    source: file
+    path: \\Mac\Home\PlantWatchSim\COM7.bin
+autoRun:
+  intervalMs: 5000
+  alternate: true
+labels:
+  dpi: 203
+# Where each device sits on the PWSimulate window: a 3 x 3 grid, rows and columns 0-based.
+layout:
+  rows: 3
+  columns: 3
+  cells:
+    Left-Side-Scanner-Net:  { row: 0, col: 0 }
+    Left-Light:             { row: 1, col: 0 }   
+    Left-Axle-Printer:      { row: 2, col: 0 }
+    ReportingScheduler:     { row: 1, col: 1 }
+    Box-Printer:            { row: 2, col: 1 }
+    Right-Side-Scanner-Net: { row: 0, col: 2 }
+    Right-Light:            { row: 1, col: 2 }
+    Right-Axle-Printer:     { row: 2, col: 2 }
+
