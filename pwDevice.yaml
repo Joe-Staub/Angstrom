@@ -9,7 +9,7 @@
   deviceType: Socket
   disabled: false
 - portID: 9100
-  iPAddress: 192.168.1.53
+  iPAddress: 192.168.1.57
   connectionTimeoutMs: 5000
   messageMode: Delimited
   searchMethodNumberOfChars: 0
@@ -44,7 +44,7 @@
   deviceType: Scheduled
   disabled: false
 - portID: 9100
-  iPAddress: 192.168.1.54
+  iPAddress: 192.168.1.58
   connectionTimeoutMs: 5000
   messageMode: Delimited
   searchMethodNumberOfChars: 0
