@@ -75,6 +75,10 @@
   isArray: false
   dataType: String
   variableType: Local
+- name: Left-Duplicate-Line
+  isArray: false
+  dataType: String
+  variableType: Local
 - name: Left-Error-Message
   isArray: false
   dataType: String
@@ -83,15 +87,7 @@
   isArray: false
   dataType: String
   variableType: Local
-- name: Left-Duplicate-Line
-  isArray: false
-  dataType: String
-  variableType: Local
 - name: Left-Part-Number
-  isArray: false
-  dataType: String
-  variableType: Local
-- name: Left-Print-Status
   isArray: false
   dataType: String
   variableType: Local
@@ -108,6 +104,10 @@
   dataType: String
   variableType: Local
 - name: Left-Print-Buffer
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Left-Print-Status
   isArray: false
   dataType: String
   variableType: Local
@@ -223,6 +223,10 @@
   isArray: false
   dataType: String
   variableType: Local
+- name: Right-Duplicate-Line
+  isArray: false
+  dataType: String
+  variableType: Local
 - name: Right-Error-Message
   isArray: false
   dataType: String
@@ -231,15 +235,7 @@
   isArray: false
   dataType: String
   variableType: Local
-- name: Right-Duplicate-Line
-  isArray: false
-  dataType: String
-  variableType: Local
 - name: Right-Part-Number
-  isArray: false
-  dataType: String
-  variableType: Local
-- name: Right-Print-Status
   isArray: false
   dataType: String
   variableType: Local
@@ -256,6 +252,10 @@
   dataType: String
   variableType: Local
 - name: Right-Print-Buffer
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Right-Print-Status
   isArray: false
   dataType: String
   variableType: Local

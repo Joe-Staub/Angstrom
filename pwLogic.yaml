@@ -763,7 +763,7 @@
       continueOnFailure: true
       name: Cell 0 2
 - gridRows: 3
-  gridColumns: 24
+  gridColumns: 23
   name: Left-Side-Scanner_Logic
   associatedDeviceName: Left-Side-Scanner-Net
   triggerMode: OnEvent
@@ -912,7 +912,7 @@
                 actionType: If
                 sourceType: Variable
                 source: Left-Container-Count
-                compareOperator: '<'
+                compareOperator: <
                 comparedToType: Variable
                 comparedTo: BATCH_SIZE
                 name: Cell 0 19
@@ -1682,7 +1682,7 @@
       continueOnFailure: true
       name: Cell 0 2
 - gridRows: 3
-  gridColumns: 24
+  gridColumns: 23
   name: Right-Side-Scanner_Logic
   associatedDeviceName: Right-Side-Scanner-Net
   triggerMode: OnEvent
@@ -1831,7 +1831,7 @@
                 actionType: If
                 sourceType: Variable
                 source: Right-Container-Count
-                compareOperator: '<'
+                compareOperator: <
                 comparedToType: Variable
                 comparedTo: BATCH_SIZE
                 name: Cell 0 18
