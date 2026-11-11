@@ -83,6 +83,14 @@
   isArray: false
   dataType: String
   variableType: Local
+- name: Left-Last-Box-Label
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Left-Last-Label
+  isArray: false
+  dataType: String
+  variableType: Local
 - name: Left-Lot-Status
   isArray: false
   dataType: String
@@ -228,6 +236,14 @@
   dataType: String
   variableType: Local
 - name: Right-Error-Message
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Right-Last-Box-Label
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Right-Last-Label
   isArray: false
   dataType: String
   variableType: Local

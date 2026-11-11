@@ -5,14 +5,14 @@
 devices:
   Left-Side-Scanner-Net:
     role: Scanner
-    scanFormat: ESAT{yy}{ddd}{line}{seq:0000}{part}{supplier:000000000}
+    scanFormat: "{oneof:ESAT|esat}{yy}{ddd}{line}{seq:0000}{part}{supplier:000000000}"
     values:
       line: "1"
       part: "85545338"
     noReadText: NoRead
   Right-Side-Scanner-Net:
     role: Scanner
-    scanFormat: ESAT{yy}{ddd}{line}{seq:0000}{part}{supplier:000000000}
+    scanFormat: "{oneof:ESAT|esat}{yy}{ddd}{line}{seq:0000}{part}{supplier:000000000}"
     values:
       line: "2"
       part: "85545339"

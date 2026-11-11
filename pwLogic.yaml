@@ -340,17 +340,7 @@
       subroutineName: Right-Ensure-Box
       continueOnFailure: true
       name: Cell 0 3
-      description: Open box for Right
-  - action:
-      actionType: CallSubroutine
-      subroutineName: Right-Clear-Alert
-      continueOnFailure: false
-      name: Cell 0 4
-  - action:
-      actionType: CallSubroutine
-      subroutineName: Left-Clear-Alert
-      continueOnFailure: false
-      name: Cell 0 5
+      description: Open box for Right; the lights are cleared by Left/Right-Light-Connected once their ports open
 - gridRows: 3
   gridColumns: 10
   name: Left-Axle-Print-Label
@@ -392,8 +382,15 @@
       description: Printed?
     trueBranch:
     - action:
-        actionType: NoOp
+        actionType: Math
+        sourceType: Variable
+        source: Left-PartId-Data
+        operator: SetVariableToValue
+        variable: Left-Last-Label
+        clearStartIndex: 1
+        clearLength: 1
         name: Cell 0 5
+        description: Remember for Reprint
     falseBranch:
     - action:
         actionType: Math
@@ -452,13 +449,23 @@
     trueBranch:
     - action:
         actionType: Math
+        sourceType: Variable
+        source: LeftLotLabel
+        operator: SetVariableToValue
+        variable: Left-Last-Box-Label
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 5
+        description: Remember for Reprint
+    - action:
+        actionType: Math
         sourceType: Value
         source: Container Label Printed
         operator: SetVariableToValue
         variable: Left-Error-Message
         clearStartIndex: 1
         clearLength: 1
-        name: Cell 0 5
+        name: Cell 0 6
     falseBranch:
     - action:
         actionType: Math
@@ -478,7 +485,7 @@
 - gridRows: 3
   gridColumns: 10
   name: Left-Clear-Ack-Button_Logic_1
-  associatedDeviceName: Screen:Operator-Main/Left-Clear-Ack-Button
+  associatedDeviceName: Screen:Left-Main/Left-Clear-Ack-Button
   triggerMode: OnEvent
   order: 0
   steps:
@@ -641,6 +648,68 @@
       name: Cell 0 14
 - gridRows: 3
   gridColumns: 10
+  name: Left-Clear-Parsed
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: '-'
+      operator: SetVariableToValue
+      variable: LeftLblYear
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+      description: Blank before parsing so a failed parse cannot reuse the last values
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: '-'
+      operator: SetVariableToValue
+      variable: LeftDayOfYear
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 2
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: '-'
+      operator: SetVariableToValue
+      variable: LeftLine
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 3
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: '-'
+      operator: SetVariableToValue
+      variable: LeftDailySequence
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 4
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: '-'
+      operator: SetVariableToValue
+      variable: LeftGMPartNumber
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 5
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: '-'
+      operator: SetVariableToValue
+      variable: LeftSupPartNumber
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 6
+- gridRows: 3
+  gridColumns: 10
   name: Left-Ensure-Box
   associatedDeviceName: Subroutine
   triggerMode: OnEvent
@@ -713,6 +782,46 @@
       clearLength: 1
       name: Cell 0 1
       description: Clear Error button goes red
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: 1
+      operator: SetVariableToValue
+      variable: Left-Stack-Alert
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 2
+      description: Scans are ignored until Clear Error
+- gridRows: 3
+  gridColumns: 10
+  name: Left-Light-Connected
+  associatedDeviceName: Left-Light
+  triggerMode: OnConnected
+  order: 0
+  steps:
+  - action:
+      actionType: If
+      sourceType: Variable
+      source: Left-Stack-Alert
+      compareOperator: =
+      comparedToType: Value
+      comparedTo: 0
+      name: Cell 0 1
+      description: Light reachable - show the current state
+    trueBranch:
+    - action:
+        actionType: CallSubroutine
+        subroutineName: Left-Clear-Alert
+        continueOnFailure: true
+        name: Cell 0 2
+        description: No error - clear the light
+    falseBranch:
+    - action:
+        actionType: CallSubroutine
+        subroutineName: LeftAlert
+        continueOnFailure: true
+        name: Cell 1 1
+        description: Error still posted - light stays red
 - gridRows: 3
   gridColumns: 10
   name: Left-Log-Duplicate
@@ -763,12 +872,246 @@
       continueOnFailure: true
       name: Cell 0 2
 - gridRows: 3
-  gridColumns: 23
+  gridColumns: 10
+  name: Left-Parse-Error
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: Unreadable part ID
+      operator: SetVariableToValue
+      variable: Left-Error-Message
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
+      actionType: CallSubroutine
+      subroutineName: LeftAlert
+      continueOnFailure: true
+      name: Cell 0 2
+      description: Lights and red button, as for a duplicate
+  - action:
+      actionType: FillTemplate
+      templateSourceType: Inline
+      templateText: ${FormattedTimeStamp},Left,${Left-PartId-Data}
+      outputVariable: Left-Duplicate-Line
+      name: Cell 0 3
+  - action:
+      actionType: ActionWriteToFile
+      valueType: Variable
+      value: Left-Duplicate-Line
+      append: Yes
+      fileSpecPathType: Value
+      fileSpecPath: C:\AxleReports\
+      fileSpecFilenameType: Value
+      fileSpecFilename: UnreadableScans
+      fileSpecFileExtensionType: Value
+      fileSpecFileExtension: csv
+      addCrLf: Yes
+      name: Cell 0 4
+      description: Append to the unreadable-scan log
+  - action:
+      actionType: Stop
+      stopped: false
+      name: Cell 0 5
+      description: Halts the scanner chart too
+- gridRows: 3
+  gridColumns: 10
+  name: Left-Reprint-Box-Button_Logic
+  associatedDeviceName: Screen:Left-Main/Left-Reprint-Box-Button
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: If
+      sourceType: Variable
+      source: Left-Last-Box-Label
+      compareOperator: IsNotEmpty
+      name: Cell 0 1
+      description: Has a box label been printed?
+    trueBranch:
+    - action:
+        actionType: Math
+        sourceType: Variable
+        source: Left-Last-Box-Label
+        operator: SetVariableToValue
+        variable: LblBoxId
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 2
+    - action:
+        actionType: FillTemplate
+        templateSourceType: Variable
+        templateVariable: BoxTemplate
+        outputVariable: BoxPrintBuffer
+        name: Cell 0 3
+    - action:
+        actionType: ActionWriteToDevice
+        sourceType: Variable
+        source: BoxPrintBuffer
+        addCrLf: Yes
+        device: Box-Printer
+        status: Left-Print-Status
+        name: Cell 0 4
+    - action:
+        actionType: If
+        sourceType: Variable
+        source: Left-Print-Status
+        compareOperator: =
+        comparedToType: Value
+        comparedTo: Success
+        name: Cell 0 5
+      trueBranch:
+      - action:
+          actionType: Math
+          sourceType: Value
+          source: Box label reprinted
+          operator: SetVariableToValue
+          variable: Left-Error-Message
+          clearStartIndex: 1
+          clearLength: 1
+          name: Cell 0 6
+      falseBranch:
+      - action:
+          actionType: Math
+          sourceType: Variable
+          source: Left-Print-Status
+          operator: SetVariableToValue
+          variable: Left-Error-Message
+          clearStartIndex: 1
+          clearLength: 1
+          name: Cell 1 5
+      - action:
+          actionType: CallSubroutine
+          subroutineName: Left-Flag-Error
+          continueOnFailure: true
+          name: Cell 1 6
+    falseBranch:
+    - action:
+        actionType: Math
+        sourceType: Value
+        source: No box label printed yet
+        operator: SetVariableToValue
+        variable: Left-Error-Message
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 1 1
+    - action:
+        actionType: CallSubroutine
+        subroutineName: Left-Flag-Error
+        continueOnFailure: true
+        name: Cell 1 2
+- gridRows: 3
+  gridColumns: 10
+  name: Left-Reprint-Button_Logic
+  associatedDeviceName: Screen:Left-Main/Left-Reprint-Button
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: If
+      sourceType: Variable
+      source: Left-Last-Label
+      compareOperator: IsNotEmpty
+      name: Cell 0 1
+      description: Has a label been printed?
+    trueBranch:
+    - action:
+        actionType: Math
+        sourceType: Variable
+        source: Left-Last-Label
+        operator: SetVariableToValue
+        variable: LabelData
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 2
+    - action:
+        actionType: FillTemplate
+        templateSourceType: Variable
+        templateVariable: AxleTemplate
+        outputVariable: Left-Print-Buffer
+        name: Cell 0 3
+    - action:
+        actionType: ActionWriteToDevice
+        sourceType: Variable
+        source: Left-Print-Buffer
+        addCrLf: Yes
+        device: Left-Axle-Printer
+        status: Left-Print-Status
+        name: Cell 0 4
+    - action:
+        actionType: If
+        sourceType: Variable
+        source: Left-Print-Status
+        compareOperator: =
+        comparedToType: Value
+        comparedTo: Success
+        name: Cell 0 5
+      trueBranch:
+      - action:
+          actionType: Math
+          sourceType: Value
+          source: Label reprinted
+          operator: SetVariableToValue
+          variable: Left-Error-Message
+          clearStartIndex: 1
+          clearLength: 1
+          name: Cell 0 6
+      falseBranch:
+      - action:
+          actionType: Math
+          sourceType: Variable
+          source: Left-Print-Status
+          operator: SetVariableToValue
+          variable: Left-Error-Message
+          clearStartIndex: 1
+          clearLength: 1
+          name: Cell 1 5
+      - action:
+          actionType: CallSubroutine
+          subroutineName: Left-Flag-Error
+          continueOnFailure: true
+          name: Cell 1 6
+    falseBranch:
+    - action:
+        actionType: Math
+        sourceType: Value
+        source: Nothing to reprint
+        operator: SetVariableToValue
+        variable: Left-Error-Message
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 1 1
+    - action:
+        actionType: CallSubroutine
+        subroutineName: Left-Flag-Error
+        continueOnFailure: true
+        name: Cell 1 2
+- gridRows: 3
+  gridColumns: 24
   name: Left-Side-Scanner_Logic
   associatedDeviceName: Left-Side-Scanner-Net
   triggerMode: OnEvent
   order: 1
   steps:
+  - action:
+      actionType: If
+      sourceType: Variable
+      source: Left-Stack-Alert
+      compareOperator: =
+      comparedToType: Value
+      comparedTo: 0
+      name: Cell 0 1
+      description: Error posted and not cleared? Then ignore the scan entirely
+    falseBranch:
+    - action:
+        actionType: Stop
+        stopped: false
+        name: Cell 1 1
+        description: Scan ignored
   - action:
       actionType: Math
       sourceType: Variable
@@ -777,7 +1120,7 @@
       variable: Left-PartId-Scan-Time
       clearStartIndex: 1
       clearLength: 1
-      name: Cell 0 1
+      name: Cell 0 2
   - action:
       actionType: Math
       sourceType: Device
@@ -785,7 +1128,17 @@
       variable: Left-PartId-Data
       clearStartIndex: 1
       clearLength: 1
-      name: Cell 0 2
+      name: Cell 0 3
+  - action:
+      actionType: Math
+      sourceType: Variable
+      source: Left-PartId-Data
+      operator: ConvertToUpperCase
+      variable: Left-PartId-Data
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 4
+      description: Scanners send esat or ESAT
   - action:
       actionType: If
       sourceType: Variable
@@ -809,12 +1162,34 @@
         name: Cell 0 5
       trueBranch:
       - action:
+          actionType: CallSubroutine
+          subroutineName: Left-Clear-Parsed
+          continueOnFailure: true
+          name: Cell 0 4
+          description: Blank the parsed fields
+      - action:
           actionType: RegexExtract
           sourceType: Variable
           source: Left-PartId-Data
           patternType: Value
           pattern: (esat|ESAT)(?<LeftLblYear>\d{2})(?<LeftDayOfYear>\d{3})(?<LeftLine>\d)(?<LeftDailySequence>\d{4})(?<LeftGMPartNumber>\d{8})(?<LeftSupPartNumber>\d*)
-          name: Cell 0 4
+          name: Cell 0 5
+      - action:
+          actionType: If
+          sourceType: Variable
+          source: LeftGMPartNumber
+          compareOperator: <>
+          comparedToType: Value
+          comparedTo: '-'
+          name: Cell 0 6
+          description: Did the ID parse?
+        falseBranch:
+        - action:
+            actionType: CallSubroutine
+            subroutineName: Left-Parse-Error
+            continueOnFailure: false
+            name: Cell 1 6
+            description: Unreadable ID, treated like a duplicate
       - action:
           actionType: If
           sourceType: Variable
@@ -912,7 +1287,7 @@
                 actionType: If
                 sourceType: Variable
                 source: Left-Container-Count
-                compareOperator: <
+                compareOperator: '<'
                 comparedToType: Variable
                 comparedTo: BATCH_SIZE
                 name: Cell 0 19
@@ -973,26 +1348,15 @@
               description: Record the duplicate scan
         falseBranch:
         - action:
-            actionType: Math
-            sourceType: Value
-            source: Part belongs on the other line
-            operator: SetVariableToValue
-            variable: Left-Error-Message
-            clearStartIndex: 1
-            clearLength: 1
-            name: Cell 1 5
-        - action:
             actionType: CallSubroutine
-            subroutineName: LeftAlert
+            subroutineName: Left-Wrong-Part
             continueOnFailure: false
-            name: Cell 1 6
+            name: Cell 1 7
+            description: Other line, or unknown part
         - action:
             actionType: Stop
-            stopped: true
-            name: Cell 1 7
-        - action: *o0
-        - action: *o1
-        - action: *o2
+            stopped: false
+            name: Cell 1 8
       falseBranch:
       - action: &o3
           actionType: Stop
@@ -1004,6 +1368,59 @@
         stopped: true
         name: Cell 1 3
     - action: *o3
+- gridRows: 3
+  gridColumns: 10
+  name: Left-Wrong-Part
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: If
+      sourceType: Variable
+      source: LeftGMPartNumber
+      compareOperator: =
+      comparedToType: Variable
+      comparedTo: Right-Supplier-Part-No-Constant
+      name: Cell 0 1
+      description: Is it the other line's part?
+    trueBranch:
+    - action:
+        actionType: Math
+        sourceType: Value
+        source: Part belongs on the other line
+        operator: SetVariableToValue
+        variable: Left-Error-Message
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 2
+    - action:
+        actionType: CallSubroutine
+        subroutineName: LeftAlert
+        continueOnFailure: true
+        name: Cell 0 3
+    - action:
+        actionType: Stop
+        stopped: false
+        name: Cell 0 4
+        description: Halts the scanner chart too
+    falseBranch:
+    - action:
+        actionType: FillTemplate
+        templateSourceType: Inline
+        templateText: Unknown part number ${LeftGMPartNumber} - bad read?
+        outputVariable: Left-Error-Message
+        name: Cell 1 1
+        description: Neither line's part
+    - action:
+        actionType: CallSubroutine
+        subroutineName: LeftAlert
+        continueOnFailure: true
+        name: Cell 1 2
+    - action:
+        actionType: Stop
+        stopped: false
+        name: Cell 1 3
 - gridRows: 3
   gridColumns: 10
   name: LeftAddToBatch
@@ -1311,8 +1728,15 @@
       description: Printed?
     trueBranch:
     - action:
-        actionType: NoOp
+        actionType: Math
+        sourceType: Variable
+        source: Right-PartId-Data
+        operator: SetVariableToValue
+        variable: Right-Last-Label
+        clearStartIndex: 1
+        clearLength: 1
         name: Cell 0 5
+        description: Remember for Reprint
     falseBranch:
     - action:
         actionType: Math
@@ -1371,13 +1795,23 @@
     trueBranch:
     - action:
         actionType: Math
+        sourceType: Variable
+        source: RightLotLabel
+        operator: SetVariableToValue
+        variable: Right-Last-Box-Label
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 5
+        description: Remember for Reprint
+    - action:
+        actionType: Math
         sourceType: Value
         source: Container Label Printed
         operator: SetVariableToValue
         variable: Right-Error-Message
         clearStartIndex: 1
         clearLength: 1
-        name: Cell 0 5
+        name: Cell 0 6
     falseBranch:
     - action:
         actionType: Math
@@ -1397,7 +1831,7 @@
 - gridRows: 3
   gridColumns: 10
   name: Right-Clear-Ack-Button_Logic_1
-  associatedDeviceName: Screen:Operator-Main/Right-Clear-Ack-Button
+  associatedDeviceName: Screen:Right-Main/Right-Clear-Ack-Button
   triggerMode: OnEvent
   order: 0
   steps:
@@ -1560,6 +1994,68 @@
       name: Cell 0 14
 - gridRows: 3
   gridColumns: 10
+  name: Right-Clear-Parsed
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: '-'
+      operator: SetVariableToValue
+      variable: RightLblYear
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+      description: Blank before parsing so a failed parse cannot reuse the last values
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: '-'
+      operator: SetVariableToValue
+      variable: RightDayOfYear
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 2
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: '-'
+      operator: SetVariableToValue
+      variable: RightLine
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 3
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: '-'
+      operator: SetVariableToValue
+      variable: RightDailySequence
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 4
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: '-'
+      operator: SetVariableToValue
+      variable: RightGMPartNumber
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 5
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: '-'
+      operator: SetVariableToValue
+      variable: RightSupPartNumber
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 6
+- gridRows: 3
+  gridColumns: 10
   name: Right-Ensure-Box
   associatedDeviceName: Subroutine
   triggerMode: OnEvent
@@ -1632,6 +2128,46 @@
       clearLength: 1
       name: Cell 0 1
       description: Clear Error button goes red
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: 1
+      operator: SetVariableToValue
+      variable: Right-Stack-Alert
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 2
+      description: Scans are ignored until Clear Error
+- gridRows: 3
+  gridColumns: 10
+  name: Right-Light-Connected
+  associatedDeviceName: Right-Light
+  triggerMode: OnConnected
+  order: 0
+  steps:
+  - action:
+      actionType: If
+      sourceType: Variable
+      source: Right-Stack-Alert
+      compareOperator: =
+      comparedToType: Value
+      comparedTo: 0
+      name: Cell 0 1
+      description: Light reachable - show the current state
+    trueBranch:
+    - action:
+        actionType: CallSubroutine
+        subroutineName: Right-Clear-Alert
+        continueOnFailure: true
+        name: Cell 0 2
+        description: No error - clear the light
+    falseBranch:
+    - action:
+        actionType: CallSubroutine
+        subroutineName: RightAlert
+        continueOnFailure: true
+        name: Cell 1 1
+        description: Error still posted - light stays red
 - gridRows: 3
   gridColumns: 10
   name: Right-Log-Duplicate
@@ -1682,12 +2218,246 @@
       continueOnFailure: true
       name: Cell 0 2
 - gridRows: 3
-  gridColumns: 23
+  gridColumns: 10
+  name: Right-Parse-Error
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: Math
+      sourceType: Value
+      source: Unreadable part ID
+      operator: SetVariableToValue
+      variable: Right-Error-Message
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 1
+  - action:
+      actionType: CallSubroutine
+      subroutineName: RightAlert
+      continueOnFailure: true
+      name: Cell 0 2
+      description: Lights and red button, as for a duplicate
+  - action:
+      actionType: FillTemplate
+      templateSourceType: Inline
+      templateText: ${FormattedTimeStamp},Right,${Right-PartId-Data}
+      outputVariable: Right-Duplicate-Line
+      name: Cell 0 3
+  - action:
+      actionType: ActionWriteToFile
+      valueType: Variable
+      value: Right-Duplicate-Line
+      append: Yes
+      fileSpecPathType: Value
+      fileSpecPath: C:\AxleReports\
+      fileSpecFilenameType: Value
+      fileSpecFilename: UnreadableScans
+      fileSpecFileExtensionType: Value
+      fileSpecFileExtension: csv
+      addCrLf: Yes
+      name: Cell 0 4
+      description: Append to the unreadable-scan log
+  - action:
+      actionType: Stop
+      stopped: false
+      name: Cell 0 5
+      description: Halts the scanner chart too
+- gridRows: 3
+  gridColumns: 10
+  name: Right-Reprint-Box-Button_Logic
+  associatedDeviceName: Screen:Right-Main/Right-Reprint-Box-Button
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: If
+      sourceType: Variable
+      source: Right-Last-Box-Label
+      compareOperator: IsNotEmpty
+      name: Cell 0 1
+      description: Has a box label been printed?
+    trueBranch:
+    - action:
+        actionType: Math
+        sourceType: Variable
+        source: Right-Last-Box-Label
+        operator: SetVariableToValue
+        variable: LblBoxId
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 2
+    - action:
+        actionType: FillTemplate
+        templateSourceType: Variable
+        templateVariable: BoxTemplate
+        outputVariable: BoxPrintBuffer
+        name: Cell 0 3
+    - action:
+        actionType: ActionWriteToDevice
+        sourceType: Variable
+        source: BoxPrintBuffer
+        addCrLf: Yes
+        device: Box-Printer
+        status: Right-Print-Status
+        name: Cell 0 4
+    - action:
+        actionType: If
+        sourceType: Variable
+        source: Right-Print-Status
+        compareOperator: =
+        comparedToType: Value
+        comparedTo: Success
+        name: Cell 0 5
+      trueBranch:
+      - action:
+          actionType: Math
+          sourceType: Value
+          source: Box label reprinted
+          operator: SetVariableToValue
+          variable: Right-Error-Message
+          clearStartIndex: 1
+          clearLength: 1
+          name: Cell 0 6
+      falseBranch:
+      - action:
+          actionType: Math
+          sourceType: Variable
+          source: Right-Print-Status
+          operator: SetVariableToValue
+          variable: Right-Error-Message
+          clearStartIndex: 1
+          clearLength: 1
+          name: Cell 1 5
+      - action:
+          actionType: CallSubroutine
+          subroutineName: Right-Flag-Error
+          continueOnFailure: true
+          name: Cell 1 6
+    falseBranch:
+    - action:
+        actionType: Math
+        sourceType: Value
+        source: No box label printed yet
+        operator: SetVariableToValue
+        variable: Right-Error-Message
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 1 1
+    - action:
+        actionType: CallSubroutine
+        subroutineName: Right-Flag-Error
+        continueOnFailure: true
+        name: Cell 1 2
+- gridRows: 3
+  gridColumns: 10
+  name: Right-Reprint-Button_Logic
+  associatedDeviceName: Screen:Right-Main/Right-Reprint-Button
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: If
+      sourceType: Variable
+      source: Right-Last-Label
+      compareOperator: IsNotEmpty
+      name: Cell 0 1
+      description: Has a label been printed?
+    trueBranch:
+    - action:
+        actionType: Math
+        sourceType: Variable
+        source: Right-Last-Label
+        operator: SetVariableToValue
+        variable: LabelData
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 2
+    - action:
+        actionType: FillTemplate
+        templateSourceType: Variable
+        templateVariable: AxleTemplate
+        outputVariable: Right-Print-Buffer
+        name: Cell 0 3
+    - action:
+        actionType: ActionWriteToDevice
+        sourceType: Variable
+        source: Right-Print-Buffer
+        addCrLf: Yes
+        device: Right-Axle-Printer
+        status: Right-Print-Status
+        name: Cell 0 4
+    - action:
+        actionType: If
+        sourceType: Variable
+        source: Right-Print-Status
+        compareOperator: =
+        comparedToType: Value
+        comparedTo: Success
+        name: Cell 0 5
+      trueBranch:
+      - action:
+          actionType: Math
+          sourceType: Value
+          source: Label reprinted
+          operator: SetVariableToValue
+          variable: Right-Error-Message
+          clearStartIndex: 1
+          clearLength: 1
+          name: Cell 0 6
+      falseBranch:
+      - action:
+          actionType: Math
+          sourceType: Variable
+          source: Right-Print-Status
+          operator: SetVariableToValue
+          variable: Right-Error-Message
+          clearStartIndex: 1
+          clearLength: 1
+          name: Cell 1 5
+      - action:
+          actionType: CallSubroutine
+          subroutineName: Right-Flag-Error
+          continueOnFailure: true
+          name: Cell 1 6
+    falseBranch:
+    - action:
+        actionType: Math
+        sourceType: Value
+        source: Nothing to reprint
+        operator: SetVariableToValue
+        variable: Right-Error-Message
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 1 1
+    - action:
+        actionType: CallSubroutine
+        subroutineName: Right-Flag-Error
+        continueOnFailure: true
+        name: Cell 1 2
+- gridRows: 3
+  gridColumns: 24
   name: Right-Side-Scanner_Logic
   associatedDeviceName: Right-Side-Scanner-Net
   triggerMode: OnEvent
   order: 0
   steps:
+  - action:
+      actionType: If
+      sourceType: Variable
+      source: Right-Stack-Alert
+      compareOperator: =
+      comparedToType: Value
+      comparedTo: 0
+      name: Cell 0 1
+      description: Error posted and not cleared? Then ignore the scan entirely
+    falseBranch:
+    - action:
+        actionType: Stop
+        stopped: false
+        name: Cell 1 1
+        description: Scan ignored
   - action:
       actionType: Math
       sourceType: Variable
@@ -1696,7 +2466,7 @@
       variable: Right-PartId-Scan-Time
       clearStartIndex: 1
       clearLength: 1
-      name: Cell 0 1
+      name: Cell 0 2
   - action:
       actionType: Math
       sourceType: Device
@@ -1704,7 +2474,17 @@
       variable: Right-PartId-Data
       clearStartIndex: 1
       clearLength: 1
-      name: Cell 0 2
+      name: Cell 0 3
+  - action:
+      actionType: Math
+      sourceType: Variable
+      source: Right-PartId-Data
+      operator: ConvertToUpperCase
+      variable: Right-PartId-Data
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 4
+      description: Scanners send esat or ESAT
   - action:
       actionType: If
       sourceType: Variable
@@ -1728,12 +2508,34 @@
         name: Cell 0 5
       trueBranch:
       - action:
+          actionType: CallSubroutine
+          subroutineName: Right-Clear-Parsed
+          continueOnFailure: true
+          name: Cell 0 4
+          description: Blank the parsed fields
+      - action:
           actionType: RegexExtract
           sourceType: Variable
           source: Right-PartId-Data
           patternType: Value
           pattern: (esat|ESAT)(?<RightLblYear>\d{2})(?<RightDayOfYear>\d{3})(?<RightLine>\d)(?<RightDailySequence>\d{4})(?<RightGMPartNumber>\d{8})(?<RightSupPartNumber>\d*)
-          name: Cell 0 4
+          name: Cell 0 5
+      - action:
+          actionType: If
+          sourceType: Variable
+          source: RightGMPartNumber
+          compareOperator: <>
+          comparedToType: Value
+          comparedTo: '-'
+          name: Cell 0 6
+          description: Did the ID parse?
+        falseBranch:
+        - action:
+            actionType: CallSubroutine
+            subroutineName: Right-Parse-Error
+            continueOnFailure: false
+            name: Cell 1 6
+            description: Unreadable ID, treated like a duplicate
       - action:
           actionType: If
           sourceType: Variable
@@ -1831,7 +2633,7 @@
                 actionType: If
                 sourceType: Variable
                 source: Right-Container-Count
-                compareOperator: <
+                compareOperator: '<'
                 comparedToType: Variable
                 comparedTo: BATCH_SIZE
                 name: Cell 0 18
@@ -1891,53 +2693,81 @@
               name: Cell 1 10
               description: Record the duplicate scan
         falseBranch:
-        - action: &o7
-            actionType: Math
-            sourceType: Value
-            source: Part belongs on the other line
-            operator: SetVariableToValue
-            variable: Right-Error-Message
-            clearStartIndex: 1
-            clearLength: 1
-            name: Cell 1 6
-        - action: &o8
+        - action:
             actionType: CallSubroutine
-            subroutineName: RightAlert
+            subroutineName: Right-Wrong-Part
             continueOnFailure: false
             name: Cell 1 7
-        - action: &o9
+            description: Other line, or unknown part
+        - action:
             actionType: Stop
-            stopped: true
-            name: Cell 1 7
-        - action: *o4
-        - action: *o5
-        - action: *o6
+            stopped: false
+            name: Cell 1 8
       falseBranch:
-      - action: &o10
+      - action:
           actionType: Stop
           stopped: false
           name: Cell 1 3
-      - action: &o11
-          actionType: NoOp
-          name: Cell 1 4
-      - action: *o7
-      - action: *o8
-      - action: *o9
-      - action: *o4
-      - action: *o5
-      - action: *o6
+          description: Alert active, scan ignored
     falseBranch:
     - action:
         actionType: Stop
         stopped: false
-    - action: *o10
-    - action: *o11
-    - action: *o7
-    - action: *o8
-    - action: *o9
-    - action: *o4
-    - action: *o5
-    - action: *o6
+        name: Cell 1 2
+        description: NoRead
+- gridRows: 3
+  gridColumns: 10
+  name: Right-Wrong-Part
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: If
+      sourceType: Variable
+      source: RightGMPartNumber
+      compareOperator: =
+      comparedToType: Variable
+      comparedTo: Left-Supplier-Part-No-Constant
+      name: Cell 0 1
+      description: Is it the other line's part?
+    trueBranch:
+    - action:
+        actionType: Math
+        sourceType: Value
+        source: Part belongs on the other line
+        operator: SetVariableToValue
+        variable: Right-Error-Message
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 2
+    - action:
+        actionType: CallSubroutine
+        subroutineName: RightAlert
+        continueOnFailure: true
+        name: Cell 0 3
+    - action:
+        actionType: Stop
+        stopped: false
+        name: Cell 0 4
+        description: Halts the scanner chart too
+    falseBranch:
+    - action:
+        actionType: FillTemplate
+        templateSourceType: Inline
+        templateText: Unknown part number ${RightGMPartNumber} - bad read?
+        outputVariable: Right-Error-Message
+        name: Cell 1 1
+        description: Neither line's part
+    - action:
+        actionType: CallSubroutine
+        subroutineName: RightAlert
+        continueOnFailure: true
+        name: Cell 1 2
+    - action:
+        actionType: Stop
+        stopped: false
+        name: Cell 1 3
 - gridRows: 3
   gridColumns: 10
   name: RightAddToBatch
