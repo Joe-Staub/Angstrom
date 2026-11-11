@@ -66,7 +66,6 @@
 - name: Left-Container-Count
   isArray: false
   dataType: Integer
-  persistenceGroup: Angstrom-Axle-Tube
   variableType: Local
 - name: Left-Current-Container
   isArray: false
@@ -76,7 +75,23 @@
   isArray: false
   dataType: String
   variableType: Local
+- name: Left-Error-Message
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Left-Lot-Status
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Left-Duplicate-Line
+  isArray: false
+  dataType: String
+  variableType: Local
 - name: Left-Part-Number
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Left-Print-Status
   isArray: false
   dataType: String
   variableType: Local
@@ -140,7 +155,7 @@
 - name: LeftLotNumber
   isArray: false
   dataType: Integer
-  persistenceGroup: Angstrom-Axle-Tube
+  defaultValue: 0
   variableType: Local
 - name: LeftPartData
   isArray: false
@@ -199,7 +214,6 @@
 - name: Right-Container-Count
   isArray: false
   dataType: Integer
-  persistenceGroup: Angstrom-Axle-Tube
   variableType: Local
 - name: Right-Current-Container
   isArray: false
@@ -209,7 +223,23 @@
   isArray: false
   dataType: String
   variableType: Local
+- name: Right-Error-Message
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Right-Lot-Status
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Right-Duplicate-Line
+  isArray: false
+  dataType: String
+  variableType: Local
 - name: Right-Part-Number
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Right-Print-Status
   isArray: false
   dataType: String
   variableType: Local
@@ -273,7 +303,7 @@
 - name: RightLotNumber
   isArray: false
   dataType: Integer
-  persistenceGroup: Angstrom-Axle-Tube
+  defaultValue: 0
   variableType: Local
 - name: RightSupPartNumber
   isArray: false

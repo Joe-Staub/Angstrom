@@ -5,7 +5,7 @@ screens:
   buttons:
   - name: Right-Clear-Ack-Button
     description: Clear Error
-    xposition: 673
+    xposition: 720
     yposition: 460
     width: 5240
     height: 110
@@ -25,26 +25,6 @@ screens:
     font: Arial, 14pt, style=Bold
     type: SetToValue
     bGColorVariable: Left-Clear-Ack_Buitton-BGColorVariable
-  - name: Reset-ProductionCounts
-    description: Reset Production Counts
-    xposition: 420
-    yposition: 740
-    width: 5320
-    height: 35
-    fGColor: Black
-    bGColor: DarkSeaGreen
-    font: Arial, 14pt, style=Bold
-    type: SetToValue
-  - name: BTNCreateCSV
-    description: Generate CSV
-    xposition: 800
-    yposition: 740
-    width: 4340
-    height: 35
-    fGColor: Black
-    bGColor: White
-    font: Arial, 14pt, style=Bold
-    type: SetToValue
   labels:
   - name: Label1
     description: Last Data Scanned
@@ -228,19 +208,6 @@ screens:
     sourceType: Constant
     textAlign: Left
     verticalAlign: Top
-  - name: Label2
-    description: Reports automatically go into C:\AxleReports at midnight.
-    xposition: 740
-    yposition: 720
-    width: 396
-    height: 20
-    fGColor: Black
-    bGColor: Silver
-    font: Arial, 9.75pt, style=Bold
-    source: Reports automatically go into C:\AxleReports at midnight.
-    sourceType: Constant
-    textAlign: Left
-    verticalAlign: Top
   inputs: []
   images:
   - name: Image11
@@ -268,15 +235,15 @@ screens:
     textAlign: Left
     verticalAlign: Top
   - name: OutputText3
-    description: ${Error-Mesage}
+    description: ${Left-Error-Message}
     xposition: 60
     yposition: 20
-    width: 896
+    width: 459
     height: 49
     fGColor: Black
     bGColor: WhiteSmoke
     font: Arial, 15.75pt, style=Bold
-    variable: Error-Mesage
+    variable: Left-Error-Message
     textAlign: Center
     verticalAlign: Middle
   - name: OutputText2_1
@@ -387,6 +354,18 @@ screens:
     variable: Right-Container-Count
     textAlign: Left
     verticalAlign: Top
+  - name: OutputText3_1
+    description: ${Right-Error-Message}
+    xposition: 540
+    yposition: 20
+    width: 453
+    height: 49
+    fGColor: Black
+    bGColor: WhiteSmoke
+    font: Arial, 15.75pt, style=Bold
+    variable: Right-Error-Message
+    textAlign: Center
+    verticalAlign: Middle
   gradientButtons: []
   userLogins: []
   zOrder:
@@ -405,7 +384,6 @@ screens:
   - OutputText2_1_1_1_1
   - Right-Clear-Ack-Button
   - Left-Clear-Ack-Button
-  - Reset-ProductionCounts
   - Label1_1_1_1_2
   - Label1_1_1_1_1_1
   - Label1_3
@@ -419,5 +397,4 @@ screens:
   - Label1_1_1_1_1_1_1
   - OutputText2_1_1_1_1_1_1
   - OutputText2_1_1_1_2_1
-  - BTNCreateCSV
-  - Label2
+  - OutputText3_1

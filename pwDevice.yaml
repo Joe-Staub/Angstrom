@@ -59,7 +59,7 @@
   parity: n
   stopBits: 1
   portString: 9600,n,8,1
-  messageMode: Delimited
+  messageMode: Automatic
   searchMethodNumberOfChars: 0
   searchMethodSuffix: \r\n
   name: Right-Light
