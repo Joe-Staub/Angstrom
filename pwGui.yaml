@@ -2,29 +2,7 @@ startupScreen: Operator-Main
 screens:
 - name: Operator-Main
   backgroundColor: Silver
-  buttons:
-  - name: Right-Clear-Ack-Button
-    description: Clear Error
-    xposition: 720
-    yposition: 460
-    width: 5240
-    height: 110
-    fGColor: Black
-    bGColor: Wheat
-    font: Arial, 14pt, style=Bold
-    type: SetToValue
-    bGColorVariable: Right-Clear-Ack-Button-BGColorVariable
-  - name: Left-Clear-Ack-Button
-    description: Clear Error
-    xposition: 160
-    yposition: 460
-    width: 5240
-    height: 110
-    fGColor: Black
-    bGColor: Wheat
-    font: Arial, 14pt, style=Bold
-    type: SetToValue
-    bGColorVariable: Left-Clear-Ack_Buitton-BGColorVariable
+  buttons: []
   labels:
   - name: Label1
     description: Last Data Scanned
@@ -211,8 +189,16 @@ screens:
   inputs: []
   images:
   - name: Image11
-    xposition: 20
-    yposition: 720
+    xposition: 180
+    yposition: 660
+    width: 183
+    height: 66
+    source: PlantWatch Logo_vectorformat_031111_transparent.png
+    sourceType: Constant
+    refreshOnlyOnNameChange: No
+  - name: Image11_1
+    xposition: 720
+    yposition: 660
     width: 183
     height: 66
     source: PlantWatch Logo_vectorformat_031111_transparent.png
@@ -366,7 +352,61 @@ screens:
     variable: Right-Error-Message
     textAlign: Center
     verticalAlign: Middle
-  gradientButtons: []
+  gradientButtons:
+  - name: Right-Clear-Ack-Button
+    description: Clear Error
+    xposition: 540
+    yposition: 440
+    width: 3920
+    height: 110
+    fGColor: Black
+    bGColor: Wheat
+    font: Arial, 14pt, style=Bold
+    type: SetToValue
+    bGColorVariable: Right-Clear-Ack-Button-BGColorVariable
+    gradientDirection: Vertical
+    gradientStyle: Continuous
+    gradientSteps: 10
+    gradientColor: Tan
+    pressColor: A=255, R=180, G=180, B=180
+    pressDurationMs: 150
+    releaseDurationMs: 200
+    pressAlpha: 80
+    pressEasing: EaseOut
+    releaseEasing: EaseIn
+    holdOverlay: True
+    cornerRadius: 36
+    topLeftRadius: -1
+    topRightRadius: -1
+    bottomLeftRadius: -1
+    bottomRightRadius: -1
+  - name: Left-Clear-Ack-Button
+    description: Clear Error
+    xposition: 20
+    yposition: 440
+    width: 3920
+    height: 110
+    fGColor: Black
+    bGColor: Wheat
+    font: Arial, 14pt, style=Bold
+    type: SetToValue
+    bGColorVariable: Left-Clear-Ack_Buitton-BGColorVariable
+    gradientDirection: Vertical
+    gradientStyle: Continuous
+    gradientSteps: 10
+    gradientColor: Tan
+    pressColor: A=255, R=180, G=180, B=180
+    pressDurationMs: 150
+    releaseDurationMs: 200
+    pressAlpha: 80
+    pressEasing: EaseOut
+    releaseEasing: EaseIn
+    holdOverlay: True
+    cornerRadius: 36
+    topLeftRadius: -1
+    topRightRadius: -1
+    bottomLeftRadius: -1
+    bottomRightRadius: -1
   userLogins: []
   zOrder:
   - Label1
@@ -398,3 +438,4 @@ screens:
   - OutputText2_1_1_1_1_1_1
   - OutputText2_1_1_1_2_1
   - OutputText3_1
+  - Image11_1
