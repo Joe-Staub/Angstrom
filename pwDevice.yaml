@@ -39,7 +39,7 @@
   name: Left-Side-Scanner-Net
   deviceType: Socket
   disabled: false
-- scheduleExpression: 10 * * * *
+- scheduleExpression: 55 23 * * *
   name: ReportingScheduler
   deviceType: Scheduled
   disabled: false

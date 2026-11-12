@@ -1,10 +1,10 @@
 scanners:
   Left-Side-Scanner-Net:
     day: 2026-11-12
-    sequence: 436
-    supplier: 1034
+    sequence: 818
+    supplier: 1772
   Right-Side-Scanner-Net:
     day: 2026-11-12
-    sequence: 412
-    supplier: 1033
-supplier: 1034
+    sequence: 768
+    supplier: 1771
+supplier: 1772
