@@ -1,55 +1,13 @@
-startupScreen: Operator-Main
+startupScreen: Left-Main
 screens:
-- name: Operator-Main
+- name: Left-Main
   backgroundColor: Silver
-  buttons:
-  - name: Right-Clear-Ack-Button
-    description: Clear Error
-    xposition: 673
-    yposition: 460
-    width: 5240
-    height: 110
-    fGColor: Black
-    bGColor: Wheat
-    font: Arial, 14pt, style=Bold
-    type: SetToValue
-    bGColorVariable: Right-Clear-Ack-Button-BGColorVariable
-  - name: Left-Clear-Ack-Button
-    description: Clear Error
-    xposition: 160
-    yposition: 460
-    width: 5240
-    height: 110
-    fGColor: Black
-    bGColor: Wheat
-    font: Arial, 14pt, style=Bold
-    type: SetToValue
-    bGColorVariable: Left-Clear-Ack_Buitton-BGColorVariable
-  - name: Reset-ProductionCounts
-    description: Reset Production Counts
-    xposition: 420
-    yposition: 740
-    width: 5320
-    height: 35
-    fGColor: Black
-    bGColor: DarkSeaGreen
-    font: Arial, 14pt, style=Bold
-    type: SetToValue
-  - name: BTNCreateCSV
-    description: Generate CSV
-    xposition: 800
-    yposition: 740
-    width: 4340
-    height: 35
-    fGColor: Black
-    bGColor: White
-    font: Arial, 14pt, style=Bold
-    type: SetToValue
+  buttons: []
   labels:
   - name: Label1
     description: Last Data Scanned
     xposition: 20
-    yposition: 240
+    yposition: 220
     width: 244
     height: 22
     fGColor: Black
@@ -62,59 +20,20 @@ screens:
   - name: Label1_1
     description: Time of Last Scan
     xposition: 20
-    yposition: 280
+    yposition: 260
     width: 244
     height: 22
     fGColor: Black
     bGColor: Silver
     font: Arial, 12pt, style=Bold
     source: Time of Last Scan
-    sourceType: Constant
-    textAlign: Left
-    verticalAlign: Top
-  - name: Label1_2
-    description: Last Data Scanned
-    xposition: 540
-    yposition: 240
-    width: 241
-    height: 22
-    fGColor: Black
-    bGColor: Silver
-    font: Arial, 12pt, style=Bold
-    source: Last Data Scanned
-    sourceType: Constant
-    textAlign: Left
-    verticalAlign: Top
-  - name: Label1_1_1
-    description: Time of Last Scan
-    xposition: 540
-    yposition: 280
-    width: 241
-    height: 22
-    fGColor: Black
-    bGColor: Silver
-    font: Arial, 12pt, style=Bold
-    source: Time of Last Scan
-    sourceType: Constant
-    textAlign: Left
-    verticalAlign: Top
-  - name: Label1_1_1_1
-    description: Production Count
-    xposition: 540
-    yposition: 320
-    width: 241
-    height: 22
-    fGColor: Black
-    bGColor: Silver
-    font: Arial, 12pt, style=Bold
-    source: Production Count
     sourceType: Constant
     textAlign: Left
     verticalAlign: Top
   - name: Label1_1_1_1_1
     description: Production Count
     xposition: 20
-    yposition: 320
+    yposition: 300
     width: 244
     height: 22
     fGColor: Black
@@ -124,23 +43,10 @@ screens:
     sourceType: Constant
     textAlign: Left
     verticalAlign: Top
-  - name: Label1_1_1_1_2
-    description: Current Container
-    xposition: 540
-    yposition: 360
-    width: 241
-    height: 22
-    fGColor: Black
-    bGColor: Silver
-    font: Arial, 12pt, style=Bold
-    source: Current Container
-    sourceType: Constant
-    textAlign: Left
-    verticalAlign: Top
   - name: Label1_1_1_1_1_1
     description: Current Container
     xposition: 20
-    yposition: 360
+    yposition: 340
     width: 244
     height: 22
     fGColor: Black
@@ -152,7 +58,7 @@ screens:
     verticalAlign: Top
   - name: Label1_3
     description: 'Production Part No.: 85545338'
-    xposition: 160
+    xposition: 420
     yposition: 160
     width: 292
     height: 20
@@ -163,22 +69,9 @@ screens:
     sourceType: Constant
     textAlign: Left
     verticalAlign: Top
-  - name: Label1_3_1
-    description: 'Production Part No.: 85545339'
-    xposition: 740
-    yposition: 160
-    width: 292
-    height: 20
-    fGColor: SteelBlue
-    bGColor: Silver
-    font: Arial, 12pt, style=Bold
-    source: 'Production Part No.: 85545339'
-    sourceType: Constant
-    textAlign: Left
-    verticalAlign: Top
   - name: Label3
     description: Left Side Line
-    xposition: 160
+    xposition: 440
     yposition: 120
     width: 292
     height: 37
@@ -189,9 +82,438 @@ screens:
     sourceType: Constant
     textAlign: Left
     verticalAlign: Top
+  - name: Label1_1_1_1_1_1_1
+    description: Current Container Count
+    xposition: 20
+    yposition: 380
+    width: 244
+    height: 22
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
+    source: Current Container Count
+    sourceType: Constant
+    textAlign: Left
+    verticalAlign: Top
+  - name: Label-Left-Year
+    description: Year
+    xposition: 640
+    yposition: 220
+    width: 146
+    height: 22
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
+    source: Year
+    sourceType: Constant
+    textAlign: Right
+    verticalAlign: Top
+  - name: Label-Left-DayOfYear
+    description: Day of Year
+    xposition: 640
+    yposition: 260
+    width: 146
+    height: 22
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
+    source: Day of Year
+    sourceType: Constant
+    textAlign: Right
+    verticalAlign: Top
+  - name: Label-Left-Line
+    description: Line
+    xposition: 640
+    yposition: 300
+    width: 146
+    height: 22
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
+    source: Line
+    sourceType: Constant
+    textAlign: Right
+    verticalAlign: Top
+  - name: Label-Left-Sequence
+    description: Daily Sequence
+    xposition: 640
+    yposition: 340
+    width: 146
+    height: 22
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
+    source: Daily Sequence
+    sourceType: Constant
+    textAlign: Right
+    verticalAlign: Top
+  - name: Label-Left-GMPart
+    description: GM Part Number
+    xposition: 640
+    yposition: 380
+    width: 146
+    height: 22
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
+    source: GM Part Number
+    sourceType: Constant
+    textAlign: Right
+    verticalAlign: Top
+  - name: Label-Left-SupplierPart
+    description: Supplier Part No.
+    xposition: 640
+    yposition: 420
+    width: 146
+    height: 22
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
+    source: Supplier Part No.
+    sourceType: Constant
+    textAlign: Right
+    verticalAlign: Top
+  inputs: []
+  images:
+  - name: Image11
+    xposition: 400
+    yposition: 500
+    width: 176
+    height: 66
+    source: PlantWatch Logo_vectorformat_031111_transparent.png
+    sourceType: Constant
+    refreshOnlyOnNameChange: No
+  listboxes: []
+  dropdowns: []
+  webPages: []
+  outputTexts:
+  - name: OutputText2
+    description: ${Left-PartId-Data}
+    xposition: 220
+    yposition: 220
+    width: 306
+    height: 20
+    fGColor: Black
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
+    variable: Left-PartId-Data
+    textAlign: Left
+    verticalAlign: Top
+  - name: OutputText3
+    description: ${Left-Error-Message}
+    xposition: 24
+    yposition: 40
+    width: 938
+    height: 49
+    fGColor: Black
+    bGColor: Gainsboro
+    font: Arial, 15.75pt, style=Bold
+    variable: Left-Error-Message
+    textAlign: Center
+    verticalAlign: Middle
+  - name: OutputText2_1
+    description: ${Left-PartId-Scan-Time}
+    xposition: 220
+    yposition: 260
+    width: 174
+    height: 20
+    fGColor: Black
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
+    variable: Left-PartId-Scan-Time
+    textAlign: Left
+    verticalAlign: Top
+  - name: OutputText2_1_1_1_1
+    description: ${Left-Production-Count}
+    xposition: 220
+    yposition: 300
+    width: 174
+    height: 20
+    fGColor: Black
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
+    variable: Left-Production-Count
+    textAlign: Left
+    verticalAlign: Top
+  - name: OutputText2_1_1_1_1_1
+    description: ${LeftLotLabel}
+    xposition: 220
+    yposition: 340
+    width: 174
+    height: 20
+    fGColor: Black
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
+    variable: LeftLotLabel
+    textAlign: Left
+    verticalAlign: Top
+  - name: OutputText2_1_1_1_1_1_1
+    description: ${Left-Container-Count}
+    xposition: 220
+    yposition: 380
+    width: 174
+    height: 20
+    fGColor: Black
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
+    variable: Left-Container-Count
+    textAlign: Left
+    verticalAlign: Top
+  - name: OutputText-Left-Year
+    description: ${LeftLblYear}
+    xposition: 800
+    yposition: 220
+    width: 160
+    height: 20
+    fGColor: Black
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
+    variable: LeftLblYear
+    textAlign: Left
+    verticalAlign: Top
+  - name: OutputText-Left-DayOfYear
+    description: ${LeftDayOfYear}
+    xposition: 800
+    yposition: 260
+    width: 160
+    height: 20
+    fGColor: Black
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
+    variable: LeftDayOfYear
+    textAlign: Left
+    verticalAlign: Top
+  - name: OutputText-Left-Line
+    description: ${LeftLine}
+    xposition: 800
+    yposition: 300
+    width: 160
+    height: 20
+    fGColor: Black
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
+    variable: LeftLine
+    textAlign: Left
+    verticalAlign: Top
+  - name: OutputText-Left-Sequence
+    description: ${LeftDailySequence}
+    xposition: 800
+    yposition: 340
+    width: 160
+    height: 20
+    fGColor: Black
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
+    variable: LeftDailySequence
+    textAlign: Left
+    verticalAlign: Top
+  - name: OutputText-Left-GMPart
+    description: ${LeftGMPartNumber}
+    xposition: 800
+    yposition: 380
+    width: 160
+    height: 20
+    fGColor: Black
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
+    variable: LeftGMPartNumber
+    textAlign: Left
+    verticalAlign: Top
+  - name: OutputText-Left-SupplierPart
+    description: ${LeftSupPartNumber}
+    xposition: 800
+    yposition: 420
+    width: 160
+    height: 20
+    fGColor: Black
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
+    variable: LeftSupPartNumber
+    textAlign: Left
+    verticalAlign: Top
+  gradientButtons:
+  - name: Left-Clear-Ack-Button
+    description: Clear Error
+    xposition: 20
+    yposition: 500
+    width: 7480
+    height: 66
+    fGColor: Black
+    bGColor: Wheat
+    font: Arial, 14pt, style=Bold
+    type: SetToValue
+    bGColorVariable: Left-Clear-Ack_Buitton-BGColorVariable
+    gradientDirection: Vertical
+    gradientStyle: Continuous
+    gradientSteps: 10
+    gradientColor: Tan
+    pressColor: A=255, R=180, G=180, B=180
+    pressDurationMs: 150
+    releaseDurationMs: 200
+    pressAlpha: 80
+    pressEasing: EaseOut
+    releaseEasing: EaseIn
+    holdOverlay: True
+    cornerRadius: 12
+    topLeftRadius: -1
+    topRightRadius: -1
+    bottomLeftRadius: -1
+    bottomRightRadius: -1
+  - name: Left-Reprint-Button
+    description: Reprint Label
+    xposition: 800
+    yposition: 500
+    width: 3300
+    height: 66
+    fGColor: Black
+    bGColor: LightCyan
+    font: Arial, 14pt, style=Bold
+    type: SetToValue
+    gradientDirection: Vertical
+    gradientStyle: Continuous
+    gradientSteps: 10
+    gradientColor: LightGreen
+    pressColor: A=255, R=180, G=180, B=180
+    pressDurationMs: 150
+    releaseDurationMs: 200
+    pressAlpha: 80
+    pressEasing: EaseOut
+    releaseEasing: EaseIn
+    holdOverlay: True
+    cornerRadius: 12
+    topLeftRadius: -1
+    topRightRadius: -1
+    bottomLeftRadius: -1
+    bottomRightRadius: -1
+  - name: Left-Reprint-Box-Button
+    description: Reprint Box Label
+    xposition: 600
+    yposition: 500
+    width: 3800
+    height: 66
+    fGColor: Black
+    bGColor: LightCyan
+    font: Arial, 14pt, style=Bold
+    type: SetToValue
+    gradientDirection: Vertical
+    gradientStyle: Continuous
+    gradientSteps: 10
+    gradientColor: LightGreen
+    pressColor: A=255, R=180, G=180, B=180
+    pressDurationMs: 150
+    releaseDurationMs: 200
+    pressAlpha: 80
+    pressEasing: EaseOut
+    releaseEasing: EaseIn
+    holdOverlay: True
+    cornerRadius: 12
+    topLeftRadius: -1
+    topRightRadius: -1
+    bottomLeftRadius: -1
+    bottomRightRadius: -1
+  userLogins: []
+  zOrder:
+  - Label1
+  - OutputText2
+  - OutputText3
+  - Label1_1
+  - OutputText2_1
+  - Label1_1_1_1_1
+  - OutputText2_1_1_1_1
+  - Left-Clear-Ack-Button
+  - Left-Reprint-Button
+  - Left-Reprint-Box-Button
+  - Label1_1_1_1_1_1
+  - Label1_3
+  - Label3
+  - Image11
+  - OutputText2_1_1_1_1_1
+  - Label1_1_1_1_1_1_1
+  - OutputText2_1_1_1_1_1_1
+  - Label-Left-Year
+  - OutputText-Left-Year
+  - Label-Left-DayOfYear
+  - OutputText-Left-DayOfYear
+  - Label-Left-Line
+  - OutputText-Left-Line
+  - Label-Left-Sequence
+  - OutputText-Left-Sequence
+  - Label-Left-GMPart
+  - OutputText-Left-GMPart
+  - Label-Left-SupplierPart
+  - OutputText-Left-SupplierPart
+- name: Right-Main
+  backgroundColor: Silver
+  buttons: []
+  labels:
+  - name: Label1_2
+    description: Last Data Scanned
+    xposition: 20
+    yposition: 220
+    width: 244
+    height: 22
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
+    source: Last Data Scanned
+    sourceType: Constant
+    textAlign: Left
+    verticalAlign: Top
+  - name: Label1_1_1
+    description: Time of Last Scan
+    xposition: 20
+    yposition: 260
+    width: 244
+    height: 22
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
+    source: Time of Last Scan
+    sourceType: Constant
+    textAlign: Left
+    verticalAlign: Top
+  - name: Label1_1_1_1
+    description: Production Count
+    xposition: 20
+    yposition: 300
+    width: 244
+    height: 22
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
+    source: Production Count
+    sourceType: Constant
+    textAlign: Left
+    verticalAlign: Top
+  - name: Label1_1_1_1_2
+    description: Current Container
+    xposition: 20
+    yposition: 340
+    width: 244
+    height: 22
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
+    source: Current Container
+    sourceType: Constant
+    textAlign: Left
+    verticalAlign: Top
+  - name: Label1_3_1
+    description: 'Production Part No.: 85545339'
+    xposition: 420
+    yposition: 160
+    width: 292
+    height: 20
+    fGColor: SteelBlue
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
+    source: 'Production Part No.: 85545339'
+    sourceType: Constant
+    textAlign: Left
+    verticalAlign: Top
   - name: Label3_1
     description: Right Side Line
-    xposition: 740
+    xposition: 440
     yposition: 120
     width: 292
     height: 37
@@ -204,21 +526,8 @@ screens:
     verticalAlign: Top
   - name: Label1_1_1_1_2_1
     description: Current Container Count
-    xposition: 540
-    yposition: 400
-    width: 241
-    height: 22
-    fGColor: Black
-    bGColor: Silver
-    font: Arial, 12pt, style=Bold
-    source: Current Container Count
-    sourceType: Constant
-    textAlign: Left
-    verticalAlign: Top
-  - name: Label1_1_1_1_1_1_1
-    description: Current Container Count
     xposition: 20
-    yposition: 400
+    yposition: 380
     width: 244
     height: 22
     fGColor: Black
@@ -228,25 +537,90 @@ screens:
     sourceType: Constant
     textAlign: Left
     verticalAlign: Top
-  - name: Label2
-    description: Reports automatically go into C:\AxleReports at midnight.
-    xposition: 740
-    yposition: 720
-    width: 396
-    height: 20
+  - name: Label-Right-Year
+    description: Year
+    xposition: 640
+    yposition: 220
+    width: 146
+    height: 22
     fGColor: Black
     bGColor: Silver
-    font: Arial, 9.75pt, style=Bold
-    source: Reports automatically go into C:\AxleReports at midnight.
+    font: Arial, 12pt, style=Bold
+    source: Year
     sourceType: Constant
-    textAlign: Left
+    textAlign: Right
+    verticalAlign: Top
+  - name: Label-Right-DayOfYear
+    description: Day of Year
+    xposition: 640
+    yposition: 260
+    width: 146
+    height: 22
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
+    source: Day of Year
+    sourceType: Constant
+    textAlign: Right
+    verticalAlign: Top
+  - name: Label-Right-Line
+    description: Line
+    xposition: 640
+    yposition: 300
+    width: 146
+    height: 22
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
+    source: Line
+    sourceType: Constant
+    textAlign: Right
+    verticalAlign: Top
+  - name: Label-Right-Sequence
+    description: Daily Sequence
+    xposition: 640
+    yposition: 340
+    width: 146
+    height: 22
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
+    source: Daily Sequence
+    sourceType: Constant
+    textAlign: Right
+    verticalAlign: Top
+  - name: Label-Right-GMPart
+    description: GM Part Number
+    xposition: 640
+    yposition: 380
+    width: 146
+    height: 22
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
+    source: GM Part Number
+    sourceType: Constant
+    textAlign: Right
+    verticalAlign: Top
+  - name: Label-Right-SupplierPart
+    description: Supplier Part No.
+    xposition: 640
+    yposition: 420
+    width: 146
+    height: 22
+    fGColor: Black
+    bGColor: Silver
+    font: Arial, 12pt, style=Bold
+    source: Supplier Part No.
+    sourceType: Constant
+    textAlign: Right
     verticalAlign: Top
   inputs: []
   images:
-  - name: Image11
-    xposition: 20
-    yposition: 720
-    width: 183
+  - name: Image11_1
+    xposition: 400
+    yposition: 500
+    width: 176
     height: 66
     source: PlantWatch Logo_vectorformat_031111_transparent.png
     sourceType: Constant
@@ -255,47 +629,11 @@ screens:
   dropdowns: []
   webPages: []
   outputTexts:
-  - name: OutputText2
-    description: ${Left-PartId-Data}
-    xposition: 220
-    yposition: 240
-    width: 306
-    height: 20
-    fGColor: Black
-    bGColor: Lavender
-    font: Arial, 12pt, style=Bold
-    variable: Left-PartId-Data
-    textAlign: Left
-    verticalAlign: Top
-  - name: OutputText3
-    description: ${Error-Mesage}
-    xposition: 60
-    yposition: 20
-    width: 896
-    height: 49
-    fGColor: Black
-    bGColor: WhiteSmoke
-    font: Arial, 15.75pt, style=Bold
-    variable: Error-Mesage
-    textAlign: Center
-    verticalAlign: Middle
-  - name: OutputText2_1
-    description: ${Left-PartId-Scan-Time}
-    xposition: 220
-    yposition: 280
-    width: 306
-    height: 20
-    fGColor: Black
-    bGColor: Lavender
-    font: Arial, 12pt, style=Bold
-    variable: Left-PartId-Scan-Time
-    textAlign: Left
-    verticalAlign: Top
   - name: OutputText2_2
     description: ${Right-PartId-Data}
-    xposition: 740
-    yposition: 240
-    width: 322
+    xposition: 220
+    yposition: 220
+    width: 306
     height: 20
     fGColor: Black
     bGColor: Lavender
@@ -303,11 +641,23 @@ screens:
     variable: Right-PartId-Data
     textAlign: Left
     verticalAlign: Top
+  - name: OutputText3_1
+    description: ${Right-Error-Message}
+    xposition: 24
+    yposition: 40
+    width: 938
+    height: 49
+    fGColor: Black
+    bGColor: Gainsboro
+    font: Arial, 15.75pt, style=Bold
+    variable: Right-Error-Message
+    textAlign: Center
+    verticalAlign: Middle
   - name: OutputText2_1_1
     description: ${Right-PartId-Scan-Time}
-    xposition: 740
-    yposition: 280
-    width: 322
+    xposition: 220
+    yposition: 260
+    width: 174
     height: 20
     fGColor: Black
     bGColor: Lavender
@@ -317,9 +667,9 @@ screens:
     verticalAlign: Top
   - name: OutputText2_1_1_1
     description: ${Right-Production-Count}
-    xposition: 740
-    yposition: 320
-    width: 322
+    xposition: 220
+    yposition: 300
+    width: 174
     height: 20
     fGColor: Black
     bGColor: Lavender
@@ -327,35 +677,11 @@ screens:
     variable: Right-Production-Count
     textAlign: Left
     verticalAlign: Top
-  - name: OutputText2_1_1_1_1
-    description: ${Left-Production-Count}
-    xposition: 220
-    yposition: 320
-    width: 306
-    height: 20
-    fGColor: Black
-    bGColor: Lavender
-    font: Arial, 12pt, style=Bold
-    variable: Left-Production-Count
-    textAlign: Left
-    verticalAlign: Top
-  - name: OutputText2_1_1_1_1_1
-    description: ${LeftLotLabel}
-    xposition: 220
-    yposition: 360
-    width: 306
-    height: 20
-    fGColor: Black
-    bGColor: Lavender
-    font: Arial, 12pt, style=Bold
-    variable: LeftLotLabel
-    textAlign: Left
-    verticalAlign: Top
   - name: OutputText2_1_1_1_2
     description: ${RightLotLabel}
-    xposition: 740
-    yposition: 360
-    width: 322
+    xposition: 220
+    yposition: 340
+    width: 174
     height: 20
     fGColor: Black
     bGColor: Lavender
@@ -363,23 +689,11 @@ screens:
     variable: RightLotLabel
     textAlign: Left
     verticalAlign: Top
-  - name: OutputText2_1_1_1_1_1_1
-    description: ${Left-Container-Count}
-    xposition: 220
-    yposition: 400
-    width: 306
-    height: 20
-    fGColor: Black
-    bGColor: Lavender
-    font: Arial, 12pt, style=Bold
-    variable: Left-Container-Count
-    textAlign: Left
-    verticalAlign: Top
   - name: OutputText2_1_1_1_2_1
     description: ${Right-Container-Count}
-    xposition: 740
-    yposition: 400
-    width: 322
+    xposition: 220
+    yposition: 380
+    width: 174
     height: 20
     fGColor: Black
     bGColor: Lavender
@@ -387,37 +701,186 @@ screens:
     variable: Right-Container-Count
     textAlign: Left
     verticalAlign: Top
-  gradientButtons: []
+  - name: OutputText-Right-Year
+    description: ${RightLblYear}
+    xposition: 800
+    yposition: 220
+    width: 160
+    height: 20
+    fGColor: Black
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
+    variable: RightLblYear
+    textAlign: Left
+    verticalAlign: Top
+  - name: OutputText-Right-DayOfYear
+    description: ${RightDayOfYear}
+    xposition: 800
+    yposition: 260
+    width: 160
+    height: 20
+    fGColor: Black
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
+    variable: RightDayOfYear
+    textAlign: Left
+    verticalAlign: Top
+  - name: OutputText-Right-Line
+    description: ${RightLine}
+    xposition: 800
+    yposition: 300
+    width: 160
+    height: 20
+    fGColor: Black
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
+    variable: RightLine
+    textAlign: Left
+    verticalAlign: Top
+  - name: OutputText-Right-Sequence
+    description: ${RightDailySequence}
+    xposition: 800
+    yposition: 340
+    width: 160
+    height: 20
+    fGColor: Black
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
+    variable: RightDailySequence
+    textAlign: Left
+    verticalAlign: Top
+  - name: OutputText-Right-GMPart
+    description: ${RightGMPartNumber}
+    xposition: 800
+    yposition: 380
+    width: 160
+    height: 20
+    fGColor: Black
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
+    variable: RightGMPartNumber
+    textAlign: Left
+    verticalAlign: Top
+  - name: OutputText-Right-SupplierPart
+    description: ${RightSupPartNumber}
+    xposition: 800
+    yposition: 420
+    width: 160
+    height: 20
+    fGColor: Black
+    bGColor: Lavender
+    font: Arial, 12pt, style=Bold
+    variable: RightSupPartNumber
+    textAlign: Left
+    verticalAlign: Top
+  gradientButtons:
+  - name: Right-Clear-Ack-Button
+    description: Clear Error
+    xposition: 20
+    yposition: 500
+    width: 7480
+    height: 66
+    fGColor: Black
+    bGColor: Wheat
+    font: Arial, 14pt, style=Bold
+    type: SetToValue
+    bGColorVariable: Right-Clear-Ack-Button-BGColorVariable
+    gradientDirection: Vertical
+    gradientStyle: Continuous
+    gradientSteps: 10
+    gradientColor: Tan
+    pressColor: A=255, R=180, G=180, B=180
+    pressDurationMs: 150
+    releaseDurationMs: 200
+    pressAlpha: 80
+    pressEasing: EaseOut
+    releaseEasing: EaseIn
+    holdOverlay: True
+    cornerRadius: 12
+    topLeftRadius: -1
+    topRightRadius: -1
+    bottomLeftRadius: -1
+    bottomRightRadius: -1
+  - name: Right-Reprint-Button
+    description: Reprint Label
+    xposition: 800
+    yposition: 500
+    width: 3300
+    height: 66
+    fGColor: Black
+    bGColor: LightCyan
+    font: Arial, 14pt, style=Bold
+    type: SetToValue
+    gradientDirection: Vertical
+    gradientStyle: Continuous
+    gradientSteps: 10
+    gradientColor: LightGreen
+    pressColor: A=255, R=180, G=180, B=180
+    pressDurationMs: 150
+    releaseDurationMs: 200
+    pressAlpha: 80
+    pressEasing: EaseOut
+    releaseEasing: EaseIn
+    holdOverlay: True
+    cornerRadius: 12
+    topLeftRadius: -1
+    topRightRadius: -1
+    bottomLeftRadius: -1
+    bottomRightRadius: -1
+  - name: Right-Reprint-Box-Button
+    description: Reprint Box Label
+    xposition: 600
+    yposition: 500
+    width: 3800
+    height: 66
+    fGColor: Black
+    bGColor: LightCyan
+    font: Arial, 14pt, style=Bold
+    type: SetToValue
+    gradientDirection: Vertical
+    gradientStyle: Continuous
+    gradientSteps: 10
+    gradientColor: LightGreen
+    pressColor: A=255, R=180, G=180, B=180
+    pressDurationMs: 150
+    releaseDurationMs: 200
+    pressAlpha: 80
+    pressEasing: EaseOut
+    releaseEasing: EaseIn
+    holdOverlay: True
+    cornerRadius: 12
+    topLeftRadius: -1
+    topRightRadius: -1
+    bottomLeftRadius: -1
+    bottomRightRadius: -1
   userLogins: []
   zOrder:
-  - Label1
-  - OutputText2
-  - OutputText3
-  - Label1_1
-  - OutputText2_1
   - Label1_2
   - OutputText2_2
+  - OutputText3_1
   - Label1_1_1
   - OutputText2_1_1
   - Label1_1_1_1
   - OutputText2_1_1_1
-  - Label1_1_1_1_1
-  - OutputText2_1_1_1_1
   - Right-Clear-Ack-Button
-  - Left-Clear-Ack-Button
-  - Reset-ProductionCounts
+  - Right-Reprint-Button
+  - Right-Reprint-Box-Button
   - Label1_1_1_1_2
-  - Label1_1_1_1_1_1
-  - Label1_3
   - Label1_3_1
-  - Label3
   - Label3_1
-  - Image11
-  - OutputText2_1_1_1_1_1
+  - Image11_1
   - OutputText2_1_1_1_2
   - Label1_1_1_1_2_1
-  - Label1_1_1_1_1_1_1
-  - OutputText2_1_1_1_1_1_1
   - OutputText2_1_1_1_2_1
-  - BTNCreateCSV
-  - Label2
+  - Label-Right-Year
+  - OutputText-Right-Year
+  - Label-Right-DayOfYear
+  - OutputText-Right-DayOfYear
+  - Label-Right-Line
+  - OutputText-Right-Line
+  - Label-Right-Sequence
+  - OutputText-Right-Sequence
+  - Label-Right-GMPart
+  - OutputText-Right-GMPart
+  - Label-Right-SupplierPart
+  - OutputText-Right-SupplierPart

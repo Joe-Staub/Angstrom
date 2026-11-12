@@ -1,0 +1,11 @@
+^CI28
+^PW609
+^LL406
+^LH0,0
+^FO56,140
+^BXN,8,200,18,18
+^FD${Left-LabelData}^FS
+^FO60,300
+^A0N,30,30
+^FB540,1,0,L,0
+^FD${Left-LabelData}^FS
