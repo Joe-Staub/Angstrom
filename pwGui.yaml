@@ -176,8 +176,8 @@ screens:
   inputs: []
   images:
   - name: Image11
-    xposition: 800
-    yposition: 520
+    xposition: 740
+    yposition: 480
     width: 176
     height: 66
     source: PlantWatch Logo_vectorformat_031111_transparent.png
@@ -334,9 +334,9 @@ screens:
   gradientButtons:
   - name: Left-Clear-Ack-Button
     description: Clear Error
-    xposition: 60
+    xposition: 20
     yposition: 460
-    width: 13980
+    width: 12400
     height: 105
     fGColor: Black
     bGColor: Wheat
@@ -564,8 +564,8 @@ screens:
   inputs: []
   images:
   - name: Image11_1
-    xposition: 1020
-    yposition: 600
+    xposition: 760
+    yposition: 500
     width: 176
     height: 66
     source: PlantWatch Logo_vectorformat_031111_transparent.png
@@ -722,10 +722,10 @@ screens:
   gradientButtons:
   - name: Right-Clear-Ack-Button
     description: Clear Error
-    xposition: 65
-    yposition: 486
-    width: 18140
-    height: 140
+    xposition: 20
+    yposition: 460
+    width: 13220
+    height: 108
     fGColor: Black
     bGColor: Wheat
     font: Arial, 14pt, style=Bold
