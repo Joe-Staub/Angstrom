@@ -1,1 +1,16 @@
-[]
+- name: rightemote
+  computerName: RIGHTREMOTE
+  iPAddress: 192.168.1.41
+  mACAddress: C8:F7:50:FD:80:77
+  heartbeatIntervalSeconds: 0
+  displayWidth: 0
+  displayHeight: 0
+  displayOrientation: -1
+  assignedDevices:
+  - ReportingScheduler
+  - Right-Axle-Printer
+  - Right-Light
+  - Right-Side-Scanner-Net
+  assignedProtocolDevices: []
+  assignedScreens:
+  - Right-Main

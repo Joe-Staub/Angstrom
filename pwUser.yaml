@@ -1,6 +1,5 @@
-
 - name: Angstrom
-  password: Angstrom
+  password: PBKDF2$100000$fEpBgkBQLiN8Wf4cTF6EqA==$ZVjhBy9dGxv4clfMAfnO0iUSCd6I/JRHk4TNrxNa5JQ=
   timeoutPeriod: 0
   securityLevelNames:
   - Operator

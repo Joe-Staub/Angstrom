@@ -48,12 +48,24 @@ Per side (Left shown; Right is the mirror with `Right`/`RIGHT`/`R` substituted):
 - `Left-Side-Scanner_Logic` (device chart): ignore if `Left-Stack-Alert` ≠ 0 → clear the
   message → record scan time and data → uppercase → `NOREAD`? (compared after the uppercase)
   → `Left-Clear-Parsed` → RegexExtract → parsed? (`LeftGMPartNumber <> -`, else
-  `Left-Parse-Error`) → own part? (else `Left-Wrong-Part`) → Birth → birthed? →
-  `Left-Axle-Print-Label` → production count → `LeftAddToBatch` → `Left-Box-Check`.
+  `Left-Parse-Error`) → own part? (else `Left-Wrong-Part`) → `Left-Build-Label` → Birth of the
+  original scan → birthed? → `Left-Birth-Label-Serial` → `Left-Axle-Print-Label` → production
+  count → `LeftAddToBatch` → `Left-Box-Check`.
   Birth failed: if the ID equals `Left-Unboxed-Serial` (a tube that was labelled but never
   boxed) it is boxed now instead; else if the failure text contains `IX_Item_Entity_Serial`
   it is a duplicate (`LeftAlert`, message, `Left-Log-Duplicate`); anything else is shown as
   the database error.
+- `Left-Build-Label`: the scan's line digit must be 1 or 2; it is printed as 3 or 4
+  (`Left-Label-Line`) and the **label serial** `Left-LabelData` is built as `ESAT` + year + day of
+  year + `Left-Label-Line` + daily sequence + GM part number, without the supplier part number.
+  Any other line digit posts "Unexpected line number N - bad read?", alerts and stops the scan
+  before the Birth, so the tube is neither in the database nor labelled.
+- **Two items per tube.** The scanner chart births the original scan (`Left-PartId-Data`, kept in
+  the database as a record, never boxed); duplicate detection and the unboxed-serial recovery
+  work on it. `Left-Birth-Label-Serial` then births the label serial, the item that is printed
+  and consumed into the box. If that birth fails: a duplicate label serial (the same tube read
+  with different supplier digits) is treated as a duplicate scan (alert, message, log), anything
+  else shows the database error and flags; either way the scan stops and the original item stays.
 - `Left-Box-Check`: consumed? (else `Left-Lot-Error`) → count updated (`Left-Lot-Status =
   Pass`, else `Left-Count-Error`) → `Left-Container-Count < BATCH_SIZE`, else
   `Left-Box-Print-Label` and `CreateLeftLot`. Row-1 branches are separated by NoOps on row 0
@@ -66,9 +78,11 @@ Per side (Left shown; Right is the mirror with `Right`/`RIGHT`/`R` substituted):
   `Initialize` and before every add.
 - `CreateLeftLot`: `DBProcedure dbo.Angstrom_NextLotNumber` → `L${LeftLotNumber:%05d}` → Birth
   with quantity 0 → count 0, persist. Failures post a message and flag the error.
-- `LeftAddToBatch`: Ensure-Box, ConsumeMaterial into the box, on success
+- `LeftAddToBatch`: Ensure-Box, ConsumeMaterial of the label serial (`Left-LabelData`) into the
+  box, on success
   `LotManagement IncrementLotQuantityValue` → `Left-Container-Count`.
-- `Left-Axle-Print-Label` / `Left-Box-Print-Label`: remember `Left-Last-Label` /
+- `Left-Axle-Print-Label` / `Left-Box-Print-Label`: print `Left-LabelData` / `Left-LblBoxId`;
+  remember `Left-Last-Label` /
   `Left-Last-Box-Label` *before* printing (so a failed print can be reprinted), fill the
   side's own template (`Left-AxleTemplate` from `ConfigFiles/AxleLabelTemplate-Left.zpl`,
   which prints `${Left-LabelData}`; box: `BoxLabelTemplate-Left.zpl`, `${Left-LblBoxId}`),
@@ -86,7 +100,9 @@ Per side (Left shown; Right is the mirror with `Right`/`RIGHT`/`R` substituted):
 - Shared: `Initialize` (OnStart: load templates, Ensure-Box both sides), `LoadPrintTemplates`
   (four files, two per side), `NightlyReport` → `CreateCSV` (runs at 00:00 and lists every
   tube born the *previous* day with the box it went into; the box columns are empty for an
-  unboxed tube; status to `Error-Mesage`, which nothing displays).
+  unboxed tube; only label serials are listed, selected by their line digit 3 or 4 at position
+  10, so the kept original scans do not double the rows; status to `Error-Mesage`, which
+  nothing displays).
 - Dead charts were removed on 2026-11-12; `pwLogic.yaml` holds only live charts.
 
 ## Screens (`pwGui.yaml`)
@@ -107,6 +123,8 @@ differ, e.g. `Label1`→`Label1_2`, `OutputText2`→`OutputText2_2`, `Label-Left
 | ID does not parse | "Unreadable part ID" | yes | `C:\AxleReports\UnreadableScans.csv` |
 | Other side's part | "Part belongs on the other line" | yes | – |
 | Neither side's part | "Unknown part number N - bad read?" | yes | – |
+| Line digit not 1 or 2 | "Unexpected line number N - bad read?" | yes | – |
+| Label serial already in the database (original scan was new) | "Duplicate Part, already in the database" | yes | `DuplicateScans.csv` |
 | Consume failed | "Can't Add to Lot - clear the error and scan the tube again" (the rescan boxes it) | flag only | – |
 | Count update failed | "Box count failed - check the box" | flag only | – |
 | Birth failed, not a duplicate | the database error text | flag only | – |
