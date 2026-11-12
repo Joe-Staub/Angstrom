@@ -169,6 +169,11 @@ charts never write a header, the files are created by hand with `Timestamp,Side,
 - Hand edits to `pwLogic.yaml` are fine but follow the grid rules in the PlantWatch CLAUDE.md;
   then **verify by loading a copy through DomainModel** (recipe there) before handing over:
   empty validation report, no invalid cells, grids printed for the charts you touched.
+- **Inserting a step before an `If` in a chart the Configurator has saved** shifts row 0 right but
+  not the `*oN` alias copies of the row-1 cells, which then overwrite the real false branch one
+  column to the left (every cell still validates). Delete every `- action: *oN` entry and the
+  `&oN` anchors from that chart before inserting, and print the grid rows afterwards; the
+  scanner charts had their duplicate and recovery rows made unreachable this way (2026-11-12).
 - If PlantWatch is open on this folder, reload the configuration there before anyone saves
   from the Configurator, or the save overwrites the hand edits. The Configurator's own save
   reorders variables and trims grid widths; commit that re-save on its own.
