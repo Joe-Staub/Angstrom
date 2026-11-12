@@ -386,7 +386,7 @@ screens:
     bottomLeftRadius: -1
     bottomRightRadius: -1
   - name: Left-Reprint-Box-Button
-    description: Reprint Lot Label
+    description: Reprint Box Label
     xposition: 600
     yposition: 500
     width: 3800
@@ -802,7 +802,7 @@ screens:
     bottomLeftRadius: -1
     bottomRightRadius: -1
   - name: Right-Reprint-Button
-    description: Reprint Last Label
+    description: Reprint Label
     xposition: 800
     yposition: 500
     width: 3300
@@ -823,8 +823,12 @@ screens:
     releaseEasing: EaseIn
     holdOverlay: True
     cornerRadius: 12
+    topLeftRadius: -1
+    topRightRadius: -1
+    bottomLeftRadius: -1
+    bottomRightRadius: -1
   - name: Right-Reprint-Box-Button
-    description: Reprint Last Box Label
+    description: Reprint Box Label
     xposition: 600
     yposition: 500
     width: 3800
@@ -845,6 +849,10 @@ screens:
     releaseEasing: EaseIn
     holdOverlay: True
     cornerRadius: 12
+    topLeftRadius: -1
+    topRightRadius: -1
+    bottomLeftRadius: -1
+    bottomRightRadius: -1
   userLogins: []
   zOrder:
   - Label1_2

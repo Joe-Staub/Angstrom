@@ -1,7 +1,3 @@
-- name: AxleTemplate
-  isArray: false
-  dataType: String
-  variableType: Local
 - variableType: Constant
   name: BATCH_SIZE
   description: 'Constant: 18'
@@ -14,21 +10,9 @@
   isArray: false
   dataType: String
   defaultValue: '  '
-- name: BoxPrintBuffer
-  isArray: false
-  dataType: String
-  variableType: Local
-- name: BoxTemplate
-  isArray: false
-  dataType: String
-  variableType: Local
 - name: CSV_Rowvount
   isArray: false
   dataType: Integer
-  variableType: Local
-- name: Display-Error-Message
-  isArray: false
-  dataType: String
   variableType: Local
 - name: Error-Mesage
   isArray: false
@@ -50,15 +34,6 @@
   isArray: false
   dataType: Integer
   defaultValue: 100
-- name: LabelData
-  isArray: false
-  dataType: String
-  variableType: Local
-- name: LblBoxId
-  isArray: false
-  dataType: String
-  defaultValue: 1234567
-  variableType: Local
 - name: Left-Clear-Ack_Buitton-BGColorVariable
   isArray: false
   dataType: String
@@ -92,6 +67,18 @@
   dataType: String
   variableType: Local
 - name: Left-Lot-Status
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Left-LabelData
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Left-LblBoxId
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Left-Light-Cmd
   isArray: false
   dataType: String
   variableType: Local
@@ -135,6 +122,22 @@
   isArray: false
   dataType: String
   defaultValue: 85545338
+- name: Left-Unboxed-Serial
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Left-AxleTemplate
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Left-BoxTemplate
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Left-Box-Print-Buffer
+  isArray: false
+  dataType: String
+  variableType: Local
 - name: LeftDailySequence
   isArray: false
   dataType: String
@@ -166,10 +169,6 @@
   defaultValue: 0
   variableType: Local
 - name: LeftPartData
-  isArray: false
-  dataType: String
-  variableType: Local
-- name: LeftPartIdData
   isArray: false
   dataType: String
   variableType: Local
@@ -251,6 +250,18 @@
   isArray: false
   dataType: String
   variableType: Local
+- name: Right-LabelData
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Right-LblBoxId
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Right-Light-Cmd
+  isArray: false
+  dataType: String
+  variableType: Local
 - name: Right-Part-Number
   isArray: false
   dataType: String
@@ -291,6 +302,22 @@
   isArray: false
   dataType: String
   defaultValue: 85545339
+- name: Right-Unboxed-Serial
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Right-AxleTemplate
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Right-BoxTemplate
+  isArray: false
+  dataType: String
+  variableType: Local
+- name: Right-Box-Print-Buffer
+  isArray: false
+  dataType: String
+  variableType: Local
 - name: RightDailySequence
   isArray: false
   dataType: String
@@ -328,10 +355,6 @@
 - name: Stack-Light
   isArray: false
   dataType: Integer
-  variableType: Local
-- name: Stack-Light-Cmd
-  isArray: false
-  dataType: String
   variableType: Local
 - name: WIP-Part-Label-Template
   isArray: false

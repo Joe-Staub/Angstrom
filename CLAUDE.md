@@ -18,7 +18,7 @@ and opens the next box. Boxes are serials `L00001…` / `R00001…`, sequential 
 | `Left-Side-Scanner-Net` 192.168.1.51:9004, `Right-Side-Scanner-Net` .52:9005 | Scanners, Automatic message mode (no terminator) |
 | `Left-Axle-Printer` .57:9100, `Right-Axle-Printer` .58:9100 | Zebra, ZPL template `ConfigFiles/AxleLabelTemplate.zpl` (prints `${LabelData}`) |
 | `Box-Printer` .55:9100 | Zebra, `BoxLabelTemplate.zpl` (prints `${LblBoxId}`) |
-| `Left-Light` COM6, `Right-Light` COM7 | Stack lights, write-only binary frames |
+| `Left-Light` COM6, `Right-Light` COM7 | SL60USB2 USB stack lights, write-only. Frames `A0 <channel#> <on/off> <mode>`: channel 1 red, 2 green, 4 buzzer; mode = channel + A1 steady, + B2 flash, buzzer + C3/D4 soft. The alert sends red flash (`A0 01 01 B3`) and buzzer flash soft (`A0 04 01 D8`). |
 | `ReportingScheduler` | Nightly CSV export of the day's genealogy |
 
 Database: `PWDatabase` → `localhost\SQLEXPRESS`, catalog `PWInventory`, provider `pw`.
@@ -45,31 +45,49 @@ Database: `PWDatabase` → `localhost\SQLEXPRESS`, catalog `PWInventory`, provid
 
 Per side (Left shown; Right is the mirror with `Right`/`RIGHT`/`R` substituted):
 
-- `Left-Side-Scanner_Logic` (device chart): ignore if `Left-Stack-Alert` ≠ 0 → record scan
-  time and data → uppercase → NoRead? → `Left-Clear-Parsed` → RegexExtract → parsed?
-  (`LeftGMPartNumber <> -`, else `Left-Parse-Error`) → own part? (else `Left-Wrong-Part`) →
-  Birth (duplicate → `LeftAlert`, message, `Left-Log-Duplicate`) → `Left-Axle-Print-Label` →
-  production count → `LeftAddToBatch` → consumed? (else `Left-Lot-Error`) → box full?
-  (`Left-Container-Count < BATCH_SIZE` false → `Left-Box-Print-Label`, `CreateLeftLot`).
-- `Left-Ensure-Box`: label known? read its lot quantity from the DB into `Left-Container-Count`;
-  missing or failed → `CreateLeftLot`. Called from `Initialize` and before every add.
+- `Left-Side-Scanner_Logic` (device chart): ignore if `Left-Stack-Alert` ≠ 0 → clear the
+  message → record scan time and data → uppercase → `NOREAD`? (compared after the uppercase)
+  → `Left-Clear-Parsed` → RegexExtract → parsed? (`LeftGMPartNumber <> -`, else
+  `Left-Parse-Error`) → own part? (else `Left-Wrong-Part`) → Birth → birthed? →
+  `Left-Axle-Print-Label` → production count → `LeftAddToBatch` → `Left-Box-Check`.
+  Birth failed: if the ID equals `Left-Unboxed-Serial` (a tube that was labelled but never
+  boxed) it is boxed now instead; else if the failure text contains `IX_Item_Entity_Serial`
+  it is a duplicate (`LeftAlert`, message, `Left-Log-Duplicate`); anything else is shown as
+  the database error.
+- `Left-Box-Check`: consumed? (else `Left-Lot-Error`) → count updated (`Left-Lot-Status =
+  Pass`, else `Left-Count-Error`) → `Left-Container-Count < BATCH_SIZE`, else
+  `Left-Box-Print-Label` and `CreateLeftLot`. Row-1 branches are separated by NoOps on row 0
+  so they cannot run into each other.
+- `Left-Lot-Error` remembers the tube in `Left-Unboxed-Serial`; `Left-Count-Error` does not
+  (the tube is in the box, only the count failed).
+- `Left-Ensure-Box`: label known? read its lot quantity from the DB into `Left-Container-Count`.
+  `Item not found` → `CreateLeftLot`; any other failure → message, flag, keep the current box;
+  found but full (a successor box that failed to open) → `CreateLeftLot`. Called from
+  `Initialize` and before every add.
 - `CreateLeftLot`: `DBProcedure dbo.Angstrom_NextLotNumber` → `L${LeftLotNumber:%05d}` → Birth
   with quantity 0 → count 0, persist. Failures post a message and flag the error.
 - `LeftAddToBatch`: Ensure-Box, ConsumeMaterial into the box, on success
   `LotManagement IncrementLotQuantityValue` → `Left-Container-Count`.
-- `Left-Axle-Print-Label` / `Left-Box-Print-Label`: fill template, write, status to
-  `Left-Print-Status`; success remembers `Left-Last-Label` / `Left-Last-Box-Label`, failure posts
-  the printer error and flags.
+- `Left-Axle-Print-Label` / `Left-Box-Print-Label`: remember `Left-Last-Label` /
+  `Left-Last-Box-Label` *before* printing (so a failed print can be reprinted), fill the
+  side's own template (`Left-AxleTemplate` from `ConfigFiles/AxleLabelTemplate-Left.zpl`,
+  which prints `${Left-LabelData}`; box: `BoxLabelTemplate-Left.zpl`, `${Left-LblBoxId}`),
+  write, status to `Left-Print-Status`; failure posts the printer error and flags. Every
+  variable a print touches is per side; the two scanner threads share nothing but the
+  box printer socket.
 - `Left-Light-Connected` (TriggerMode **OnConnected** on `Left-Light`): clears the light when
   no error is posted, re-asserts red when one is. This is how the lights get their startup
   state; `Initialize` runs before the COM ports are open and must not talk to them.
 - Screen charts: `Left-Clear-Ack-Button_Logic_1`, `Left-Reprint-Button_Logic`,
-  `Left-Reprint-Box-Button_Logic` on `Screen:Left-Main/...`.
-- Shared: `Initialize` (OnStart: load templates, Ensure-Box both sides), `LoadPrintTemplates`,
-  `NightlyReport` → `CreateCSV`.
-- **Dead charts, left in place:** `CheckLeftNoRead`, `ClearProductionCounts`, `ExtractLeftData`,
-  `PrintLeftAxleLable`, and the two orphans `BTNCreateCSV_Logic_1` /
-  `Reset-ProductionCounts_Logic_1` whose screen controls were removed.
+  `Left-Reprint-Box-Button_Logic` on `Screen:Left-Main/...` and the three `Right-*`
+  equivalents on `Screen:Right-Main/...`. John wants the two screens kept identical and
+  separate (no Right controls on Left-Main); note that the runtime on main shows one window,
+  so until a per-station window exists the Right buttons are not reachable at runtime.
+- Shared: `Initialize` (OnStart: load templates, Ensure-Box both sides), `LoadPrintTemplates`
+  (four files, two per side), `NightlyReport` → `CreateCSV` (runs at 00:00 and lists every
+  tube born the *previous* day with the box it went into; the box columns are empty for an
+  unboxed tube; status to `Error-Mesage`, which nothing displays).
+- Dead charts were removed on 2026-11-12; `pwLogic.yaml` holds only live charts.
 
 ## Screens (`pwGui.yaml`)
 
@@ -89,7 +107,11 @@ differ, e.g. `Label1`→`Label1_2`, `OutputText2`→`OutputText2_2`, `Label-Left
 | ID does not parse | "Unreadable part ID" | yes | `C:\AxleReports\UnreadableScans.csv` |
 | Other side's part | "Part belongs on the other line" | yes | – |
 | Neither side's part | "Unknown part number N - bad read?" | yes | – |
-| Consume failed | "Can't Add to Lot" | flag only | – |
+| Consume failed | "Can't Add to Lot - clear the error and scan the tube again" (the rescan boxes it) | flag only | – |
+| Count update failed | "Box count failed - check the box" | flag only | – |
+| Birth failed, not a duplicate | the database error text | flag only | – |
+| Reprint with nothing printed yet | "Nothing to reprint yet" / "No box label printed yet" | none | – |
+| No read | "No read - scan the tube again"; the next scan clears it | none | – |
 | Box creation failed | "Cannot get the next box number" / "Cannot create a new box" | flag only | – |
 | Printer write failed | the `Fail: …` text | flag only | – |
 
@@ -110,6 +132,19 @@ charts never write a header, the files are created by hand with `Timestamp,Side,
    startup, and the simulator rejects `{oneof}` in `pwSimulator.yaml`.
 5. Simulator: `PWSimulate /config:<this folder>`; `pwSimulator.yaml` alternates `ESAT`/`esat`
    prefixes. `pwSimulatorState.yaml` is the simulator's counters.
+
+## Scripts in `misc/`
+
+- `Create-Angstrom-Procedures.sql`: the stored procedure the box numbering needs.
+- `Export-LotContents.ps1` (`.cmd` wrapper): boxes and their tubes to CSV, one row per tube;
+  `-Lot L00012`, `-Side Right`, `-Since`/`-Until`, `-OutFile`. Default output
+  `C:\AxleReports\LotContents_<stamp>.csv`. Note `Item_Gene.TimeStamp` in the pw schema is a
+  computed `getdate()`, so "when was it added" is not stored; the tube's birth time is used.
+- `Export-LotContentsFromLogs.ps1`: the same per-tube CSV rebuilt from `PlantWatch.*.log`
+  files (logic-chart debug logging must have been on), for days the database does not
+  cover. Pairs each side's last scanner trigger with the next ConsumeMaterial line; flags
+  boxes whose serial already existed when issued and tubes whose birth failed.
+- `Backup-PWInventory.ps1` (repo root): nightly database backup, see its help.
 
 ## Editing safely
 

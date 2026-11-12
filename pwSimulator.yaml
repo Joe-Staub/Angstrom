@@ -20,13 +20,13 @@ devices:
   Left-Light:
     role: StackLight
     protocol: FramedChannel
-    lamps: [red, green]
+    lamps: [red, green, buzzer]
     source: file
     path: \\Mac\Home\PlantWatchSim\COM6.bin
   Right-Light:
     role: StackLight
     protocol: FramedChannel
-    lamps: [red, green]
+    lamps: [red, green, buzzer]
     source: file
     path: \\Mac\Home\PlantWatchSim\COM7.bin
 autoRun:
