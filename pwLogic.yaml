@@ -348,7 +348,7 @@
         name: Cell 1 5
 - gridRows: 3
   gridColumns: 10
-  name: Left-Birth-Label-Serial
+  name: Left-Birth-Original
   associatedDeviceName: Subroutine
   triggerMode: OnEvent
   order: 0
@@ -360,13 +360,13 @@
       partProducerType: Constant
       partProducer: Angstrom
       partSerialNumberType: Variable
-      partSerialNumber: Left-LabelData
+      partSerialNumber: Left-PartId-Data
       lotQuantityType: Value
       lotQuantity: 1
       statusVariableType: Variable
       statusVariable: Left-DB-Result
       name: Cell 0 1
-      description: The label serial, the item that goes into the box
+      description: The original scan, kept as a record and never boxed
   - action:
       actionType: If
       sourceType: Variable
@@ -375,7 +375,7 @@
       comparedToType: Value
       comparedTo: 0
       name: Cell 0 2
-      description: Birthed?
+      description: Recorded?
     trueBranch:
     - action:
         actionType: NoOp
@@ -389,52 +389,24 @@
         comparedToType: Value
         comparedTo: IX_Item_Entity_Serial
         name: Cell 1 2
-        description: A duplicate label serial (same tube, different supplier digits?), or did the database fail?
+        description: Already recorded (a tube scanned before label serials existed)? Then nothing to do
       trueBranch:
       - action:
-          actionType: CallSubroutine
-          subroutineName: LeftAlert
-          continueOnFailure: true
+          actionType: NoOp
           name: Cell 1 3
-      - action:
-          actionType: Math
-          sourceType: Value
-          source: Duplicate Part, already in the database
-          operator: SetVariableToValue
-          variable: Left-Error-Message
-          clearStartIndex: 1
-          clearLength: 1
-          name: Cell 1 4
-      - action:
-          actionType: CallSubroutine
-          subroutineName: Left-Log-Duplicate
-          continueOnFailure: true
-          name: Cell 1 5
-      - action:
-          actionType: Stop
-          stopped: false
-          name: Cell 1 6
-          description: Halts the scanner chart too
       falseBranch:
       - action:
-          actionType: Math
-          sourceType: Variable
-          source: Left-DB-Result
-          operator: SetVariableToValue
-          variable: Left-Error-Message
-          clearStartIndex: 1
-          clearLength: 1
+          actionType: FillTemplate
+          templateSourceType: Inline
+          templateText: Original scan not recorded - ${Left-DB-Result}
+          outputVariable: Left-Error-Message
           name: Cell 2 2
-          description: Show the database error
+          description: The tube is still labelled and boxed; the flag asks for a look
       - action:
           actionType: CallSubroutine
           subroutineName: Left-Flag-Error
           continueOnFailure: true
           name: Cell 2 3
-      - action:
-          actionType: Stop
-          stopped: false
-          name: Cell 2 4
 - gridRows: 3
   gridColumns: 10
   name: Left-Box-Check
@@ -1119,7 +1091,7 @@
   - action:
       actionType: Math
       sourceType: Variable
-      source: Left-PartId-Data
+      source: Left-LabelData
       operator: SetVariableToValue
       variable: Left-Unboxed-Serial
       clearStartIndex: 1
@@ -1288,13 +1260,13 @@
               partProducerType: Constant
               partProducer: Angstrom
               partSerialNumberType: Variable
-              partSerialNumber: Left-PartId-Data
+              partSerialNumber: Left-LabelData
               lotQuantityType: Value
               lotQuantity: 1
               statusVariableType: Variable
               statusVariable: Left-DB-Result
               name: Cell 0 12
-              description: The original scan is kept in the database as its own item, never boxed
+              description: The label serial is the inventory item - duplicate check, label and box all use it
           - action:
               actionType: If
               sourceType: Variable
@@ -1307,10 +1279,10 @@
             trueBranch:
             - action:
                 actionType: CallSubroutine
-                subroutineName: Left-Birth-Label-Serial
-                continueOnFailure: false
+                subroutineName: Left-Birth-Original
+                continueOnFailure: true
                 name: Cell 0 14
-                description: The label serial is the item that is printed and boxed
+                description: Record the original scan as its own item, never boxed
             - action:
                 actionType: CallSubroutine
                 subroutineName: Left-Axle-Print-Label
@@ -1345,7 +1317,7 @@
             - action: &o0
                 actionType: If
                 sourceType: Variable
-                source: Left-PartId-Data
+                source: Left-LabelData
                 compareOperator: =
                 comparedToType: Variable
                 comparedTo: Left-Unboxed-Serial
@@ -1850,7 +1822,7 @@
         name: Cell 1 5
 - gridRows: 3
   gridColumns: 10
-  name: Right-Birth-Label-Serial
+  name: Right-Birth-Original
   associatedDeviceName: Subroutine
   triggerMode: OnEvent
   order: 0
@@ -1862,13 +1834,13 @@
       partProducerType: Constant
       partProducer: Angstrom
       partSerialNumberType: Variable
-      partSerialNumber: Right-LabelData
+      partSerialNumber: Right-PartId-Data
       lotQuantityType: Value
       lotQuantity: 1
       statusVariableType: Variable
       statusVariable: Right-DB-Result
       name: Cell 0 1
-      description: The label serial, the item that goes into the box
+      description: The original scan, kept as a record and never boxed
   - action:
       actionType: If
       sourceType: Variable
@@ -1877,7 +1849,7 @@
       comparedToType: Value
       comparedTo: 0
       name: Cell 0 2
-      description: Birthed?
+      description: Recorded?
     trueBranch:
     - action:
         actionType: NoOp
@@ -1891,52 +1863,24 @@
         comparedToType: Value
         comparedTo: IX_Item_Entity_Serial
         name: Cell 1 2
-        description: A duplicate label serial (same tube, different supplier digits?), or did the database fail?
+        description: Already recorded (a tube scanned before label serials existed)? Then nothing to do
       trueBranch:
       - action:
-          actionType: CallSubroutine
-          subroutineName: RightAlert
-          continueOnFailure: true
+          actionType: NoOp
           name: Cell 1 3
-      - action:
-          actionType: Math
-          sourceType: Value
-          source: Duplicate Part, already in the database
-          operator: SetVariableToValue
-          variable: Right-Error-Message
-          clearStartIndex: 1
-          clearLength: 1
-          name: Cell 1 4
-      - action:
-          actionType: CallSubroutine
-          subroutineName: Right-Log-Duplicate
-          continueOnFailure: true
-          name: Cell 1 5
-      - action:
-          actionType: Stop
-          stopped: false
-          name: Cell 1 6
-          description: Halts the scanner chart too
       falseBranch:
       - action:
-          actionType: Math
-          sourceType: Variable
-          source: Right-DB-Result
-          operator: SetVariableToValue
-          variable: Right-Error-Message
-          clearStartIndex: 1
-          clearLength: 1
+          actionType: FillTemplate
+          templateSourceType: Inline
+          templateText: Original scan not recorded - ${Right-DB-Result}
+          outputVariable: Right-Error-Message
           name: Cell 2 2
-          description: Show the database error
+          description: The tube is still labelled and boxed; the flag asks for a look
       - action:
           actionType: CallSubroutine
           subroutineName: Right-Flag-Error
           continueOnFailure: true
           name: Cell 2 3
-      - action:
-          actionType: Stop
-          stopped: false
-          name: Cell 2 4
 - gridRows: 3
   gridColumns: 10
   name: Right-Box-Check
@@ -2621,7 +2565,7 @@
   - action:
       actionType: Math
       sourceType: Variable
-      source: Right-PartId-Data
+      source: Right-LabelData
       operator: SetVariableToValue
       variable: Right-Unboxed-Serial
       clearStartIndex: 1
@@ -2790,13 +2734,13 @@
               partProducerType: Constant
               partProducer: Angstrom
               partSerialNumberType: Variable
-              partSerialNumber: Right-PartId-Data
+              partSerialNumber: Right-LabelData
               lotQuantityType: Value
               lotQuantity: 1
               statusVariableType: Variable
               statusVariable: Right-DB-Result
               name: Cell 0 12
-              description: The original scan is kept in the database as its own item, never boxed
+              description: The label serial is the inventory item - duplicate check, label and box all use it
           - action:
               actionType: If
               sourceType: Variable
@@ -2809,10 +2753,10 @@
             trueBranch:
             - action:
                 actionType: CallSubroutine
-                subroutineName: Right-Birth-Label-Serial
-                continueOnFailure: false
+                subroutineName: Right-Birth-Original
+                continueOnFailure: true
                 name: Cell 0 14
-                description: The label serial is the item that is printed and boxed
+                description: Record the original scan as its own item, never boxed
             - action:
                 actionType: CallSubroutine
                 subroutineName: Right-Axle-Print-Label
@@ -2847,7 +2791,7 @@
             - action: &o13
                 actionType: If
                 sourceType: Variable
-                source: Right-PartId-Data
+                source: Right-LabelData
                 compareOperator: =
                 comparedToType: Variable
                 comparedTo: Right-Unboxed-Serial

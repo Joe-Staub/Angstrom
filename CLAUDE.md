@@ -49,10 +49,10 @@ Per side (Left shown; Right is the mirror with `Right`/`RIGHT`/`R` substituted):
   message → record scan time and data → uppercase → `NOREAD`? (compared after the uppercase)
   → `Left-Clear-Parsed` → RegexExtract → parsed? (`LeftGMPartNumber <> -`, else
   `Left-Parse-Error`) → own part? (else `Left-Wrong-Part`) → `Left-Build-Label` → Birth of the
-  original scan → birthed? → `Left-Birth-Label-Serial` → `Left-Axle-Print-Label` → production
+  label serial → birthed? → `Left-Birth-Original` → `Left-Axle-Print-Label` → production
   count → `LeftAddToBatch` → `Left-Box-Check`.
-  Birth failed: if the ID equals `Left-Unboxed-Serial` (a tube that was labelled but never
-  boxed) it is boxed now instead; else if the failure text contains `IX_Item_Entity_Serial`
+  Birth failed: if the label serial equals `Left-Unboxed-Serial` (a tube that was labelled but
+  never boxed) it is boxed now instead; else if the failure text contains `IX_Item_Entity_Serial`
   it is a duplicate (`LeftAlert`, message, `Left-Log-Duplicate`); anything else is shown as
   the database error.
 - `Left-Build-Label`: the scan's line digit must be 1 or 2; it is printed as 3 or 4
@@ -60,12 +60,12 @@ Per side (Left shown; Right is the mirror with `Right`/`RIGHT`/`R` substituted):
   year + `Left-Label-Line` + daily sequence + GM part number, without the supplier part number.
   Any other line digit posts "Unexpected line number N - bad read?", alerts and stops the scan
   before the Birth, so the tube is neither in the database nor labelled.
-- **Two items per tube.** The scanner chart births the original scan (`Left-PartId-Data`, kept in
-  the database as a record, never boxed); duplicate detection and the unboxed-serial recovery
-  work on it. `Left-Birth-Label-Serial` then births the label serial, the item that is printed
-  and consumed into the box. If that birth fails: a duplicate label serial (the same tube read
-  with different supplier digits) is treated as a duplicate scan (alert, message, log), anything
-  else shows the database error and flags; either way the scan stops and the original item stays.
+- **Two items per tube.** The scanner chart births the **label serial** (`Left-LabelData`); it is
+  the inventory item, so the duplicate check, the unboxed-serial recovery, the label and the box
+  all work on it. Tubes processed before label serials existed are therefore accepted once more.
+  `Left-Birth-Original` then records the original scan (`Left-PartId-Data`) as its own item,
+  never boxed; "already exists" is ignored, any other failure posts "Original scan not recorded -
+  …" and flags, but the tube is still labelled and boxed.
 - `Left-Box-Check`: consumed? (else `Left-Lot-Error`) → count updated (`Left-Lot-Status =
   Pass`, else `Left-Count-Error`) → `Left-Container-Count < BATCH_SIZE`, else
   `Left-Box-Print-Label` and `CreateLeftLot`. Row-1 branches are separated by NoOps on row 0
@@ -119,12 +119,12 @@ differ, e.g. `Label1`→`Label1_2`, `OutputText2`→`OutputText2_2`, `Label-Left
 
 | Situation | Message | Alert (light + lockout) | Logged to |
 |---|---|---|---|
-| Duplicate ID | "Duplicate Part, already in the database" | yes | `C:\AxleReports\DuplicateScans.csv` |
+| Duplicate label serial | "Duplicate Part, already in the database" | yes | `C:\AxleReports\DuplicateScans.csv` |
 | ID does not parse | "Unreadable part ID" | yes | `C:\AxleReports\UnreadableScans.csv` |
 | Other side's part | "Part belongs on the other line" | yes | – |
 | Neither side's part | "Unknown part number N - bad read?" | yes | – |
 | Line digit not 1 or 2 | "Unexpected line number N - bad read?" | yes | – |
-| Label serial already in the database (original scan was new) | "Duplicate Part, already in the database" | yes | `DuplicateScans.csv` |
+| Original scan could not be recorded | "Original scan not recorded - …" (tube still labelled and boxed) | flag only | – |
 | Consume failed | "Can't Add to Lot - clear the error and scan the tube again" (the rescan boxes it) | flag only | – |
 | Count update failed | "Box count failed - check the box" | flag only | – |
 | Birth failed, not a duplicate | the database error text | flag only | – |
