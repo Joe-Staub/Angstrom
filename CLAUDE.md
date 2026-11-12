@@ -98,11 +98,14 @@ Per side (Left shown; Right is the mirror with `Right`/`RIGHT`/`R` substituted):
   separate (no Right controls on Left-Main); note that the runtime on main shows one window,
   so until a per-station window exists the Right buttons are not reachable at runtime.
 - Shared: `Initialize` (OnStart: load templates, Ensure-Box both sides), `LoadPrintTemplates`
-  (four files, two per side), `NightlyReport` → `CreateCSV` (runs at 00:00 and lists every
-  tube born the *previous* day with the box it went into; the box columns are empty for an
-  unboxed tube; only label serials are listed, selected by their line digit 3 or 4 at position
-  10, so the kept original scans do not double the rows; status to `Error-Mesage`, which
-  nothing displays).
+  (four files, two per side), `NightlyReport` → `CreateCSV` (lists every tube born after the
+  previous report's window end and up to the moment this one ran, with the box it went into.
+  The window end is the persisted variable `CSV-Last-Reported`, moved only after the file was
+  written, so whatever the schedule, and across restarts, no tube is listed twice or skipped;
+  the first ever run starts at the previous midnight. The box columns are empty for an unboxed
+  tube; only label serials are listed, selected by their line digit 3 or 4 at position 10, so
+  the kept original scans do not double the rows; status to `Error-Mesage`, which nothing
+  displays).
 - Dead charts were removed on 2026-11-12; `pwLogic.yaml` holds only live charts.
 
 ## Screens (`pwGui.yaml`)

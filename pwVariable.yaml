@@ -11,6 +11,19 @@
   dataType: String
   defaultValue: '  '
 - variableType: Local
+  name: CSV-Last-Reported
+  isArray: false
+  dataType: String
+  persistenceGroup: Angstrom-Axle-Tube
+- variableType: Local
+  name: CSV-Persist-Status
+  isArray: false
+  dataType: String
+- variableType: Local
+  name: CSV-Window-End
+  isArray: false
+  dataType: String
+- variableType: Local
   name: CSV_Rowvount
   isArray: false
   dataType: Integer

@@ -12,6 +12,16 @@
       outputVariable: ReportFolder
       name: Cell 0 1
   - action:
+      actionType: Math
+      sourceType: Variable
+      source: FormattedTimeStamp
+      operator: SetVariableToValue
+      variable: CSV-Window-End
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 2
+      description: End of this report's window, taken before the query runs; the next report starts here
+  - action:
       actionType: DBExportCsv
       databaseConnection: PWDatabase
       sql: >-
@@ -28,10 +38,18 @@
                 LEFT  JOIN dbo.Part pp        ON pp.Part_Key = parent.Part_Key
         WHERE   cp.Part_Number IN ('85545338', '85545339')
           AND   SUBSTRING(child.Serial_Nbr, 10, 1) IN ('3', '4')
-          AND   child.Birth_DateTime >= DATEADD(day, -1, CAST(GETDATE() AS date))
-          AND   child.Birth_DateTime <  CAST(GETDATE() AS date)
+          AND   child.Birth_DateTime >  COALESCE(@From, DATEADD(day, -1, CAST(GETDATE() AS date)))
+          AND   child.Birth_DateTime <= @To
         ORDER BY child.Birth_DateTime, child.Serial_Nbr
-      parameters: []
+      parameters:
+      - name: '@From'
+        valueType: Variable
+        value: CSV-Last-Reported
+        dataType: DateTime
+      - name: '@To'
+        valueType: Variable
+        value: CSV-Window-End
+        dataType: DateTime
       filePathType: Variable
       filePath: ReportFolder
       append: No
@@ -40,8 +58,40 @@
       commandTimeoutSeconds: 60
       status: Error-Mesage
       rowCountVariable: CSV_Rowvount
-      name: Cell 0 2
-      description: Runs at midnight, so it lists the tubes born the previous day with the box each went into; the kept original scans (line digit 1 or 2) are left out
+      name: Cell 0 3
+      description: Every label serial born after the previous report's window end and up to this one's, with the box each went into; the first ever run starts at the previous midnight; the kept original scans (line digit 1 or 2) are not listed
+  - action:
+      actionType: If
+      sourceType: Variable
+      source: Error-Mesage
+      compareOperator: =
+      comparedToType: Value
+      comparedTo: Success
+      name: Cell 0 4
+      description: Only a written file moves the window on
+    trueBranch:
+    - action:
+        actionType: Math
+        sourceType: Variable
+        source: CSV-Window-End
+        operator: SetVariableToValue
+        variable: CSV-Last-Reported
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 5
+    - action:
+        actionType: PersistVars
+        mode: Save
+        group: Angstrom-Axle-Tube
+        status: CSV-Persist-Status
+        name: Cell 0 6
+        description: Kept across restarts, so no window is reported twice or skipped
+    falseBranch:
+    - action:
+        actionType: Stop
+        stopped: false
+        name: Cell 1 4
+        description: Export failed; the window stays open and is reported by the next run
 - gridRows: 3
   gridColumns: 10
   name: CreateLeftLot
@@ -1438,7 +1488,7 @@
     falseBranch:
     - action:
         actionType: Stop
-        stopped: false
+        stopped: true
         name: Cell 1 1
         description: Scan ignored
 - gridRows: 3
