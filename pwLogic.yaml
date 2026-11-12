@@ -14,7 +14,7 @@
   - action:
       actionType: DBExportCsv
       databaseConnection: PWDatabase
-      sql: |-
+      sql: >-
         SELECT  parent.Serial_Nbr      AS ParentSerial,
                 pp.Part_Number         AS ParentPart,
                 parent.Birth_DateTime  AS ParentBorn,
@@ -1185,7 +1185,7 @@
         name: Cell 1 1
         description: A notice, not an error
 - gridRows: 4
-  gridColumns: 20
+  gridColumns: 18
   name: Left-Side-Scanner_Logic
   associatedDeviceName: Left-Side-Scanner-Net
   triggerMode: OnEvent
@@ -1200,262 +1200,298 @@
       comparedTo: 0
       name: Cell 0 1
       description: Error posted and not cleared? Then ignore the scan entirely
+    trueBranch:
+    - action:
+        actionType: Math
+        sourceType: Variable
+        source: BLANK
+        operator: SetVariableToValue
+        variable: Left-Error-Message
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 2
+        description: New scan, clear the last message
+    - action:
+        actionType: Math
+        sourceType: Variable
+        source: FormattedTimeStamp
+        operator: SetVariableToValue
+        variable: Left-PartId-Scan-Time
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 3
+    - action:
+        actionType: Math
+        sourceType: Device
+        operator: SetVariableToValue
+        variable: Left-PartId-Data
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 4
+    - action:
+        actionType: Math
+        sourceType: Variable
+        source: Left-PartId-Data
+        operator: ConvertToUpperCase
+        variable: Left-PartId-Data
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 5
+        description: Scanners send esat or ESAT
+    - action:
+        actionType: If
+        sourceType: Variable
+        source: Left-PartId-Data
+        compareOperator: <>
+        comparedToType: Value
+        comparedTo: NOREAD
+        name: Cell 0 6
+        description: A no-read arrives as NOREAD after the uppercase step
+      trueBranch:
+      - action:
+          actionType: CallSubroutine
+          subroutineName: Left-Clear-Parsed
+          continueOnFailure: true
+          name: Cell 0 7
+          description: Blank the parsed fields
+      - action:
+          actionType: RegexExtract
+          sourceType: Variable
+          source: Left-PartId-Data
+          patternType: Value
+          pattern: (esat|ESAT)(?<LeftLblYear>\d{2})(?<LeftDayOfYear>\d{3})(?<LeftLine>\d)(?<LeftDailySequence>\d{4})(?<LeftGMPartNumber>\d{8})(?<LeftSupPartNumber>\d*)
+          name: Cell 0 8
+      - action:
+          actionType: If
+          sourceType: Variable
+          source: LeftGMPartNumber
+          compareOperator: <>
+          comparedToType: Value
+          comparedTo: '-'
+          name: Cell 0 9
+          description: Did the ID parse?
+        trueBranch:
+        - action:
+            actionType: If
+            sourceType: Variable
+            source: LeftGMPartNumber
+            compareOperator: =
+            comparedToType: Variable
+            comparedTo: Left-Supplier-Part-No-Constant
+            name: Cell 0 10
+            description: This line's part?
+          trueBranch:
+          - action:
+              actionType: ActionBirth
+              partNumberType: Variable
+              partNumber: LeftGMPartNumber
+              partProducerType: Constant
+              partProducer: Angstrom
+              partSerialNumberType: Variable
+              partSerialNumber: Left-PartId-Data
+              lotQuantityType: Value
+              lotQuantity: 1
+              statusVariableType: Variable
+              statusVariable: Left-DB-Result
+              name: Cell 0 11
+          - action:
+              actionType: If
+              sourceType: Variable
+              source: Left-DB-Result
+              compareOperator: =
+              comparedToType: Value
+              comparedTo: 0
+              name: Cell 0 12
+              description: Birthed?
+            trueBranch:
+            - action:
+                actionType: CallSubroutine
+                subroutineName: Left-Axle-Print-Label
+                continueOnFailure: false
+                name: Cell 0 13
+            - action:
+                actionType: Math
+                operator: IncrementAsNumber
+                variable: Left-Production-Count
+                clearStartIndex: 1
+                clearLength: 1
+                name: Cell 0 14
+            - action:
+                actionType: PersistVars
+                mode: Save
+                group: Angstrom-Axle-Tube
+                status: Left-Persist-Status
+                name: Cell 0 15
+            - action:
+                actionType: CallSubroutine
+                subroutineName: LeftAddToBatch
+                continueOnFailure: false
+                name: Cell 0 16
+                description: Add to Batch
+            - action:
+                actionType: CallSubroutine
+                subroutineName: Left-Box-Check
+                continueOnFailure: false
+                name: Cell 0 17
+                description: Count it, close the box when full
+            falseBranch:
+            - action: &o0
+                actionType: If
+                sourceType: Variable
+                source: Left-PartId-Data
+                compareOperator: =
+                comparedToType: Variable
+                comparedTo: Left-Unboxed-Serial
+                name: Cell 1 12
+                description: A tube that was labelled but never boxed? Box it now
+              trueBranch:
+              - action: &o1
+                  actionType: Math
+                  sourceType: Value
+                  source: Tube added to its box
+                  operator: SetVariableToValue
+                  variable: Left-Error-Message
+                  clearStartIndex: 1
+                  clearLength: 1
+                  name: Cell 1 13
+              - action: &o2
+                  actionType: Math
+                  sourceType: Variable
+                  source: BLANK
+                  operator: SetVariableToValue
+                  variable: Left-Unboxed-Serial
+                  clearStartIndex: 1
+                  clearLength: 1
+                  name: Cell 1 14
+              - action: &o3
+                  actionType: CallSubroutine
+                  subroutineName: LeftAddToBatch
+                  continueOnFailure: false
+                  name: Cell 1 15
+              - action: &o4
+                  actionType: CallSubroutine
+                  subroutineName: Left-Box-Check
+                  continueOnFailure: false
+                  name: Cell 1 16
+              falseBranch:
+              - action: &o5
+                  actionType: If
+                  sourceType: Variable
+                  source: Left-DB-Result
+                  compareOperator: Contains
+                  comparedToType: Value
+                  comparedTo: IX_Item_Entity_Serial
+                  name: Cell 2 12
+                  description: A duplicate, or did the database fail?
+                trueBranch:
+                - action: &o6
+                    actionType: CallSubroutine
+                    subroutineName: LeftAlert
+                    continueOnFailure: true
+                    name: Cell 2 13
+                - action: &o7
+                    actionType: Math
+                    sourceType: Value
+                    source: Duplicate Part, already in the database
+                    operator: SetVariableToValue
+                    variable: Left-Error-Message
+                    clearStartIndex: 1
+                    clearLength: 1
+                    name: Cell 2 14
+                - action: &o8
+                    actionType: CallSubroutine
+                    subroutineName: Left-Log-Duplicate
+                    continueOnFailure: true
+                    name: Cell 2 15
+                    description: Record the duplicate scan
+                falseBranch:
+                - action: &o9
+                    actionType: Math
+                    sourceType: Variable
+                    source: Left-DB-Result
+                    operator: SetVariableToValue
+                    variable: Left-Error-Message
+                    clearStartIndex: 1
+                    clearLength: 1
+                    name: Cell 3 12
+                    description: Show the database error
+                - action: &o10
+                    actionType: CallSubroutine
+                    subroutineName: Left-Flag-Error
+                    continueOnFailure: true
+                    name: Cell 3 13
+          falseBranch:
+          - action: &o11
+              actionType: CallSubroutine
+              subroutineName: Left-Wrong-Part
+              continueOnFailure: false
+              name: Cell 1 10
+              description: Other line, or unknown part
+          - action: &o12
+              actionType: Stop
+              stopped: false
+              name: Cell 1 11
+          - action: *o0
+            trueBranch:
+            - action: *o1
+            - action: *o2
+            - action: *o3
+            - action: *o4
+            falseBranch:
+            - action: *o5
+              trueBranch:
+              - action: *o6
+              - action: *o7
+              - action: *o8
+              falseBranch:
+              - action: *o9
+              - action: *o10
+        falseBranch:
+        - action:
+            actionType: CallSubroutine
+            subroutineName: Left-Parse-Error
+            continueOnFailure: false
+            name: Cell 1 9
+            description: Unreadable ID, treated like a duplicate
+        - action: *o11
+        - action: *o12
+        - action: *o0
+          trueBranch:
+          - action: *o1
+          - action: *o2
+          - action: *o3
+          - action: *o4
+          falseBranch:
+          - action: *o5
+            trueBranch:
+            - action: *o6
+            - action: *o7
+            - action: *o8
+            falseBranch:
+            - action: *o9
+            - action: *o10
+      falseBranch:
+      - action:
+          actionType: Math
+          sourceType: Value
+          source: No read - scan the tube again
+          operator: SetVariableToValue
+          variable: Left-Error-Message
+          clearStartIndex: 1
+          clearLength: 1
+          name: Cell 1 6
+          description: A notice only; the next scan clears it
+      - action:
+          actionType: Stop
+          stopped: false
+          name: Cell 1 7
+          description: No read
     falseBranch:
     - action:
         actionType: Stop
         stopped: false
         name: Cell 1 1
         description: Scan ignored
-  - action:
-      actionType: Math
-      sourceType: Variable
-      source: BLANK
-      operator: SetVariableToValue
-      variable: Left-Error-Message
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 2
-      description: New scan, clear the last message
-  - action:
-      actionType: Math
-      sourceType: Variable
-      source: FormattedTimeStamp
-      operator: SetVariableToValue
-      variable: Left-PartId-Scan-Time
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 3
-  - action:
-      actionType: Math
-      sourceType: Device
-      operator: SetVariableToValue
-      variable: Left-PartId-Data
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 4
-  - action:
-      actionType: Math
-      sourceType: Variable
-      source: Left-PartId-Data
-      operator: ConvertToUpperCase
-      variable: Left-PartId-Data
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 5
-      description: Scanners send esat or ESAT
-  - action:
-      actionType: If
-      sourceType: Variable
-      source: Left-PartId-Data
-      compareOperator: <>
-      comparedToType: Value
-      comparedTo: NOREAD
-      name: Cell 0 6
-      description: A no-read arrives as NOREAD after the uppercase step
-    falseBranch:
-    - action:
-        actionType: Math
-        sourceType: Value
-        source: No read - scan the tube again
-        operator: SetVariableToValue
-        variable: Left-Error-Message
-        clearStartIndex: 1
-        clearLength: 1
-        name: Cell 1 6
-        description: A notice only; the next scan clears it
-    - action:
-        actionType: Stop
-        stopped: false
-        name: Cell 1 7
-        description: No read
-  - action:
-      actionType: CallSubroutine
-      subroutineName: Left-Clear-Parsed
-      continueOnFailure: true
-      name: Cell 0 7
-      description: Blank the parsed fields
-  - action:
-      actionType: RegexExtract
-      sourceType: Variable
-      source: Left-PartId-Data
-      patternType: Value
-      pattern: (esat|ESAT)(?<LeftLblYear>\d{2})(?<LeftDayOfYear>\d{3})(?<LeftLine>\d)(?<LeftDailySequence>\d{4})(?<LeftGMPartNumber>\d{8})(?<LeftSupPartNumber>\d*)
-      name: Cell 0 8
-  - action:
-      actionType: If
-      sourceType: Variable
-      source: LeftGMPartNumber
-      compareOperator: <>
-      comparedToType: Value
-      comparedTo: '-'
-      name: Cell 0 9
-      description: Did the ID parse?
-    falseBranch:
-    - action:
-        actionType: CallSubroutine
-        subroutineName: Left-Parse-Error
-        continueOnFailure: false
-        name: Cell 1 9
-        description: Unreadable ID, treated like a duplicate
-  - action:
-      actionType: If
-      sourceType: Variable
-      source: LeftGMPartNumber
-      compareOperator: =
-      comparedToType: Variable
-      comparedTo: Left-Supplier-Part-No-Constant
-      name: Cell 0 10
-      description: This line's part?
-    falseBranch:
-    - action:
-        actionType: CallSubroutine
-        subroutineName: Left-Wrong-Part
-        continueOnFailure: false
-        name: Cell 1 10
-        description: Other line, or unknown part
-    - action:
-        actionType: Stop
-        stopped: false
-        name: Cell 1 11
-  - action:
-      actionType: ActionBirth
-      partNumberType: Variable
-      partNumber: LeftGMPartNumber
-      partProducerType: Constant
-      partProducer: Angstrom
-      partSerialNumberType: Variable
-      partSerialNumber: Left-PartId-Data
-      lotQuantityType: Value
-      lotQuantity: 1
-      statusVariableType: Variable
-      statusVariable: Left-DB-Result
-      name: Cell 0 11
-  - action:
-      actionType: If
-      sourceType: Variable
-      source: Left-DB-Result
-      compareOperator: =
-      comparedToType: Value
-      comparedTo: 0
-      name: Cell 0 12
-      description: Birthed?
-    trueBranch:
-    - action:
-        actionType: CallSubroutine
-        subroutineName: Left-Axle-Print-Label
-        continueOnFailure: false
-        name: Cell 0 13
-    - action:
-        actionType: Math
-        operator: IncrementAsNumber
-        variable: Left-Production-Count
-        clearStartIndex: 1
-        clearLength: 1
-        name: Cell 0 14
-    - action:
-        actionType: PersistVars
-        mode: Save
-        group: Angstrom-Axle-Tube
-        status: Left-Persist-Status
-        name: Cell 0 15
-    - action:
-        actionType: CallSubroutine
-        subroutineName: LeftAddToBatch
-        continueOnFailure: false
-        name: Cell 0 16
-        description: Add to Batch
-    - action:
-        actionType: CallSubroutine
-        subroutineName: Left-Box-Check
-        continueOnFailure: false
-        name: Cell 0 17
-        description: Count it, close the box when full
-    falseBranch:
-    - action:
-        actionType: If
-        sourceType: Variable
-        source: Left-PartId-Data
-        compareOperator: =
-        comparedToType: Variable
-        comparedTo: Left-Unboxed-Serial
-        name: Cell 1 12
-        description: A tube that was labelled but never boxed? Box it now
-      trueBranch:
-      - action:
-          actionType: Math
-          sourceType: Value
-          source: Tube added to its box
-          operator: SetVariableToValue
-          variable: Left-Error-Message
-          clearStartIndex: 1
-          clearLength: 1
-          name: Cell 1 13
-      - action:
-          actionType: Math
-          sourceType: Variable
-          source: BLANK
-          operator: SetVariableToValue
-          variable: Left-Unboxed-Serial
-          clearStartIndex: 1
-          clearLength: 1
-          name: Cell 1 14
-      - action:
-          actionType: CallSubroutine
-          subroutineName: LeftAddToBatch
-          continueOnFailure: false
-          name: Cell 1 15
-      - action:
-          actionType: CallSubroutine
-          subroutineName: Left-Box-Check
-          continueOnFailure: false
-          name: Cell 1 16
-      falseBranch:
-      - action:
-          actionType: If
-          sourceType: Variable
-          source: Left-DB-Result
-          compareOperator: Contains
-          comparedToType: Value
-          comparedTo: IX_Item_Entity_Serial
-          name: Cell 2 12
-          description: A duplicate, or did the database fail?
-        trueBranch:
-        - action:
-            actionType: CallSubroutine
-            subroutineName: LeftAlert
-            continueOnFailure: true
-            name: Cell 2 13
-        - action:
-            actionType: Math
-            sourceType: Value
-            source: Duplicate Part, already in the database
-            operator: SetVariableToValue
-            variable: Left-Error-Message
-            clearStartIndex: 1
-            clearLength: 1
-            name: Cell 2 14
-        - action:
-            actionType: CallSubroutine
-            subroutineName: Left-Log-Duplicate
-            continueOnFailure: true
-            name: Cell 2 15
-            description: Record the duplicate scan
-        falseBranch:
-        - action:
-            actionType: Math
-            sourceType: Variable
-            source: Left-DB-Result
-            operator: SetVariableToValue
-            variable: Left-Error-Message
-            clearStartIndex: 1
-            clearLength: 1
-            name: Cell 3 12
-            description: Show the database error
-        - action:
-            actionType: CallSubroutine
-            subroutineName: Left-Flag-Error
-            continueOnFailure: true
-            name: Cell 3 13
 - gridRows: 3
   gridColumns: 10
   name: Left-Wrong-Part
@@ -2645,7 +2681,7 @@
         name: Cell 1 1
         description: A notice, not an error
 - gridRows: 4
-  gridColumns: 20
+  gridColumns: 18
   name: Right-Side-Scanner_Logic
   associatedDeviceName: Right-Side-Scanner-Net
   triggerMode: OnEvent
@@ -2660,262 +2696,298 @@
       comparedTo: 0
       name: Cell 0 1
       description: Error posted and not cleared? Then ignore the scan entirely
+    trueBranch:
+    - action:
+        actionType: Math
+        sourceType: Variable
+        source: BLANK
+        operator: SetVariableToValue
+        variable: Right-Error-Message
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 2
+        description: New scan, clear the last message
+    - action:
+        actionType: Math
+        sourceType: Variable
+        source: FormattedTimeStamp
+        operator: SetVariableToValue
+        variable: Right-PartId-Scan-Time
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 3
+    - action:
+        actionType: Math
+        sourceType: Device
+        operator: SetVariableToValue
+        variable: Right-PartId-Data
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 4
+    - action:
+        actionType: Math
+        sourceType: Variable
+        source: Right-PartId-Data
+        operator: ConvertToUpperCase
+        variable: Right-PartId-Data
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 5
+        description: Scanners send esat or ESAT
+    - action:
+        actionType: If
+        sourceType: Variable
+        source: Right-PartId-Data
+        compareOperator: <>
+        comparedToType: Value
+        comparedTo: NOREAD
+        name: Cell 0 6
+        description: A no-read arrives as NOREAD after the uppercase step
+      trueBranch:
+      - action:
+          actionType: CallSubroutine
+          subroutineName: Right-Clear-Parsed
+          continueOnFailure: true
+          name: Cell 0 7
+          description: Blank the parsed fields
+      - action:
+          actionType: RegexExtract
+          sourceType: Variable
+          source: Right-PartId-Data
+          patternType: Value
+          pattern: (esat|ESAT)(?<RightLblYear>\d{2})(?<RightDayOfYear>\d{3})(?<RightLine>\d)(?<RightDailySequence>\d{4})(?<RightGMPartNumber>\d{8})(?<RightSupPartNumber>\d*)
+          name: Cell 0 8
+      - action:
+          actionType: If
+          sourceType: Variable
+          source: RightGMPartNumber
+          compareOperator: <>
+          comparedToType: Value
+          comparedTo: '-'
+          name: Cell 0 9
+          description: Did the ID parse?
+        trueBranch:
+        - action:
+            actionType: If
+            sourceType: Variable
+            source: RightGMPartNumber
+            compareOperator: =
+            comparedToType: Variable
+            comparedTo: Right-Supplier-Part-No-Constant
+            name: Cell 0 10
+            description: This line's part?
+          trueBranch:
+          - action:
+              actionType: ActionBirth
+              partNumberType: Variable
+              partNumber: RightGMPartNumber
+              partProducerType: Constant
+              partProducer: Angstrom
+              partSerialNumberType: Variable
+              partSerialNumber: Right-PartId-Data
+              lotQuantityType: Value
+              lotQuantity: 1
+              statusVariableType: Variable
+              statusVariable: Right-DB-Result
+              name: Cell 0 11
+          - action:
+              actionType: If
+              sourceType: Variable
+              source: Right-DB-Result
+              compareOperator: =
+              comparedToType: Value
+              comparedTo: 0
+              name: Cell 0 12
+              description: Birthed?
+            trueBranch:
+            - action:
+                actionType: CallSubroutine
+                subroutineName: Right-Axle-Print-Label
+                continueOnFailure: false
+                name: Cell 0 13
+            - action:
+                actionType: Math
+                operator: IncrementAsNumber
+                variable: Right-Production-Count
+                clearStartIndex: 1
+                clearLength: 1
+                name: Cell 0 14
+            - action:
+                actionType: PersistVars
+                mode: Save
+                group: Angstrom-Axle-Tube
+                status: Right-Persist-Status
+                name: Cell 0 15
+            - action:
+                actionType: CallSubroutine
+                subroutineName: RightAddToBatch
+                continueOnFailure: false
+                name: Cell 0 16
+                description: Add to Batch
+            - action:
+                actionType: CallSubroutine
+                subroutineName: Right-Box-Check
+                continueOnFailure: false
+                name: Cell 0 17
+                description: Count it, close the box when full
+            falseBranch:
+            - action: &o13
+                actionType: If
+                sourceType: Variable
+                source: Right-PartId-Data
+                compareOperator: =
+                comparedToType: Variable
+                comparedTo: Right-Unboxed-Serial
+                name: Cell 1 12
+                description: A tube that was labelled but never boxed? Box it now
+              trueBranch:
+              - action: &o14
+                  actionType: Math
+                  sourceType: Value
+                  source: Tube added to its box
+                  operator: SetVariableToValue
+                  variable: Right-Error-Message
+                  clearStartIndex: 1
+                  clearLength: 1
+                  name: Cell 1 13
+              - action: &o15
+                  actionType: Math
+                  sourceType: Variable
+                  source: BLANK
+                  operator: SetVariableToValue
+                  variable: Right-Unboxed-Serial
+                  clearStartIndex: 1
+                  clearLength: 1
+                  name: Cell 1 14
+              - action: &o16
+                  actionType: CallSubroutine
+                  subroutineName: RightAddToBatch
+                  continueOnFailure: false
+                  name: Cell 1 15
+              - action: &o17
+                  actionType: CallSubroutine
+                  subroutineName: Right-Box-Check
+                  continueOnFailure: false
+                  name: Cell 1 16
+              falseBranch:
+              - action: &o18
+                  actionType: If
+                  sourceType: Variable
+                  source: Right-DB-Result
+                  compareOperator: Contains
+                  comparedToType: Value
+                  comparedTo: IX_Item_Entity_Serial
+                  name: Cell 2 12
+                  description: A duplicate, or did the database fail?
+                trueBranch:
+                - action: &o19
+                    actionType: CallSubroutine
+                    subroutineName: RightAlert
+                    continueOnFailure: true
+                    name: Cell 2 13
+                - action: &o20
+                    actionType: Math
+                    sourceType: Value
+                    source: Duplicate Part, already in the database
+                    operator: SetVariableToValue
+                    variable: Right-Error-Message
+                    clearStartIndex: 1
+                    clearLength: 1
+                    name: Cell 2 14
+                - action: &o21
+                    actionType: CallSubroutine
+                    subroutineName: Right-Log-Duplicate
+                    continueOnFailure: true
+                    name: Cell 2 15
+                    description: Record the duplicate scan
+                falseBranch:
+                - action: &o22
+                    actionType: Math
+                    sourceType: Variable
+                    source: Right-DB-Result
+                    operator: SetVariableToValue
+                    variable: Right-Error-Message
+                    clearStartIndex: 1
+                    clearLength: 1
+                    name: Cell 3 12
+                    description: Show the database error
+                - action: &o23
+                    actionType: CallSubroutine
+                    subroutineName: Right-Flag-Error
+                    continueOnFailure: true
+                    name: Cell 3 13
+          falseBranch:
+          - action: &o24
+              actionType: CallSubroutine
+              subroutineName: Right-Wrong-Part
+              continueOnFailure: false
+              name: Cell 1 10
+              description: Other line, or unknown part
+          - action: &o25
+              actionType: Stop
+              stopped: false
+              name: Cell 1 11
+          - action: *o13
+            trueBranch:
+            - action: *o14
+            - action: *o15
+            - action: *o16
+            - action: *o17
+            falseBranch:
+            - action: *o18
+              trueBranch:
+              - action: *o19
+              - action: *o20
+              - action: *o21
+              falseBranch:
+              - action: *o22
+              - action: *o23
+        falseBranch:
+        - action:
+            actionType: CallSubroutine
+            subroutineName: Right-Parse-Error
+            continueOnFailure: false
+            name: Cell 1 9
+            description: Unreadable ID, treated like a duplicate
+        - action: *o24
+        - action: *o25
+        - action: *o13
+          trueBranch:
+          - action: *o14
+          - action: *o15
+          - action: *o16
+          - action: *o17
+          falseBranch:
+          - action: *o18
+            trueBranch:
+            - action: *o19
+            - action: *o20
+            - action: *o21
+            falseBranch:
+            - action: *o22
+            - action: *o23
+      falseBranch:
+      - action:
+          actionType: Math
+          sourceType: Value
+          source: No read - scan the tube again
+          operator: SetVariableToValue
+          variable: Right-Error-Message
+          clearStartIndex: 1
+          clearLength: 1
+          name: Cell 1 6
+          description: A notice only; the next scan clears it
+      - action:
+          actionType: Stop
+          stopped: false
+          name: Cell 1 7
+          description: No read
     falseBranch:
     - action:
         actionType: Stop
         stopped: false
         name: Cell 1 1
         description: Scan ignored
-  - action:
-      actionType: Math
-      sourceType: Variable
-      source: BLANK
-      operator: SetVariableToValue
-      variable: Right-Error-Message
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 2
-      description: New scan, clear the last message
-  - action:
-      actionType: Math
-      sourceType: Variable
-      source: FormattedTimeStamp
-      operator: SetVariableToValue
-      variable: Right-PartId-Scan-Time
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 3
-  - action:
-      actionType: Math
-      sourceType: Device
-      operator: SetVariableToValue
-      variable: Right-PartId-Data
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 4
-  - action:
-      actionType: Math
-      sourceType: Variable
-      source: Right-PartId-Data
-      operator: ConvertToUpperCase
-      variable: Right-PartId-Data
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 5
-      description: Scanners send esat or ESAT
-  - action:
-      actionType: If
-      sourceType: Variable
-      source: Right-PartId-Data
-      compareOperator: <>
-      comparedToType: Value
-      comparedTo: NOREAD
-      name: Cell 0 6
-      description: A no-read arrives as NOREAD after the uppercase step
-    falseBranch:
-    - action:
-        actionType: Math
-        sourceType: Value
-        source: No read - scan the tube again
-        operator: SetVariableToValue
-        variable: Right-Error-Message
-        clearStartIndex: 1
-        clearLength: 1
-        name: Cell 1 6
-        description: A notice only; the next scan clears it
-    - action:
-        actionType: Stop
-        stopped: false
-        name: Cell 1 7
-        description: No read
-  - action:
-      actionType: CallSubroutine
-      subroutineName: Right-Clear-Parsed
-      continueOnFailure: true
-      name: Cell 0 7
-      description: Blank the parsed fields
-  - action:
-      actionType: RegexExtract
-      sourceType: Variable
-      source: Right-PartId-Data
-      patternType: Value
-      pattern: (esat|ESAT)(?<RightLblYear>\d{2})(?<RightDayOfYear>\d{3})(?<RightLine>\d)(?<RightDailySequence>\d{4})(?<RightGMPartNumber>\d{8})(?<RightSupPartNumber>\d*)
-      name: Cell 0 8
-  - action:
-      actionType: If
-      sourceType: Variable
-      source: RightGMPartNumber
-      compareOperator: <>
-      comparedToType: Value
-      comparedTo: '-'
-      name: Cell 0 9
-      description: Did the ID parse?
-    falseBranch:
-    - action:
-        actionType: CallSubroutine
-        subroutineName: Right-Parse-Error
-        continueOnFailure: false
-        name: Cell 1 9
-        description: Unreadable ID, treated like a duplicate
-  - action:
-      actionType: If
-      sourceType: Variable
-      source: RightGMPartNumber
-      compareOperator: =
-      comparedToType: Variable
-      comparedTo: Right-Supplier-Part-No-Constant
-      name: Cell 0 10
-      description: This line's part?
-    falseBranch:
-    - action:
-        actionType: CallSubroutine
-        subroutineName: Right-Wrong-Part
-        continueOnFailure: false
-        name: Cell 1 10
-        description: Other line, or unknown part
-    - action:
-        actionType: Stop
-        stopped: false
-        name: Cell 1 11
-  - action:
-      actionType: ActionBirth
-      partNumberType: Variable
-      partNumber: RightGMPartNumber
-      partProducerType: Constant
-      partProducer: Angstrom
-      partSerialNumberType: Variable
-      partSerialNumber: Right-PartId-Data
-      lotQuantityType: Value
-      lotQuantity: 1
-      statusVariableType: Variable
-      statusVariable: Right-DB-Result
-      name: Cell 0 11
-  - action:
-      actionType: If
-      sourceType: Variable
-      source: Right-DB-Result
-      compareOperator: =
-      comparedToType: Value
-      comparedTo: 0
-      name: Cell 0 12
-      description: Birthed?
-    trueBranch:
-    - action:
-        actionType: CallSubroutine
-        subroutineName: Right-Axle-Print-Label
-        continueOnFailure: false
-        name: Cell 0 13
-    - action:
-        actionType: Math
-        operator: IncrementAsNumber
-        variable: Right-Production-Count
-        clearStartIndex: 1
-        clearLength: 1
-        name: Cell 0 14
-    - action:
-        actionType: PersistVars
-        mode: Save
-        group: Angstrom-Axle-Tube
-        status: Right-Persist-Status
-        name: Cell 0 15
-    - action:
-        actionType: CallSubroutine
-        subroutineName: RightAddToBatch
-        continueOnFailure: false
-        name: Cell 0 16
-        description: Add to Batch
-    - action:
-        actionType: CallSubroutine
-        subroutineName: Right-Box-Check
-        continueOnFailure: false
-        name: Cell 0 17
-        description: Count it, close the box when full
-    falseBranch:
-    - action:
-        actionType: If
-        sourceType: Variable
-        source: Right-PartId-Data
-        compareOperator: =
-        comparedToType: Variable
-        comparedTo: Right-Unboxed-Serial
-        name: Cell 1 12
-        description: A tube that was labelled but never boxed? Box it now
-      trueBranch:
-      - action:
-          actionType: Math
-          sourceType: Value
-          source: Tube added to its box
-          operator: SetVariableToValue
-          variable: Right-Error-Message
-          clearStartIndex: 1
-          clearLength: 1
-          name: Cell 1 13
-      - action:
-          actionType: Math
-          sourceType: Variable
-          source: BLANK
-          operator: SetVariableToValue
-          variable: Right-Unboxed-Serial
-          clearStartIndex: 1
-          clearLength: 1
-          name: Cell 1 14
-      - action:
-          actionType: CallSubroutine
-          subroutineName: RightAddToBatch
-          continueOnFailure: false
-          name: Cell 1 15
-      - action:
-          actionType: CallSubroutine
-          subroutineName: Right-Box-Check
-          continueOnFailure: false
-          name: Cell 1 16
-      falseBranch:
-      - action:
-          actionType: If
-          sourceType: Variable
-          source: Right-DB-Result
-          compareOperator: Contains
-          comparedToType: Value
-          comparedTo: IX_Item_Entity_Serial
-          name: Cell 2 12
-          description: A duplicate, or did the database fail?
-        trueBranch:
-        - action:
-            actionType: CallSubroutine
-            subroutineName: RightAlert
-            continueOnFailure: true
-            name: Cell 2 13
-        - action:
-            actionType: Math
-            sourceType: Value
-            source: Duplicate Part, already in the database
-            operator: SetVariableToValue
-            variable: Right-Error-Message
-            clearStartIndex: 1
-            clearLength: 1
-            name: Cell 2 14
-        - action:
-            actionType: CallSubroutine
-            subroutineName: Right-Log-Duplicate
-            continueOnFailure: true
-            name: Cell 2 15
-            description: Record the duplicate scan
-        falseBranch:
-        - action:
-            actionType: Math
-            sourceType: Variable
-            source: Right-DB-Result
-            operator: SetVariableToValue
-            variable: Right-Error-Message
-            clearStartIndex: 1
-            clearLength: 1
-            name: Cell 3 12
-            description: Show the database error
-        - action:
-            actionType: CallSubroutine
-            subroutineName: Right-Flag-Error
-            continueOnFailure: true
-            name: Cell 3 13
 - gridRows: 3
   gridColumns: 10
   name: Right-Wrong-Part
