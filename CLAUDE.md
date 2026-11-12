@@ -48,12 +48,24 @@ Per side (Left shown; Right is the mirror with `Right`/`RIGHT`/`R` substituted):
 - `Left-Side-Scanner_Logic` (device chart): ignore if `Left-Stack-Alert` ≠ 0 → clear the
   message → record scan time and data → uppercase → `NOREAD`? (compared after the uppercase)
   → `Left-Clear-Parsed` → RegexExtract → parsed? (`LeftGMPartNumber <> -`, else
-  `Left-Parse-Error`) → own part? (else `Left-Wrong-Part`) → Birth → birthed? →
-  `Left-Axle-Print-Label` → production count → `LeftAddToBatch` → `Left-Box-Check`.
-  Birth failed: if the ID equals `Left-Unboxed-Serial` (a tube that was labelled but never
-  boxed) it is boxed now instead; else if the failure text contains `IX_Item_Entity_Serial`
+  `Left-Parse-Error`) → own part? (else `Left-Wrong-Part`) → `Left-Build-Label` → Birth of the
+  label serial → birthed? → `Left-Birth-Original` → `Left-Axle-Print-Label` → production
+  count → `LeftAddToBatch` → `Left-Box-Check`.
+  Birth failed: if the label serial equals `Left-Unboxed-Serial` (a tube that was labelled but
+  never boxed) it is boxed now instead; else if the failure text contains `IX_Item_Entity_Serial`
   it is a duplicate (`LeftAlert`, message, `Left-Log-Duplicate`); anything else is shown as
   the database error.
+- `Left-Build-Label`: the scan's line digit must be 1 or 2; it is printed as 3 or 4
+  (`Left-Label-Line`) and the **label serial** `Left-LabelData` is built as `ESAT` + year + day of
+  year + `Left-Label-Line` + daily sequence + GM part number, without the supplier part number.
+  Any other line digit posts "Unexpected line number N - bad read?", alerts and stops the scan
+  before the Birth, so the tube is neither in the database nor labelled.
+- **Two items per tube.** The scanner chart births the **label serial** (`Left-LabelData`); it is
+  the inventory item, so the duplicate check, the unboxed-serial recovery, the label and the box
+  all work on it. Tubes processed before label serials existed are therefore accepted once more.
+  `Left-Birth-Original` then records the original scan (`Left-PartId-Data`) as its own item,
+  never boxed; "already exists" is ignored, any other failure posts "Original scan not recorded -
+  …" and flags, but the tube is still labelled and boxed.
 - `Left-Box-Check`: consumed? (else `Left-Lot-Error`) → count updated (`Left-Lot-Status =
   Pass`, else `Left-Count-Error`) → `Left-Container-Count < BATCH_SIZE`, else
   `Left-Box-Print-Label` and `CreateLeftLot`. Row-1 branches are separated by NoOps on row 0
@@ -66,9 +78,11 @@ Per side (Left shown; Right is the mirror with `Right`/`RIGHT`/`R` substituted):
   `Initialize` and before every add.
 - `CreateLeftLot`: `DBProcedure dbo.Angstrom_NextLotNumber` → `L${LeftLotNumber:%05d}` → Birth
   with quantity 0 → count 0, persist. Failures post a message and flag the error.
-- `LeftAddToBatch`: Ensure-Box, ConsumeMaterial into the box, on success
+- `LeftAddToBatch`: Ensure-Box, ConsumeMaterial of the label serial (`Left-LabelData`) into the
+  box, on success
   `LotManagement IncrementLotQuantityValue` → `Left-Container-Count`.
-- `Left-Axle-Print-Label` / `Left-Box-Print-Label`: remember `Left-Last-Label` /
+- `Left-Axle-Print-Label` / `Left-Box-Print-Label`: print `Left-LabelData` / `Left-LblBoxId`;
+  remember `Left-Last-Label` /
   `Left-Last-Box-Label` *before* printing (so a failed print can be reprinted), fill the
   side's own template (`Left-AxleTemplate` from `ConfigFiles/AxleLabelTemplate-Left.zpl`,
   which prints `${Left-LabelData}`; box: `BoxLabelTemplate-Left.zpl`, `${Left-LblBoxId}`),
@@ -84,9 +98,14 @@ Per side (Left shown; Right is the mirror with `Right`/`RIGHT`/`R` substituted):
   separate (no Right controls on Left-Main); note that the runtime on main shows one window,
   so until a per-station window exists the Right buttons are not reachable at runtime.
 - Shared: `Initialize` (OnStart: load templates, Ensure-Box both sides), `LoadPrintTemplates`
-  (four files, two per side), `NightlyReport` → `CreateCSV` (runs at 00:00 and lists every
-  tube born the *previous* day with the box it went into; the box columns are empty for an
-  unboxed tube; status to `Error-Mesage`, which nothing displays).
+  (four files, two per side), `NightlyReport` → `CreateCSV` (lists every tube born after the
+  previous report's window end and up to the moment this one ran, with the box it went into.
+  The window end is the persisted variable `CSV-Last-Reported`, moved only after the file was
+  written, so whatever the schedule, and across restarts, no tube is listed twice or skipped;
+  the first ever run starts at the previous midnight. The box columns are empty for an unboxed
+  tube; only label serials are listed, selected by their line digit 3 or 4 at position 10, so
+  the kept original scans do not double the rows; status to `Error-Mesage`, which nothing
+  displays).
 - Dead charts were removed on 2026-11-12; `pwLogic.yaml` holds only live charts.
 
 ## Screens (`pwGui.yaml`)
@@ -103,10 +122,12 @@ differ, e.g. `Label1`→`Label1_2`, `OutputText2`→`OutputText2_2`, `Label-Left
 
 | Situation | Message | Alert (light + lockout) | Logged to |
 |---|---|---|---|
-| Duplicate ID | "Duplicate Part, already in the database" | yes | `C:\AxleReports\DuplicateScans.csv` |
+| Duplicate label serial | "Duplicate Part, already in the database" | yes | `C:\AxleReports\DuplicateScans.csv` |
 | ID does not parse | "Unreadable part ID" | yes | `C:\AxleReports\UnreadableScans.csv` |
 | Other side's part | "Part belongs on the other line" | yes | – |
 | Neither side's part | "Unknown part number N - bad read?" | yes | – |
+| Line digit not 1 or 2 | "Unexpected line number N - bad read?" | yes | – |
+| Original scan could not be recorded | "Original scan not recorded - …" (tube still labelled and boxed) | flag only | – |
 | Consume failed | "Can't Add to Lot - clear the error and scan the tube again" (the rescan boxes it) | flag only | – |
 | Count update failed | "Box count failed - check the box" | flag only | – |
 | Birth failed, not a duplicate | the database error text | flag only | – |
@@ -151,6 +172,11 @@ charts never write a header, the files are created by hand with `Timestamp,Side,
 - Hand edits to `pwLogic.yaml` are fine but follow the grid rules in the PlantWatch CLAUDE.md;
   then **verify by loading a copy through DomainModel** (recipe there) before handing over:
   empty validation report, no invalid cells, grids printed for the charts you touched.
+- **Inserting a step before an `If` in a chart the Configurator has saved** shifts row 0 right but
+  not the `*oN` alias copies of the row-1 cells, which then overwrite the real false branch one
+  column to the left (every cell still validates). Delete every `- action: *oN` entry and the
+  `&oN` anchors from that chart before inserting, and print the grid rows afterwards; the
+  scanner charts had their duplicate and recovery rows made unreachable this way (2026-11-12).
 - If PlantWatch is open on this folder, reload the configuration there before anyone saves
   from the Configurator, or the save overwrites the hand edits. The Configurator's own save
   reorders variables and trims grid widths; commit that re-save on its own.

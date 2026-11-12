@@ -176,8 +176,8 @@ screens:
   inputs: []
   images:
   - name: Image11
-    xposition: 400
-    yposition: 500
+    xposition: 740
+    yposition: 480
     width: 176
     height: 66
     source: PlantWatch Logo_vectorformat_031111_transparent.png
@@ -335,9 +335,9 @@ screens:
   - name: Left-Clear-Ack-Button
     description: Clear Error
     xposition: 20
-    yposition: 500
-    width: 7480
-    height: 66
+    yposition: 460
+    width: 12400
+    height: 105
     fGColor: Black
     bGColor: Wheat
     font: Arial, 14pt, style=Bold
@@ -347,58 +347,6 @@ screens:
     gradientStyle: Continuous
     gradientSteps: 10
     gradientColor: Tan
-    pressColor: A=255, R=180, G=180, B=180
-    pressDurationMs: 150
-    releaseDurationMs: 200
-    pressAlpha: 80
-    pressEasing: EaseOut
-    releaseEasing: EaseIn
-    holdOverlay: True
-    cornerRadius: 12
-    topLeftRadius: -1
-    topRightRadius: -1
-    bottomLeftRadius: -1
-    bottomRightRadius: -1
-  - name: Left-Reprint-Button
-    description: Reprint Label
-    xposition: 800
-    yposition: 500
-    width: 3300
-    height: 66
-    fGColor: Black
-    bGColor: LightCyan
-    font: Arial, 14pt, style=Bold
-    type: SetToValue
-    gradientDirection: Vertical
-    gradientStyle: Continuous
-    gradientSteps: 10
-    gradientColor: LightGreen
-    pressColor: A=255, R=180, G=180, B=180
-    pressDurationMs: 150
-    releaseDurationMs: 200
-    pressAlpha: 80
-    pressEasing: EaseOut
-    releaseEasing: EaseIn
-    holdOverlay: True
-    cornerRadius: 12
-    topLeftRadius: -1
-    topRightRadius: -1
-    bottomLeftRadius: -1
-    bottomRightRadius: -1
-  - name: Left-Reprint-Box-Button
-    description: Reprint Box Label
-    xposition: 600
-    yposition: 500
-    width: 3800
-    height: 66
-    fGColor: Black
-    bGColor: LightCyan
-    font: Arial, 14pt, style=Bold
-    type: SetToValue
-    gradientDirection: Vertical
-    gradientStyle: Continuous
-    gradientSteps: 10
-    gradientColor: LightGreen
     pressColor: A=255, R=180, G=180, B=180
     pressDurationMs: 150
     releaseDurationMs: 200
@@ -421,8 +369,6 @@ screens:
   - Label1_1_1_1_1
   - OutputText2_1_1_1_1
   - Left-Clear-Ack-Button
-  - Left-Reprint-Button
-  - Left-Reprint-Box-Button
   - Label1_1_1_1_1_1
   - Label1_3
   - Label3
@@ -618,7 +564,7 @@ screens:
   inputs: []
   images:
   - name: Image11_1
-    xposition: 400
+    xposition: 760
     yposition: 500
     width: 176
     height: 66
@@ -777,9 +723,9 @@ screens:
   - name: Right-Clear-Ack-Button
     description: Clear Error
     xposition: 20
-    yposition: 500
-    width: 7480
-    height: 66
+    yposition: 460
+    width: 13220
+    height: 108
     fGColor: Black
     bGColor: Wheat
     font: Arial, 14pt, style=Bold
@@ -789,58 +735,6 @@ screens:
     gradientStyle: Continuous
     gradientSteps: 10
     gradientColor: Tan
-    pressColor: A=255, R=180, G=180, B=180
-    pressDurationMs: 150
-    releaseDurationMs: 200
-    pressAlpha: 80
-    pressEasing: EaseOut
-    releaseEasing: EaseIn
-    holdOverlay: True
-    cornerRadius: 12
-    topLeftRadius: -1
-    topRightRadius: -1
-    bottomLeftRadius: -1
-    bottomRightRadius: -1
-  - name: Right-Reprint-Button
-    description: Reprint Label
-    xposition: 800
-    yposition: 500
-    width: 3300
-    height: 66
-    fGColor: Black
-    bGColor: LightCyan
-    font: Arial, 14pt, style=Bold
-    type: SetToValue
-    gradientDirection: Vertical
-    gradientStyle: Continuous
-    gradientSteps: 10
-    gradientColor: LightGreen
-    pressColor: A=255, R=180, G=180, B=180
-    pressDurationMs: 150
-    releaseDurationMs: 200
-    pressAlpha: 80
-    pressEasing: EaseOut
-    releaseEasing: EaseIn
-    holdOverlay: True
-    cornerRadius: 12
-    topLeftRadius: -1
-    topRightRadius: -1
-    bottomLeftRadius: -1
-    bottomRightRadius: -1
-  - name: Right-Reprint-Box-Button
-    description: Reprint Box Label
-    xposition: 600
-    yposition: 500
-    width: 3800
-    height: 66
-    fGColor: Black
-    bGColor: LightCyan
-    font: Arial, 14pt, style=Bold
-    type: SetToValue
-    gradientDirection: Vertical
-    gradientStyle: Continuous
-    gradientSteps: 10
-    gradientColor: LightGreen
     pressColor: A=255, R=180, G=180, B=180
     pressDurationMs: 150
     releaseDurationMs: 200
@@ -863,8 +757,6 @@ screens:
   - Label1_1_1_1
   - OutputText2_1_1_1
   - Right-Clear-Ack-Button
-  - Right-Reprint-Button
-  - Right-Reprint-Box-Button
   - Label1_1_1_1_2
   - Label1_3_1
   - Label3_1

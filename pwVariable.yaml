@@ -11,6 +11,19 @@
   dataType: String
   defaultValue: '  '
 - variableType: Local
+  name: CSV-Last-Reported
+  isArray: false
+  dataType: String
+  persistenceGroup: Angstrom-Axle-Tube
+- variableType: Local
+  name: CSV-Persist-Status
+  isArray: false
+  dataType: String
+- variableType: Local
+  name: CSV-Window-End
+  isArray: false
+  dataType: String
+- variableType: Local
   name: CSV_Rowvount
   isArray: false
   dataType: Integer
@@ -68,6 +81,11 @@
   dataType: String
 - variableType: Local
   name: Left-Error-Message
+  isArray: false
+  dataType: String
+- variableType: Local
+  name: Left-Label-Line
+  description: Line digit printed on the axle label (scan line 1 prints as 3, 2 as 4)
   isArray: false
   dataType: String
 - variableType: Local
@@ -248,6 +266,11 @@
   dataType: String
 - variableType: Local
   name: Right-Error-Message
+  isArray: false
+  dataType: String
+- variableType: Local
+  name: Right-Label-Line
+  description: Line digit printed on the axle label (scan line 1 prints as 3, 2 as 4)
   isArray: false
   dataType: String
 - variableType: Local

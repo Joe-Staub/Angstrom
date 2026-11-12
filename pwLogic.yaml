@@ -12,6 +12,16 @@
       outputVariable: ReportFolder
       name: Cell 0 1
   - action:
+      actionType: Math
+      sourceType: Variable
+      source: FormattedTimeStamp
+      operator: SetVariableToValue
+      variable: CSV-Window-End
+      clearStartIndex: 1
+      clearLength: 1
+      name: Cell 0 2
+      description: End of this report's window, taken before the query runs; the next report starts here
+  - action:
       actionType: DBExportCsv
       databaseConnection: PWDatabase
       sql: >-
@@ -27,10 +37,19 @@
                 LEFT  JOIN dbo.Item parent    ON parent.Item_Key = g.Parent_Item_Key
                 LEFT  JOIN dbo.Part pp        ON pp.Part_Key = parent.Part_Key
         WHERE   cp.Part_Number IN ('85545338', '85545339')
-          AND   child.Birth_DateTime >= DATEADD(day, -1, CAST(GETDATE() AS date))
-          AND   child.Birth_DateTime <  CAST(GETDATE() AS date)
+          AND   SUBSTRING(child.Serial_Nbr, 10, 1) IN ('3', '4')
+          AND   child.Birth_DateTime >  COALESCE(@From, DATEADD(day, -1, CAST(GETDATE() AS date)))
+          AND   child.Birth_DateTime <= @To
         ORDER BY child.Birth_DateTime, child.Serial_Nbr
-      parameters: []
+      parameters:
+      - name: '@From'
+        valueType: Variable
+        value: CSV-Last-Reported
+        dataType: DateTime
+      - name: '@To'
+        valueType: Variable
+        value: CSV-Window-End
+        dataType: DateTime
       filePathType: Variable
       filePath: ReportFolder
       append: No
@@ -39,8 +58,40 @@
       commandTimeoutSeconds: 60
       status: Error-Mesage
       rowCountVariable: CSV_Rowvount
-      name: Cell 0 2
-      description: Runs at midnight, so it lists the tubes born the previous day with the box each went into
+      name: Cell 0 3
+      description: Every label serial born after the previous report's window end and up to this one's, with the box each went into; the first ever run starts at the previous midnight; the kept original scans (line digit 1 or 2) are not listed
+  - action:
+      actionType: If
+      sourceType: Variable
+      source: Error-Mesage
+      compareOperator: =
+      comparedToType: Value
+      comparedTo: Success
+      name: Cell 0 4
+      description: Only a written file moves the window on
+    trueBranch:
+    - action:
+        actionType: Math
+        sourceType: Variable
+        source: CSV-Window-End
+        operator: SetVariableToValue
+        variable: CSV-Last-Reported
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 5
+    - action:
+        actionType: PersistVars
+        mode: Save
+        group: Angstrom-Axle-Tube
+        status: CSV-Persist-Status
+        name: Cell 0 6
+        description: Kept across restarts, so no window is reported twice or skipped
+    falseBranch:
+    - action:
+        actionType: Stop
+        stopped: false
+        name: Cell 1 4
+        description: Export failed; the window stays open and is reported by the next run
 - gridRows: 3
   gridColumns: 10
   name: CreateLeftLot
@@ -295,28 +346,19 @@
   - action:
       actionType: Math
       sourceType: Variable
-      source: Left-PartId-Data
-      operator: SetVariableToValue
-      variable: Left-LabelData
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 1
-  - action:
-      actionType: Math
-      sourceType: Variable
-      source: Left-PartId-Data
+      source: Left-LabelData
       operator: SetVariableToValue
       variable: Left-Last-Label
       clearStartIndex: 1
       clearLength: 1
-      name: Cell 0 2
-      description: Remembered before printing, so a failed print can be reprinted
+      name: Cell 0 1
+      description: The label serial, built by Left-Build-Label, remembered before printing
   - action:
       actionType: FillTemplate
       templateSourceType: Variable
       templateVariable: Left-AxleTemplate
       outputVariable: Left-Print-Buffer
-      name: Cell 0 3
+      name: Cell 0 2
   - action:
       actionType: ActionWriteToDevice
       sourceType: Variable
@@ -324,7 +366,7 @@
       addCrLf: Yes
       device: Left-Axle-Printer
       status: Left-Print-Status
-      name: Cell 0 4
+      name: Cell 0 3
   - action:
       actionType: If
       sourceType: Variable
@@ -332,12 +374,12 @@
       compareOperator: =
       comparedToType: Value
       comparedTo: Success
-      name: Cell 0 5
+      name: Cell 0 4
       description: Printed?
     trueBranch:
     - action:
         actionType: NoOp
-        name: Cell 0 6
+        name: Cell 0 5
     falseBranch:
     - action:
         actionType: Math
@@ -347,13 +389,74 @@
         variable: Left-Error-Message
         clearStartIndex: 1
         clearLength: 1
-        name: Cell 1 5
+        name: Cell 1 4
         description: Show the printer error
     - action:
         actionType: CallSubroutine
         subroutineName: Left-Flag-Error
         continueOnFailure: true
-        name: Cell 1 6
+        name: Cell 1 5
+- gridRows: 3
+  gridColumns: 10
+  name: Left-Birth-Original
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: ActionBirth
+      partNumberType: Variable
+      partNumber: LeftGMPartNumber
+      partProducerType: Constant
+      partProducer: Angstrom
+      partSerialNumberType: Variable
+      partSerialNumber: Left-PartId-Data
+      lotQuantityType: Value
+      lotQuantity: 1
+      statusVariableType: Variable
+      statusVariable: Left-DB-Result
+      name: Cell 0 1
+      description: The original scan, kept as a record and never boxed
+  - action:
+      actionType: If
+      sourceType: Variable
+      source: Left-DB-Result
+      compareOperator: =
+      comparedToType: Value
+      comparedTo: 0
+      name: Cell 0 2
+      description: Recorded?
+    trueBranch:
+    - action:
+        actionType: NoOp
+        name: Cell 0 3
+    falseBranch:
+    - action:
+        actionType: If
+        sourceType: Variable
+        source: Left-DB-Result
+        compareOperator: Contains
+        comparedToType: Value
+        comparedTo: IX_Item_Entity_Serial
+        name: Cell 1 2
+        description: Already recorded (a tube scanned before label serials existed)? Then nothing to do
+      trueBranch:
+      - action:
+          actionType: NoOp
+          name: Cell 1 3
+      falseBranch:
+      - action:
+          actionType: FillTemplate
+          templateSourceType: Inline
+          templateText: Original scan not recorded - ${Left-DB-Result}
+          outputVariable: Left-Error-Message
+          name: Cell 2 2
+          description: The tube is still labelled and boxed; the flag asks for a look
+      - action:
+          actionType: CallSubroutine
+          subroutineName: Left-Flag-Error
+          continueOnFailure: true
+          name: Cell 2 3
 - gridRows: 3
   gridColumns: 10
   name: Left-Box-Check
@@ -502,6 +605,83 @@
         subroutineName: Left-Flag-Error
         continueOnFailure: true
         name: Cell 1 6
+- gridRows: 3
+  gridColumns: 10
+  name: Left-Build-Label
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: If
+      sourceType: Variable
+      source: LeftLine
+      compareOperator: =
+      comparedToType: Value
+      comparedTo: 1
+      name: Cell 0 1
+      description: Line 1 is printed as line 3
+    trueBranch:
+    - action:
+        actionType: Math
+        sourceType: Value
+        source: 3
+        operator: SetVariableToValue
+        variable: Left-Label-Line
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 2
+    - action:
+        actionType: FillTemplate
+        templateSourceType: Inline
+        templateText: ESAT${LeftLblYear}${LeftDayOfYear}${Left-Label-Line}${LeftDailySequence}${LeftGMPartNumber}
+        outputVariable: Left-LabelData
+        name: Cell 0 3
+        description: The label serial - no supplier part number, line printed as 3 or 4
+    falseBranch:
+    - action:
+        actionType: If
+        sourceType: Variable
+        source: LeftLine
+        compareOperator: =
+        comparedToType: Value
+        comparedTo: 2
+        name: Cell 1 1
+        description: Line 2 is printed as line 4
+      trueBranch:
+      - action:
+          actionType: Math
+          sourceType: Value
+          source: 4
+          operator: SetVariableToValue
+          variable: Left-Label-Line
+          clearStartIndex: 1
+          clearLength: 1
+          name: Cell 1 2
+      - action:
+          actionType: FillTemplate
+          templateSourceType: Inline
+          templateText: ESAT${LeftLblYear}${LeftDayOfYear}${Left-Label-Line}${LeftDailySequence}${LeftGMPartNumber}
+          outputVariable: Left-LabelData
+          name: Cell 1 3
+      falseBranch:
+      - action:
+          actionType: FillTemplate
+          templateSourceType: Inline
+          templateText: Unexpected line number ${LeftLine} - bad read?
+          outputVariable: Left-Error-Message
+          name: Cell 2 1
+          description: Neither line 1 nor 2 - the tube is not birthed or labelled
+      - action:
+          actionType: CallSubroutine
+          subroutineName: LeftAlert
+          continueOnFailure: true
+          name: Cell 2 2
+      - action:
+          actionType: Stop
+          stopped: false
+          name: Cell 2 3
+          description: Halts the scanner chart too
 - gridRows: 3
   gridColumns: 10
   name: Left-Clear-Ack-Button_Logic_1
@@ -961,7 +1141,7 @@
   - action:
       actionType: Math
       sourceType: Variable
-      source: Left-PartId-Data
+      source: Left-LabelData
       operator: SetVariableToValue
       variable: Left-Unboxed-Serial
       clearStartIndex: 1
@@ -1017,175 +1197,11 @@
       description: Append to the unreadable-scan log
   - action:
       actionType: Stop
-      stopped: false
+      stopped: true
       name: Cell 0 5
       description: Halts the scanner chart too
-- gridRows: 3
-  gridColumns: 10
-  name: Left-Reprint-Box-Button_Logic
-  associatedDeviceName: Screen:Left-Main/Left-Reprint-Box-Button
-  triggerMode: OnEvent
-  order: 0
-  steps:
-  - action:
-      actionType: If
-      sourceType: Variable
-      source: Left-Last-Box-Label
-      compareOperator: IsNotEmpty
-      name: Cell 0 1
-      description: Has a box label been printed?
-    trueBranch:
-    - action:
-        actionType: Math
-        sourceType: Variable
-        source: Left-Last-Box-Label
-        operator: SetVariableToValue
-        variable: Left-LblBoxId
-        clearStartIndex: 1
-        clearLength: 1
-        name: Cell 0 2
-    - action:
-        actionType: FillTemplate
-        templateSourceType: Variable
-        templateVariable: Left-BoxTemplate
-        outputVariable: Left-Box-Print-Buffer
-        name: Cell 0 3
-    - action:
-        actionType: ActionWriteToDevice
-        sourceType: Variable
-        source: Left-Box-Print-Buffer
-        addCrLf: Yes
-        device: Box-Printer
-        status: Left-Print-Status
-        name: Cell 0 4
-    - action:
-        actionType: If
-        sourceType: Variable
-        source: Left-Print-Status
-        compareOperator: =
-        comparedToType: Value
-        comparedTo: Success
-        name: Cell 0 5
-      trueBranch:
-      - action:
-          actionType: Math
-          sourceType: Value
-          source: Box label reprinted
-          operator: SetVariableToValue
-          variable: Left-Error-Message
-          clearStartIndex: 1
-          clearLength: 1
-          name: Cell 0 6
-      falseBranch:
-      - action:
-          actionType: Math
-          sourceType: Variable
-          source: Left-Print-Status
-          operator: SetVariableToValue
-          variable: Left-Error-Message
-          clearStartIndex: 1
-          clearLength: 1
-          name: Cell 1 5
-      - action:
-          actionType: CallSubroutine
-          subroutineName: Left-Flag-Error
-          continueOnFailure: true
-          name: Cell 1 6
-    falseBranch:
-    - action:
-        actionType: Math
-        sourceType: Value
-        source: No box label printed yet
-        operator: SetVariableToValue
-        variable: Left-Error-Message
-        clearStartIndex: 1
-        clearLength: 1
-        name: Cell 1 1
-        description: A notice, not an error
-- gridRows: 3
-  gridColumns: 10
-  name: Left-Reprint-Button_Logic
-  associatedDeviceName: Screen:Left-Main/Left-Reprint-Button
-  triggerMode: OnEvent
-  order: 0
-  steps:
-  - action:
-      actionType: If
-      sourceType: Variable
-      source: Left-Last-Label
-      compareOperator: IsNotEmpty
-      name: Cell 0 1
-      description: Has a label been printed?
-    trueBranch:
-    - action:
-        actionType: Math
-        sourceType: Variable
-        source: Left-Last-Label
-        operator: SetVariableToValue
-        variable: Left-LabelData
-        clearStartIndex: 1
-        clearLength: 1
-        name: Cell 0 2
-    - action:
-        actionType: FillTemplate
-        templateSourceType: Variable
-        templateVariable: Left-AxleTemplate
-        outputVariable: Left-Print-Buffer
-        name: Cell 0 3
-    - action:
-        actionType: ActionWriteToDevice
-        sourceType: Variable
-        source: Left-Print-Buffer
-        addCrLf: Yes
-        device: Left-Axle-Printer
-        status: Left-Print-Status
-        name: Cell 0 4
-    - action:
-        actionType: If
-        sourceType: Variable
-        source: Left-Print-Status
-        compareOperator: =
-        comparedToType: Value
-        comparedTo: Success
-        name: Cell 0 5
-      trueBranch:
-      - action:
-          actionType: Math
-          sourceType: Value
-          source: Label reprinted
-          operator: SetVariableToValue
-          variable: Left-Error-Message
-          clearStartIndex: 1
-          clearLength: 1
-          name: Cell 0 6
-      falseBranch:
-      - action:
-          actionType: Math
-          sourceType: Variable
-          source: Left-Print-Status
-          operator: SetVariableToValue
-          variable: Left-Error-Message
-          clearStartIndex: 1
-          clearLength: 1
-          name: Cell 1 5
-      - action:
-          actionType: CallSubroutine
-          subroutineName: Left-Flag-Error
-          continueOnFailure: true
-          name: Cell 1 6
-    falseBranch:
-    - action:
-        actionType: Math
-        sourceType: Value
-        source: Nothing to reprint yet
-        operator: SetVariableToValue
-        variable: Left-Error-Message
-        clearStartIndex: 1
-        clearLength: 1
-        name: Cell 1 1
-        description: A notice, not an error
 - gridRows: 4
-  gridColumns: 18
+  gridColumns: 20
   name: Left-Side-Scanner_Logic
   associatedDeviceName: Left-Side-Scanner-Net
   triggerMode: OnEvent
@@ -1282,18 +1298,25 @@
             description: This line's part?
           trueBranch:
           - action:
+              actionType: CallSubroutine
+              subroutineName: Left-Build-Label
+              continueOnFailure: false
+              name: Cell 0 11
+              description: Line 1 or 2 only; builds the label serial, stops the scan otherwise
+          - action:
               actionType: ActionBirth
               partNumberType: Variable
               partNumber: LeftGMPartNumber
               partProducerType: Constant
               partProducer: Angstrom
               partSerialNumberType: Variable
-              partSerialNumber: Left-PartId-Data
+              partSerialNumber: Left-LabelData
               lotQuantityType: Value
               lotQuantity: 1
               statusVariableType: Variable
               statusVariable: Left-DB-Result
-              name: Cell 0 11
+              name: Cell 0 12
+              description: The label serial is the inventory item - duplicate check, label and box all use it
           - action:
               actionType: If
               sourceType: Variable
@@ -1301,51 +1324,57 @@
               compareOperator: =
               comparedToType: Value
               comparedTo: 0
-              name: Cell 0 12
+              name: Cell 0 13
               description: Birthed?
             trueBranch:
             - action:
                 actionType: CallSubroutine
+                subroutineName: Left-Birth-Original
+                continueOnFailure: true
+                name: Cell 0 14
+                description: Record the original scan as its own item, never boxed
+            - action:
+                actionType: CallSubroutine
                 subroutineName: Left-Axle-Print-Label
                 continueOnFailure: false
-                name: Cell 0 13
+                name: Cell 0 15
             - action:
                 actionType: Math
                 operator: IncrementAsNumber
                 variable: Left-Production-Count
                 clearStartIndex: 1
                 clearLength: 1
-                name: Cell 0 14
+                name: Cell 0 16
             - action:
                 actionType: PersistVars
                 mode: Save
                 group: Angstrom-Axle-Tube
                 status: Left-Persist-Status
-                name: Cell 0 15
+                name: Cell 0 17
             - action:
                 actionType: CallSubroutine
                 subroutineName: LeftAddToBatch
                 continueOnFailure: false
-                name: Cell 0 16
+                name: Cell 0 18
                 description: Add to Batch
             - action:
                 actionType: CallSubroutine
                 subroutineName: Left-Box-Check
                 continueOnFailure: false
-                name: Cell 0 17
+                name: Cell 0 19
                 description: Count it, close the box when full
             falseBranch:
-            - action: &o0
+            - action:
                 actionType: If
                 sourceType: Variable
-                source: Left-PartId-Data
+                source: Left-LabelData
                 compareOperator: =
                 comparedToType: Variable
                 comparedTo: Left-Unboxed-Serial
-                name: Cell 1 12
+                name: Cell 1 13
                 description: A tube that was labelled but never boxed? Box it now
               trueBranch:
-              - action: &o1
+              - action:
                   actionType: Math
                   sourceType: Value
                   source: Tube added to its box
@@ -1353,8 +1382,8 @@
                   variable: Left-Error-Message
                   clearStartIndex: 1
                   clearLength: 1
-                  name: Cell 1 13
-              - action: &o2
+                  name: Cell 1 14
+              - action:
                   actionType: Math
                   sourceType: Variable
                   source: BLANK
@@ -1362,34 +1391,34 @@
                   variable: Left-Unboxed-Serial
                   clearStartIndex: 1
                   clearLength: 1
-                  name: Cell 1 14
-              - action: &o3
+                  name: Cell 1 15
+              - action:
                   actionType: CallSubroutine
                   subroutineName: LeftAddToBatch
                   continueOnFailure: false
-                  name: Cell 1 15
-              - action: &o4
+                  name: Cell 1 16
+              - action:
                   actionType: CallSubroutine
                   subroutineName: Left-Box-Check
                   continueOnFailure: false
-                  name: Cell 1 16
+                  name: Cell 1 17
               falseBranch:
-              - action: &o5
+              - action:
                   actionType: If
                   sourceType: Variable
                   source: Left-DB-Result
                   compareOperator: Contains
                   comparedToType: Value
                   comparedTo: IX_Item_Entity_Serial
-                  name: Cell 2 12
+                  name: Cell 2 13
                   description: A duplicate, or did the database fail?
                 trueBranch:
-                - action: &o6
+                - action:
                     actionType: CallSubroutine
                     subroutineName: LeftAlert
                     continueOnFailure: true
-                    name: Cell 2 13
-                - action: &o7
+                    name: Cell 2 14
+                - action:
                     actionType: Math
                     sourceType: Value
                     source: Duplicate Part, already in the database
@@ -1397,15 +1426,15 @@
                     variable: Left-Error-Message
                     clearStartIndex: 1
                     clearLength: 1
-                    name: Cell 2 14
-                - action: &o8
+                    name: Cell 2 15
+                - action:
                     actionType: CallSubroutine
                     subroutineName: Left-Log-Duplicate
                     continueOnFailure: true
-                    name: Cell 2 15
+                    name: Cell 2 16
                     description: Record the duplicate scan
                 falseBranch:
-                - action: &o9
+                - action:
                     actionType: Math
                     sourceType: Variable
                     source: Left-DB-Result
@@ -1413,39 +1442,24 @@
                     variable: Left-Error-Message
                     clearStartIndex: 1
                     clearLength: 1
-                    name: Cell 3 12
+                    name: Cell 3 13
                     description: Show the database error
-                - action: &o10
+                - action:
                     actionType: CallSubroutine
                     subroutineName: Left-Flag-Error
                     continueOnFailure: true
-                    name: Cell 3 13
+                    name: Cell 3 14
           falseBranch:
-          - action: &o11
+          - action: &o0
               actionType: CallSubroutine
               subroutineName: Left-Wrong-Part
               continueOnFailure: false
               name: Cell 1 10
               description: Other line, or unknown part
-          - action: &o12
+          - action: &o1
               actionType: Stop
               stopped: false
               name: Cell 1 11
-          - action: *o0
-            trueBranch:
-            - action: *o1
-            - action: *o2
-            - action: *o3
-            - action: *o4
-            falseBranch:
-            - action: *o5
-              trueBranch:
-              - action: *o6
-              - action: *o7
-              - action: *o8
-              falseBranch:
-              - action: *o9
-              - action: *o10
         falseBranch:
         - action:
             actionType: CallSubroutine
@@ -1453,23 +1467,8 @@
             continueOnFailure: false
             name: Cell 1 9
             description: Unreadable ID, treated like a duplicate
-        - action: *o11
-        - action: *o12
         - action: *o0
-          trueBranch:
-          - action: *o1
-          - action: *o2
-          - action: *o3
-          - action: *o4
-          falseBranch:
-          - action: *o5
-            trueBranch:
-            - action: *o6
-            - action: *o7
-            - action: *o8
-            falseBranch:
-            - action: *o9
-            - action: *o10
+        - action: *o1
       falseBranch:
       - action:
           actionType: Math
@@ -1489,7 +1488,7 @@
     falseBranch:
     - action:
         actionType: Stop
-        stopped: false
+        stopped: true
         name: Cell 1 1
         description: Scan ignored
 - gridRows: 3
@@ -1562,7 +1561,7 @@
       consumedMaterialPartNumberType: Variable
       consumedMaterialPartNumber: Left-Supplier-Part-No-Constant
       consumedMaterialSerialNumberType: Variable
-      consumedMaterialSerialNumber: Left-PartId-Data
+      consumedMaterialSerialNumber: Left-LabelData
       consumedMaterialSerialNumberArrayStartIndexType: Constant
       consumedMaterialSerialNumberArrayLengthType: Constant
       bOMCheck: False
@@ -1791,28 +1790,19 @@
   - action:
       actionType: Math
       sourceType: Variable
-      source: Right-PartId-Data
-      operator: SetVariableToValue
-      variable: Right-LabelData
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 1
-  - action:
-      actionType: Math
-      sourceType: Variable
-      source: Right-PartId-Data
+      source: Right-LabelData
       operator: SetVariableToValue
       variable: Right-Last-Label
       clearStartIndex: 1
       clearLength: 1
-      name: Cell 0 2
-      description: Remembered before printing, so a failed print can be reprinted
+      name: Cell 0 1
+      description: The label serial, built by Right-Build-Label, remembered before printing
   - action:
       actionType: FillTemplate
       templateSourceType: Variable
       templateVariable: Right-AxleTemplate
       outputVariable: Right-Print-Buffer
-      name: Cell 0 3
+      name: Cell 0 2
   - action:
       actionType: ActionWriteToDevice
       sourceType: Variable
@@ -1820,7 +1810,7 @@
       addCrLf: Yes
       device: Right-Axle-Printer
       status: Right-Print-Status
-      name: Cell 0 4
+      name: Cell 0 3
   - action:
       actionType: If
       sourceType: Variable
@@ -1828,12 +1818,12 @@
       compareOperator: =
       comparedToType: Value
       comparedTo: Success
-      name: Cell 0 5
+      name: Cell 0 4
       description: Printed?
     trueBranch:
     - action:
         actionType: NoOp
-        name: Cell 0 6
+        name: Cell 0 5
     falseBranch:
     - action:
         actionType: Math
@@ -1843,13 +1833,74 @@
         variable: Right-Error-Message
         clearStartIndex: 1
         clearLength: 1
-        name: Cell 1 5
+        name: Cell 1 4
         description: Show the printer error
     - action:
         actionType: CallSubroutine
         subroutineName: Right-Flag-Error
         continueOnFailure: true
-        name: Cell 1 6
+        name: Cell 1 5
+- gridRows: 3
+  gridColumns: 10
+  name: Right-Birth-Original
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: ActionBirth
+      partNumberType: Variable
+      partNumber: RightGMPartNumber
+      partProducerType: Constant
+      partProducer: Angstrom
+      partSerialNumberType: Variable
+      partSerialNumber: Right-PartId-Data
+      lotQuantityType: Value
+      lotQuantity: 1
+      statusVariableType: Variable
+      statusVariable: Right-DB-Result
+      name: Cell 0 1
+      description: The original scan, kept as a record and never boxed
+  - action:
+      actionType: If
+      sourceType: Variable
+      source: Right-DB-Result
+      compareOperator: =
+      comparedToType: Value
+      comparedTo: 0
+      name: Cell 0 2
+      description: Recorded?
+    trueBranch:
+    - action:
+        actionType: NoOp
+        name: Cell 0 3
+    falseBranch:
+    - action:
+        actionType: If
+        sourceType: Variable
+        source: Right-DB-Result
+        compareOperator: Contains
+        comparedToType: Value
+        comparedTo: IX_Item_Entity_Serial
+        name: Cell 1 2
+        description: Already recorded (a tube scanned before label serials existed)? Then nothing to do
+      trueBranch:
+      - action:
+          actionType: NoOp
+          name: Cell 1 3
+      falseBranch:
+      - action:
+          actionType: FillTemplate
+          templateSourceType: Inline
+          templateText: Original scan not recorded - ${Right-DB-Result}
+          outputVariable: Right-Error-Message
+          name: Cell 2 2
+          description: The tube is still labelled and boxed; the flag asks for a look
+      - action:
+          actionType: CallSubroutine
+          subroutineName: Right-Flag-Error
+          continueOnFailure: true
+          name: Cell 2 3
 - gridRows: 3
   gridColumns: 10
   name: Right-Box-Check
@@ -1998,6 +2049,83 @@
         subroutineName: Right-Flag-Error
         continueOnFailure: true
         name: Cell 1 6
+- gridRows: 3
+  gridColumns: 10
+  name: Right-Build-Label
+  associatedDeviceName: Subroutine
+  triggerMode: OnEvent
+  order: 0
+  steps:
+  - action:
+      actionType: If
+      sourceType: Variable
+      source: RightLine
+      compareOperator: =
+      comparedToType: Value
+      comparedTo: 1
+      name: Cell 0 1
+      description: Line 1 is printed as line 3
+    trueBranch:
+    - action:
+        actionType: Math
+        sourceType: Value
+        source: 3
+        operator: SetVariableToValue
+        variable: Right-Label-Line
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 2
+    - action:
+        actionType: FillTemplate
+        templateSourceType: Inline
+        templateText: ESAT${RightLblYear}${RightDayOfYear}${Right-Label-Line}${RightDailySequence}${RightGMPartNumber}
+        outputVariable: Right-LabelData
+        name: Cell 0 3
+        description: The label serial - no supplier part number, line printed as 3 or 4
+    falseBranch:
+    - action:
+        actionType: If
+        sourceType: Variable
+        source: RightLine
+        compareOperator: =
+        comparedToType: Value
+        comparedTo: 2
+        name: Cell 1 1
+        description: Line 2 is printed as line 4
+      trueBranch:
+      - action:
+          actionType: Math
+          sourceType: Value
+          source: 4
+          operator: SetVariableToValue
+          variable: Right-Label-Line
+          clearStartIndex: 1
+          clearLength: 1
+          name: Cell 1 2
+      - action:
+          actionType: FillTemplate
+          templateSourceType: Inline
+          templateText: ESAT${RightLblYear}${RightDayOfYear}${Right-Label-Line}${RightDailySequence}${RightGMPartNumber}
+          outputVariable: Right-LabelData
+          name: Cell 1 3
+      falseBranch:
+      - action:
+          actionType: FillTemplate
+          templateSourceType: Inline
+          templateText: Unexpected line number ${RightLine} - bad read?
+          outputVariable: Right-Error-Message
+          name: Cell 2 1
+          description: Neither line 1 nor 2 - the tube is not birthed or labelled
+      - action:
+          actionType: CallSubroutine
+          subroutineName: RightAlert
+          continueOnFailure: true
+          name: Cell 2 2
+      - action:
+          actionType: Stop
+          stopped: false
+          name: Cell 2 3
+          description: Halts the scanner chart too
 - gridRows: 3
   gridColumns: 10
   name: Right-Clear-Ack-Button_Logic_1
@@ -2457,7 +2585,7 @@
   - action:
       actionType: Math
       sourceType: Variable
-      source: Right-PartId-Data
+      source: Right-LabelData
       operator: SetVariableToValue
       variable: Right-Unboxed-Serial
       clearStartIndex: 1
@@ -2516,172 +2644,8 @@
       stopped: false
       name: Cell 0 5
       description: Halts the scanner chart too
-- gridRows: 3
-  gridColumns: 10
-  name: Right-Reprint-Box-Button_Logic
-  associatedDeviceName: Screen:Right-Main/Right-Reprint-Box-Button
-  triggerMode: OnEvent
-  order: 0
-  steps:
-  - action:
-      actionType: If
-      sourceType: Variable
-      source: Right-Last-Box-Label
-      compareOperator: IsNotEmpty
-      name: Cell 0 1
-      description: Has a box label been printed?
-    trueBranch:
-    - action:
-        actionType: Math
-        sourceType: Variable
-        source: Right-Last-Box-Label
-        operator: SetVariableToValue
-        variable: Right-LblBoxId
-        clearStartIndex: 1
-        clearLength: 1
-        name: Cell 0 2
-    - action:
-        actionType: FillTemplate
-        templateSourceType: Variable
-        templateVariable: Right-BoxTemplate
-        outputVariable: Right-Box-Print-Buffer
-        name: Cell 0 3
-    - action:
-        actionType: ActionWriteToDevice
-        sourceType: Variable
-        source: Right-Box-Print-Buffer
-        addCrLf: Yes
-        device: Box-Printer
-        status: Right-Print-Status
-        name: Cell 0 4
-    - action:
-        actionType: If
-        sourceType: Variable
-        source: Right-Print-Status
-        compareOperator: =
-        comparedToType: Value
-        comparedTo: Success
-        name: Cell 0 5
-      trueBranch:
-      - action:
-          actionType: Math
-          sourceType: Value
-          source: Box label reprinted
-          operator: SetVariableToValue
-          variable: Right-Error-Message
-          clearStartIndex: 1
-          clearLength: 1
-          name: Cell 0 6
-      falseBranch:
-      - action:
-          actionType: Math
-          sourceType: Variable
-          source: Right-Print-Status
-          operator: SetVariableToValue
-          variable: Right-Error-Message
-          clearStartIndex: 1
-          clearLength: 1
-          name: Cell 1 5
-      - action:
-          actionType: CallSubroutine
-          subroutineName: Right-Flag-Error
-          continueOnFailure: true
-          name: Cell 1 6
-    falseBranch:
-    - action:
-        actionType: Math
-        sourceType: Value
-        source: No box label printed yet
-        operator: SetVariableToValue
-        variable: Right-Error-Message
-        clearStartIndex: 1
-        clearLength: 1
-        name: Cell 1 1
-        description: A notice, not an error
-- gridRows: 3
-  gridColumns: 10
-  name: Right-Reprint-Button_Logic
-  associatedDeviceName: Screen:Right-Main/Right-Reprint-Button
-  triggerMode: OnEvent
-  order: 0
-  steps:
-  - action:
-      actionType: If
-      sourceType: Variable
-      source: Right-Last-Label
-      compareOperator: IsNotEmpty
-      name: Cell 0 1
-      description: Has a label been printed?
-    trueBranch:
-    - action:
-        actionType: Math
-        sourceType: Variable
-        source: Right-Last-Label
-        operator: SetVariableToValue
-        variable: Right-LabelData
-        clearStartIndex: 1
-        clearLength: 1
-        name: Cell 0 2
-    - action:
-        actionType: FillTemplate
-        templateSourceType: Variable
-        templateVariable: Right-AxleTemplate
-        outputVariable: Right-Print-Buffer
-        name: Cell 0 3
-    - action:
-        actionType: ActionWriteToDevice
-        sourceType: Variable
-        source: Right-Print-Buffer
-        addCrLf: Yes
-        device: Right-Axle-Printer
-        status: Right-Print-Status
-        name: Cell 0 4
-    - action:
-        actionType: If
-        sourceType: Variable
-        source: Right-Print-Status
-        compareOperator: =
-        comparedToType: Value
-        comparedTo: Success
-        name: Cell 0 5
-      trueBranch:
-      - action:
-          actionType: Math
-          sourceType: Value
-          source: Label reprinted
-          operator: SetVariableToValue
-          variable: Right-Error-Message
-          clearStartIndex: 1
-          clearLength: 1
-          name: Cell 0 6
-      falseBranch:
-      - action:
-          actionType: Math
-          sourceType: Variable
-          source: Right-Print-Status
-          operator: SetVariableToValue
-          variable: Right-Error-Message
-          clearStartIndex: 1
-          clearLength: 1
-          name: Cell 1 5
-      - action:
-          actionType: CallSubroutine
-          subroutineName: Right-Flag-Error
-          continueOnFailure: true
-          name: Cell 1 6
-    falseBranch:
-    - action:
-        actionType: Math
-        sourceType: Value
-        source: Nothing to reprint yet
-        operator: SetVariableToValue
-        variable: Right-Error-Message
-        clearStartIndex: 1
-        clearLength: 1
-        name: Cell 1 1
-        description: A notice, not an error
 - gridRows: 4
-  gridColumns: 18
+  gridColumns: 20
   name: Right-Side-Scanner_Logic
   associatedDeviceName: Right-Side-Scanner-Net
   triggerMode: OnEvent
@@ -2778,18 +2742,25 @@
             description: This line's part?
           trueBranch:
           - action:
+              actionType: CallSubroutine
+              subroutineName: Right-Build-Label
+              continueOnFailure: false
+              name: Cell 0 11
+              description: Line 1 or 2 only; builds the label serial, stops the scan otherwise
+          - action:
               actionType: ActionBirth
               partNumberType: Variable
               partNumber: RightGMPartNumber
               partProducerType: Constant
               partProducer: Angstrom
               partSerialNumberType: Variable
-              partSerialNumber: Right-PartId-Data
+              partSerialNumber: Right-LabelData
               lotQuantityType: Value
               lotQuantity: 1
               statusVariableType: Variable
               statusVariable: Right-DB-Result
-              name: Cell 0 11
+              name: Cell 0 12
+              description: The label serial is the inventory item - duplicate check, label and box all use it
           - action:
               actionType: If
               sourceType: Variable
@@ -2797,51 +2768,57 @@
               compareOperator: =
               comparedToType: Value
               comparedTo: 0
-              name: Cell 0 12
+              name: Cell 0 13
               description: Birthed?
             trueBranch:
             - action:
                 actionType: CallSubroutine
+                subroutineName: Right-Birth-Original
+                continueOnFailure: true
+                name: Cell 0 14
+                description: Record the original scan as its own item, never boxed
+            - action:
+                actionType: CallSubroutine
                 subroutineName: Right-Axle-Print-Label
                 continueOnFailure: false
-                name: Cell 0 13
+                name: Cell 0 15
             - action:
                 actionType: Math
                 operator: IncrementAsNumber
                 variable: Right-Production-Count
                 clearStartIndex: 1
                 clearLength: 1
-                name: Cell 0 14
+                name: Cell 0 16
             - action:
                 actionType: PersistVars
                 mode: Save
                 group: Angstrom-Axle-Tube
                 status: Right-Persist-Status
-                name: Cell 0 15
+                name: Cell 0 17
             - action:
                 actionType: CallSubroutine
                 subroutineName: RightAddToBatch
                 continueOnFailure: false
-                name: Cell 0 16
+                name: Cell 0 18
                 description: Add to Batch
             - action:
                 actionType: CallSubroutine
                 subroutineName: Right-Box-Check
                 continueOnFailure: false
-                name: Cell 0 17
+                name: Cell 0 19
                 description: Count it, close the box when full
             falseBranch:
-            - action: &o13
+            - action:
                 actionType: If
                 sourceType: Variable
-                source: Right-PartId-Data
+                source: Right-LabelData
                 compareOperator: =
                 comparedToType: Variable
                 comparedTo: Right-Unboxed-Serial
-                name: Cell 1 12
+                name: Cell 1 13
                 description: A tube that was labelled but never boxed? Box it now
               trueBranch:
-              - action: &o14
+              - action:
                   actionType: Math
                   sourceType: Value
                   source: Tube added to its box
@@ -2849,8 +2826,8 @@
                   variable: Right-Error-Message
                   clearStartIndex: 1
                   clearLength: 1
-                  name: Cell 1 13
-              - action: &o15
+                  name: Cell 1 14
+              - action:
                   actionType: Math
                   sourceType: Variable
                   source: BLANK
@@ -2858,34 +2835,34 @@
                   variable: Right-Unboxed-Serial
                   clearStartIndex: 1
                   clearLength: 1
-                  name: Cell 1 14
-              - action: &o16
+                  name: Cell 1 15
+              - action:
                   actionType: CallSubroutine
                   subroutineName: RightAddToBatch
                   continueOnFailure: false
-                  name: Cell 1 15
-              - action: &o17
+                  name: Cell 1 16
+              - action:
                   actionType: CallSubroutine
                   subroutineName: Right-Box-Check
                   continueOnFailure: false
-                  name: Cell 1 16
+                  name: Cell 1 17
               falseBranch:
-              - action: &o18
+              - action:
                   actionType: If
                   sourceType: Variable
                   source: Right-DB-Result
                   compareOperator: Contains
                   comparedToType: Value
                   comparedTo: IX_Item_Entity_Serial
-                  name: Cell 2 12
+                  name: Cell 2 13
                   description: A duplicate, or did the database fail?
                 trueBranch:
-                - action: &o19
+                - action:
                     actionType: CallSubroutine
                     subroutineName: RightAlert
                     continueOnFailure: true
-                    name: Cell 2 13
-                - action: &o20
+                    name: Cell 2 14
+                - action:
                     actionType: Math
                     sourceType: Value
                     source: Duplicate Part, already in the database
@@ -2893,15 +2870,15 @@
                     variable: Right-Error-Message
                     clearStartIndex: 1
                     clearLength: 1
-                    name: Cell 2 14
-                - action: &o21
+                    name: Cell 2 15
+                - action:
                     actionType: CallSubroutine
                     subroutineName: Right-Log-Duplicate
                     continueOnFailure: true
-                    name: Cell 2 15
+                    name: Cell 2 16
                     description: Record the duplicate scan
                 falseBranch:
-                - action: &o22
+                - action:
                     actionType: Math
                     sourceType: Variable
                     source: Right-DB-Result
@@ -2909,39 +2886,24 @@
                     variable: Right-Error-Message
                     clearStartIndex: 1
                     clearLength: 1
-                    name: Cell 3 12
+                    name: Cell 3 13
                     description: Show the database error
-                - action: &o23
+                - action:
                     actionType: CallSubroutine
                     subroutineName: Right-Flag-Error
                     continueOnFailure: true
-                    name: Cell 3 13
+                    name: Cell 3 14
           falseBranch:
-          - action: &o24
+          - action: &o2
               actionType: CallSubroutine
               subroutineName: Right-Wrong-Part
               continueOnFailure: false
               name: Cell 1 10
               description: Other line, or unknown part
-          - action: &o25
+          - action: &o3
               actionType: Stop
               stopped: false
               name: Cell 1 11
-          - action: *o13
-            trueBranch:
-            - action: *o14
-            - action: *o15
-            - action: *o16
-            - action: *o17
-            falseBranch:
-            - action: *o18
-              trueBranch:
-              - action: *o19
-              - action: *o20
-              - action: *o21
-              falseBranch:
-              - action: *o22
-              - action: *o23
         falseBranch:
         - action:
             actionType: CallSubroutine
@@ -2949,23 +2911,8 @@
             continueOnFailure: false
             name: Cell 1 9
             description: Unreadable ID, treated like a duplicate
-        - action: *o24
-        - action: *o25
-        - action: *o13
-          trueBranch:
-          - action: *o14
-          - action: *o15
-          - action: *o16
-          - action: *o17
-          falseBranch:
-          - action: *o18
-            trueBranch:
-            - action: *o19
-            - action: *o20
-            - action: *o21
-            falseBranch:
-            - action: *o22
-            - action: *o23
+        - action: *o2
+        - action: *o3
       falseBranch:
       - action:
           actionType: Math
@@ -3058,7 +3005,7 @@
       consumedMaterialPartNumberType: Variable
       consumedMaterialPartNumber: Right-Supplier-Part-No-Constant
       consumedMaterialSerialNumberType: Variable
-      consumedMaterialSerialNumber: Right-PartId-Data
+      consumedMaterialSerialNumber: Right-LabelData
       consumedMaterialSerialNumberArrayStartIndexType: Constant
       consumedMaterialSerialNumberArrayLengthType: Constant
       bOMCheck: False

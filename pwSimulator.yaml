@@ -30,7 +30,7 @@ devices:
     source: file
     path: \\Mac\Home\PlantWatchSim\COM7.bin
 autoRun:
-  intervalMs: 5000
+  intervalMs: 1000
   alternate: true
 labels:
   dpi: 203
