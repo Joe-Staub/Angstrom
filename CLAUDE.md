@@ -155,7 +155,8 @@ The ordered cutover to schema v2, with the check after each step, is `CUTOVER-V2
    `PlantWatch.Simulator\Setup-Simulation.ps1 -RenamePorts`. Printer/scanner addresses on the dev
    VM are aliases on the second adapter (`Setup-Simulation.ps1 -Adapter "Ethernet 2"`).
 5. **PlantWatch build dependency:** this configuration needs PlantWatch with the runtime colour
-   binding and the `OnConnected` trigger (PlantWatch `main` from 14 November 2026 or later). On an older build the buttons never turn red, the lights are not cleared at
+   binding and the `OnConnected` trigger (PlantWatch `main` from 14 November 2026 or later).
+   On an older build the buttons never turn red, the lights are not cleared at
    startup, and the simulator rejects `{oneof}` in `pwSimulator.yaml`.
 6. Simulator: `PWSimulate /config:<this folder>`; `pwSimulator.yaml` alternates `ESAT`/`esat`
    prefixes. `pwSimulatorState.yaml` is the simulator's counters.
