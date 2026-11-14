@@ -26,17 +26,15 @@
       databaseConnection: PWDatabase
       sql: >-
         SELECT  parent.Serial_Nbr      AS ParentSerial,
-                pp.Part_Number         AS ParentPart,
+                parent.Part_Number     AS ParentPart,
                 parent.Birth_DateTime  AS ParentBorn,
-                cp.Part_Number         AS ChildPart,
+                child.Part_Number      AS ChildPart,
                 child.Serial_Nbr       AS ChildSerial,
                 child.Birth_DateTime   AS ChildBorn
         FROM    dbo.Item child
-                INNER JOIN dbo.Part cp        ON cp.Part_Key = child.Part_Key
-                LEFT  JOIN dbo.Item_Gene g    ON g.Child_Item_Key = child.Item_Key
-                LEFT  JOIN dbo.Item parent    ON parent.Item_Key = g.Parent_Item_Key
-                LEFT  JOIN dbo.Part pp        ON pp.Part_Key = parent.Part_Key
-        WHERE   cp.Part_Number IN ('85545338', '85545339')
+                LEFT  JOIN dbo.Item_Gene g    ON g.Child_Entity = child.Entity AND g.Child_Serial_Nbr = child.Serial_Nbr
+                LEFT  JOIN dbo.Item parent    ON parent.Entity = g.Parent_Entity AND parent.Serial_Nbr = g.Parent_Serial_Nbr
+        WHERE   child.Part_Number IN ('85545338', '85545339')
           AND   SUBSTRING(child.Serial_Nbr, 10, 1) IN ('3', '4')
           AND   child.Birth_DateTime >  COALESCE(@From, DATEADD(day, -1, CAST(GETDATE() AS date)))
           AND   child.Birth_DateTime <= @To
@@ -437,7 +435,7 @@
         source: Left-DB-Result
         compareOperator: Contains
         comparedToType: Value
-        comparedTo: IX_Item_Entity_Serial
+        comparedTo: already exists
         name: Cell 1 2
         description: Already recorded (a tube scanned before label serials existed)? Then nothing to do
       trueBranch:
@@ -1409,7 +1407,7 @@
                   source: Left-DB-Result
                   compareOperator: Contains
                   comparedToType: Value
-                  comparedTo: IX_Item_Entity_Serial
+                  comparedTo: already exists
                   name: Cell 2 13
                   description: A duplicate, or did the database fail?
                 trueBranch:
@@ -1881,7 +1879,7 @@
         source: Right-DB-Result
         compareOperator: Contains
         comparedToType: Value
-        comparedTo: IX_Item_Entity_Serial
+        comparedTo: already exists
         name: Cell 1 2
         description: Already recorded (a tube scanned before label serials existed)? Then nothing to do
       trueBranch:
@@ -2853,7 +2851,7 @@
                   source: Right-DB-Result
                   compareOperator: Contains
                   comparedToType: Value
-                  comparedTo: IX_Item_Entity_Serial
+                  comparedTo: already exists
                   name: Cell 2 13
                   description: A duplicate, or did the database fail?
                 trueBranch:

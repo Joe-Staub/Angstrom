@@ -141,17 +141,24 @@ charts never write a header, the files are created by hand with `Timestamp,Side,
 
 ## Deployment checklist (new machine or the plant)
 
-1. Run `misc/Create-Angstrom-Procedures.sql` against `PWInventory` (creates
+The ordered cutover to schema v2, with the check after each step, is `CUTOVER-V2.md`.
+
+1. The database is **PWInventory2** (inventory schema v2, provider `pw2` in `pwInventory.yaml` and
+   `pwTraceDatabase.yaml`). On a machine still holding the old PWInventory, back it up, then
+   migrate: `PWInventoryMigrate --server <instance> --check`, then the same with
+   `--create-schema --skip-orphans` (the plant data references a station name with no Station
+   row; skipping records it with Station NULL). Keep PWInventory untouched as the fallback.
+2. Run `misc/Create-Angstrom-Procedures.sql` against `PWInventory2` (creates
    `dbo.Angstrom_NextLotNumber`; safe to re-run). Without it no box can be created.
-2. Create `C:\AxleReports\` with `DuplicateScans.csv` and `UnreadableScans.csv` (header row).
-3. Serial ports must be COM6/COM7 as Device Manager numbers them; on the Parallels dev VM use
+3. Create `C:\AxleReports\` with `DuplicateScans.csv` and `UnreadableScans.csv` (header row).
+4. Serial ports must be COM6/COM7 as Device Manager numbers them; on the Parallels dev VM use
    `PlantWatch.Simulator\Setup-Simulation.ps1 -RenamePorts`. Printer/scanner addresses on the dev
    VM are aliases on the second adapter (`Setup-Simulation.ps1 -Adapter "Ethernet 2"`).
-4. **PlantWatch build dependency:** this configuration needs PlantWatch with the runtime colour
-   binding and the `OnConnected` trigger (branch `feature/onconnected-and-colour-binding` until
-   merged). On an older build the buttons never turn red, the lights are not cleared at
+5. **PlantWatch build dependency:** this configuration needs PlantWatch with the runtime colour
+   binding and the `OnConnected` trigger (PlantWatch `main` from 14 November 2026 or later).
+   On an older build the buttons never turn red, the lights are not cleared at
    startup, and the simulator rejects `{oneof}` in `pwSimulator.yaml`.
-5. Simulator: `PWSimulate /config:<this folder>`; `pwSimulator.yaml` alternates `ESAT`/`esat`
+6. Simulator: `PWSimulate /config:<this folder>`; `pwSimulator.yaml` alternates `ESAT`/`esat`
    prefixes. `pwSimulatorState.yaml` is the simulator's counters.
 
 ## Scripts in `misc/`

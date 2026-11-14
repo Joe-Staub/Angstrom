@@ -8,14 +8,14 @@
     them (Item_Gene) through the .NET SQL client, so nothing but Windows PowerShell and the
     SQL Server instance is needed. Columns:
 
-        Box, BoxPart, Side, BoxCreated, BoxCount, Position, Tube, TubePart, TubeBorn, Station
+        Box, BoxPart, Side, BoxCreated, BoxCount, Position, Tube, TubePart, TubeBorn, Added, Station
 
     BoxCount is the count PlantWatch keeps on the box (its lot quantity); Position numbers
     the tubes in the order they were added. A box with no tubes yet appears once with the
     tube columns empty. Rows are ordered by box creation, then by the order the tubes were
-    added. The database does not store when a tube was added (Item_Gene.TimeStamp is a
-    computed getdate()); TubeBorn, the moment the tube was scanned, is seconds earlier and
-    is the time to use.
+    added. Added is when the tube went into the box and Station the machine that did it;
+    for boxes migrated from the old PWInventory database Added is the migration time, so
+    TubeBorn, the moment the tube was scanned, is the time to use for those.
 
     Without -Lot, -Side, -Since or -Until every box in the database is exported.
 
@@ -41,7 +41,7 @@
     SQL Server instance. Default localhost\SQLEXPRESS, as in pwDBBDatabase.yaml.
 
 .PARAMETER Database
-    Database to read. Default PWInventory.
+    Database to read. Default PWInventory2 (schema v2).
 
 .EXAMPLE
     .\Export-LotContents.ps1
@@ -62,7 +62,7 @@ param(
     [datetime] $Until,
     [string] $OutFile,
     [string] $Instance = 'localhost\SQLEXPRESS',
-    [string] $Database = 'PWInventory'
+    [string] $Database = 'PWInventory2'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -73,7 +73,7 @@ $sideParts = @{ Left = 'LOT85545338'; Right = 'LOT85545339' }
 
 $where = New-Object System.Collections.Generic.List[string]
 $parameters = New-Object System.Collections.Generic.List[System.Data.SqlClient.SqlParameter]
-$where.Add("bp.Part_Number LIKE 'LOT%'")
+$where.Add("b.Part_Number LIKE 'LOT%'")
 
 if ($Lot) {
     $clauses = @()
@@ -86,7 +86,7 @@ if ($Lot) {
     $where.Add('(' + ($clauses -join ' OR ') + ')')
 }
 if ($Side) {
-    $where.Add('bp.Part_Number = @part')
+    $where.Add('b.Part_Number = @part')
     $parameters.Add((New-Object System.Data.SqlClient.SqlParameter('@part', $sideParts[$Side])))
 }
 if ($PSBoundParameters.ContainsKey('Since')) {
@@ -100,21 +100,21 @@ if ($PSBoundParameters.ContainsKey('Until')) {
 
 $sql = @"
 SELECT  b.Serial_Nbr                 AS Box,
-        bp.Part_Number               AS BoxPart,
+        b.Part_Number                AS BoxPart,
         b.Birth_DateTime             AS BoxCreated,
         ISNULL(b.LotQuantity, 0)     AS BoxCount,
-        CASE WHEN g.Item_Gene_Key IS NULL THEN NULL
-             ELSE ROW_NUMBER() OVER (PARTITION BY b.Item_Key ORDER BY g.Item_Gene_Key) END AS Position,
-        g.Child_Serial_Number        AS Tube,
-        g.Child_Part_Number          AS TubePart,
+        CASE WHEN g.Child_Serial_Nbr IS NULL THEN NULL
+             ELSE ROW_NUMBER() OVER (PARTITION BY b.Entity, b.Serial_Nbr ORDER BY g.Consumed_At) END AS Position,
+        g.Child_Serial_Nbr           AS Tube,
+        t.Part_Number                AS TubePart,
         t.Birth_DateTime             AS TubeBorn,
+        g.Consumed_At                AS Added,
         g.Station                    AS Station
 FROM    dbo.Item b
-        INNER JOIN dbo.Part bp      ON bp.Part_Key = b.Part_Key
-        LEFT  JOIN dbo.Item_Gene g  ON g.Parent_Item_Key = b.Item_Key
-        LEFT  JOIN dbo.Item t       ON t.Item_Key = g.Child_Item_Key
+        LEFT  JOIN dbo.Item_Gene g  ON g.Parent_Entity = b.Entity AND g.Parent_Serial_Nbr = b.Serial_Nbr
+        LEFT  JOIN dbo.Item t       ON t.Entity = g.Child_Entity AND t.Serial_Nbr = g.Child_Serial_Nbr
 WHERE   $($where -join "`r`n  AND   ")
-ORDER BY b.Birth_DateTime, b.Serial_Nbr, g.Item_Gene_Key
+ORDER BY b.Birth_DateTime, b.Serial_Nbr, g.Consumed_At
 "@
 
 if (-not $OutFile) {
@@ -156,6 +156,7 @@ try {
                 Tube       = Text $reader['Tube']
                 TubePart   = Text $reader['TubePart']
                 TubeBorn   = Stamp $reader['TubeBorn']
+                Added      = Stamp $reader['Added']
                 Station    = Text $reader['Station']
             })
         }
