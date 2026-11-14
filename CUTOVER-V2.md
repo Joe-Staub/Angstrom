@@ -24,7 +24,7 @@ On the master, from this folder:
 Backup-PWInventory.cmd -Database PWInventory
 ```
 
-The `.bak` lands in `C:PWInventoryBackups<yyyyMMdd>.BAK`. Copy it to the jump
+The `.bak` lands in `C:\PWInventoryBackups\<yyyyMMdd>.BAK`. Copy it to the jump
 drive as well. PWInventory itself is left in place as the fallback for the whole weekend.
 
 ## 2. Pre-flight the migration (writes nothing)
