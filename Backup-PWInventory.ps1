@@ -23,7 +23,7 @@
     SQL Server instance. Default localhost\SQLEXPRESS, as in pwDBBDatabase.yaml.
 
 .PARAMETER Database
-    Database to back up. Default PWInventory.
+    Database to back up. Default PWInventory2 (schema v2); pass -Database PWInventory for the old one.
 
 .PARAMETER BackupFolder
     Where the .BAK files go. Default C:\PWInventoryBackups.
@@ -55,7 +55,7 @@
 [CmdletBinding()]
 param(
     [string] $Instance = 'localhost\SQLEXPRESS',
-    [string] $Database = 'PWInventory',
+    [string] $Database = 'PWInventory2',
     [string] $BackupFolder = 'C:\PWInventoryBackups',
     [int]    $KeepDays = 30,
     [switch] $Register,

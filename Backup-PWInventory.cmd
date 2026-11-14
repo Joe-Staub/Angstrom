@@ -1,5 +1,5 @@
 @echo off
-rem Double-click wrapper: backs up the PWInventory database to C:\PWInventoryBackups\YYYYMMDD.BAK.
+rem Double-click wrapper: backs up the PWInventory2 database (or -Database PWInventory) to C:\PWInventoryBackups\YYYYMMDD.BAK.
 rem Any arguments are passed straight through, e.g.  Backup-PWInventory.cmd -Register
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0Backup-PWInventory.ps1" %*
 if errorlevel 1 (
