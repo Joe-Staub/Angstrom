@@ -1,3 +1,20 @@
+- name: axletube
+  computerName: AXLETUBE
+  iPAddress: 192.168.1.50
+  mACAddress: FC:4C:EA:1B:70:84
+  heartbeatIntervalSeconds: 0
+  displayWidth: 0
+  displayHeight: 0
+  displayOrientation: -1
+  assignedDevices:
+  - Box-Printer
+  - Left-Axle-Printer
+  - Left-Light
+  - Left-Side-Scanner-Net
+  - ReportingScheduler
+  assignedProtocolDevices: []
+  assignedScreens:
+  - Left-Main
 - name: rightemote
   computerName: RIGHTREMOTE
   iPAddress: 192.168.1.41
@@ -7,8 +24,8 @@
   displayHeight: 0
   displayOrientation: -1
   assignedDevices:
-  - ReportingScheduler
   - Right-Axle-Printer
+  - Right-Box-Printer
   - Right-Light
   - Right-Side-Scanner-Net
   assignedProtocolDevices: []

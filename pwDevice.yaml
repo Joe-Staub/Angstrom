@@ -18,7 +18,7 @@
   name: Left-Axle-Printer
   deviceType: Socket
   disabled: false
-- portID: 6
+- portID: 10
   baudRate: 9600
   dataBits: 8
   parity: n
@@ -53,7 +53,17 @@
   name: Right-Axle-Printer
   deviceType: Socket
   disabled: false
-- portID: 7
+- portID: 9100
+  iPAddress: 192.168.1.54
+  connectionTimeoutMs: 5000
+  messageMode: Delimited
+  searchMethodNumberOfChars: 0
+  searchMethodPrefix: ^XA
+  searchMethodSuffix: ^XZ
+  name: Right-Box-Printer
+  deviceType: Socket
+  disabled: false
+- portID: 3
   baudRate: 9600
   dataBits: 8
   parity: n

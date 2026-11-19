@@ -35,7 +35,6 @@
                 LEFT  JOIN dbo.Item_Gene g    ON g.Child_Entity = child.Entity AND g.Child_Serial_Nbr = child.Serial_Nbr
                 LEFT  JOIN dbo.Item parent    ON parent.Entity = g.Parent_Entity AND parent.Serial_Nbr = g.Parent_Serial_Nbr
         WHERE   child.Part_Number IN ('85545338', '85545339')
-          AND   SUBSTRING(child.Serial_Nbr, 10, 1) IN ('3', '4')
           AND   child.Birth_DateTime >  COALESCE(@From, DATEADD(day, -1, CAST(GETDATE() AS date)))
           AND   child.Birth_DateTime <= @To
         ORDER BY child.Birth_DateTime, child.Serial_Nbr
@@ -344,7 +343,7 @@
   - action:
       actionType: Math
       sourceType: Variable
-      source: Left-LabelData
+      source: Left-PartId-Data
       operator: SetVariableToValue
       variable: Left-Last-Label
       clearStartIndex: 1
@@ -394,67 +393,6 @@
         subroutineName: Left-Flag-Error
         continueOnFailure: true
         name: Cell 1 5
-- gridRows: 3
-  gridColumns: 10
-  name: Left-Birth-Original
-  associatedDeviceName: Subroutine
-  triggerMode: OnEvent
-  order: 0
-  steps:
-  - action:
-      actionType: ActionBirth
-      partNumberType: Variable
-      partNumber: LeftGMPartNumber
-      partProducerType: Constant
-      partProducer: Angstrom
-      partSerialNumberType: Variable
-      partSerialNumber: Left-PartId-Data
-      lotQuantityType: Value
-      lotQuantity: 1
-      statusVariableType: Variable
-      statusVariable: Left-DB-Result
-      name: Cell 0 1
-      description: The original scan, kept as a record and never boxed
-  - action:
-      actionType: If
-      sourceType: Variable
-      source: Left-DB-Result
-      compareOperator: =
-      comparedToType: Value
-      comparedTo: 0
-      name: Cell 0 2
-      description: Recorded?
-    trueBranch:
-    - action:
-        actionType: NoOp
-        name: Cell 0 3
-    falseBranch:
-    - action:
-        actionType: If
-        sourceType: Variable
-        source: Left-DB-Result
-        compareOperator: Contains
-        comparedToType: Value
-        comparedTo: already exists
-        name: Cell 1 2
-        description: Already recorded (a tube scanned before label serials existed)? Then nothing to do
-      trueBranch:
-      - action:
-          actionType: NoOp
-          name: Cell 1 3
-      falseBranch:
-      - action:
-          actionType: FillTemplate
-          templateSourceType: Inline
-          templateText: Original scan not recorded - ${Left-DB-Result}
-          outputVariable: Left-Error-Message
-          name: Cell 2 2
-          description: The tube is still labelled and boxed; the flag asks for a look
-      - action:
-          actionType: CallSubroutine
-          subroutineName: Left-Flag-Error
-          continueOnFailure: true
-          name: Cell 2 3
 - gridRows: 3
   gridColumns: 10
   name: Left-Box-Check
@@ -618,24 +556,15 @@
       comparedToType: Value
       comparedTo: 1
       name: Cell 0 1
-      description: Line 1 is printed as line 3
+      description: Line 1 - the line digit is kept as scanned
     trueBranch:
-    - action:
-        actionType: Math
-        sourceType: Value
-        source: 3
-        operator: SetVariableToValue
-        variable: Left-Label-Line
-        clearStartIndex: 1
-        clearLength: 1
-        name: Cell 0 2
     - action:
         actionType: FillTemplate
         templateSourceType: Inline
-        templateText: ESAT${LeftLblYear}${LeftDayOfYear}${Left-Label-Line}${LeftDailySequence}${LeftGMPartNumber}
+        templateText: ESAT${LeftLblYear}${LeftDayOfYear}${LeftLine}${LeftDailySequence}${LeftGMPartNumber}
         outputVariable: Left-LabelData
         name: Cell 0 3
-        description: The label serial - no supplier part number, line printed as 3 or 4
+        description: The 22-character serial kept in the database - the scan without the supplier serial
     falseBranch:
     - action:
         actionType: If
@@ -645,21 +574,12 @@
         comparedToType: Value
         comparedTo: 2
         name: Cell 1 1
-        description: Line 2 is printed as line 4
+        description: Line 2 - the line digit is kept as scanned
       trueBranch:
-      - action:
-          actionType: Math
-          sourceType: Value
-          source: 4
-          operator: SetVariableToValue
-          variable: Left-Label-Line
-          clearStartIndex: 1
-          clearLength: 1
-          name: Cell 1 2
       - action:
           actionType: FillTemplate
           templateSourceType: Inline
-          templateText: ESAT${LeftLblYear}${LeftDayOfYear}${Left-Label-Line}${LeftDailySequence}${LeftGMPartNumber}
+          templateText: ESAT${LeftLblYear}${LeftDayOfYear}${LeftLine}${LeftDailySequence}${LeftGMPartNumber}
           outputVariable: Left-LabelData
           name: Cell 1 3
       falseBranch:
@@ -1327,12 +1247,6 @@
             trueBranch:
             - action:
                 actionType: CallSubroutine
-                subroutineName: Left-Birth-Original
-                continueOnFailure: true
-                name: Cell 0 14
-                description: Record the original scan as its own item, never boxed
-            - action:
-                actionType: CallSubroutine
                 subroutineName: Left-Axle-Print-Label
                 continueOnFailure: false
                 name: Cell 0 15
@@ -1522,7 +1436,7 @@
         name: Cell 0 3
     - action:
         actionType: Stop
-        stopped: false
+        stopped: true
         name: Cell 0 4
         description: Halts the scanner chart too
     falseBranch:
@@ -1788,7 +1702,7 @@
   - action:
       actionType: Math
       sourceType: Variable
-      source: Right-LabelData
+      source: Right-PartId-Data
       operator: SetVariableToValue
       variable: Right-Last-Label
       clearStartIndex: 1
@@ -1838,67 +1752,6 @@
         subroutineName: Right-Flag-Error
         continueOnFailure: true
         name: Cell 1 5
-- gridRows: 3
-  gridColumns: 10
-  name: Right-Birth-Original
-  associatedDeviceName: Subroutine
-  triggerMode: OnEvent
-  order: 0
-  steps:
-  - action:
-      actionType: ActionBirth
-      partNumberType: Variable
-      partNumber: RightGMPartNumber
-      partProducerType: Constant
-      partProducer: Angstrom
-      partSerialNumberType: Variable
-      partSerialNumber: Right-PartId-Data
-      lotQuantityType: Value
-      lotQuantity: 1
-      statusVariableType: Variable
-      statusVariable: Right-DB-Result
-      name: Cell 0 1
-      description: The original scan, kept as a record and never boxed
-  - action:
-      actionType: If
-      sourceType: Variable
-      source: Right-DB-Result
-      compareOperator: =
-      comparedToType: Value
-      comparedTo: 0
-      name: Cell 0 2
-      description: Recorded?
-    trueBranch:
-    - action:
-        actionType: NoOp
-        name: Cell 0 3
-    falseBranch:
-    - action:
-        actionType: If
-        sourceType: Variable
-        source: Right-DB-Result
-        compareOperator: Contains
-        comparedToType: Value
-        comparedTo: already exists
-        name: Cell 1 2
-        description: Already recorded (a tube scanned before label serials existed)? Then nothing to do
-      trueBranch:
-      - action:
-          actionType: NoOp
-          name: Cell 1 3
-      falseBranch:
-      - action:
-          actionType: FillTemplate
-          templateSourceType: Inline
-          templateText: Original scan not recorded - ${Right-DB-Result}
-          outputVariable: Right-Error-Message
-          name: Cell 2 2
-          description: The tube is still labelled and boxed; the flag asks for a look
-      - action:
-          actionType: CallSubroutine
-          subroutineName: Right-Flag-Error
-          continueOnFailure: true
-          name: Cell 2 3
 - gridRows: 3
   gridColumns: 10
   name: Right-Box-Check
@@ -2009,7 +1862,7 @@
       sourceType: Variable
       source: Right-Box-Print-Buffer
       addCrLf: Yes
-      device: Box-Printer
+      device: Right-Box-Printer
       status: Right-Print-Status
       name: Cell 0 4
   - action:
@@ -2062,24 +1915,15 @@
       comparedToType: Value
       comparedTo: 1
       name: Cell 0 1
-      description: Line 1 is printed as line 3
+      description: Line 1 - the line digit is kept as scanned
     trueBranch:
-    - action:
-        actionType: Math
-        sourceType: Value
-        source: 3
-        operator: SetVariableToValue
-        variable: Right-Label-Line
-        clearStartIndex: 1
-        clearLength: 1
-        name: Cell 0 2
     - action:
         actionType: FillTemplate
         templateSourceType: Inline
-        templateText: ESAT${RightLblYear}${RightDayOfYear}${Right-Label-Line}${RightDailySequence}${RightGMPartNumber}
+        templateText: ESAT${RightLblYear}${RightDayOfYear}${RightLine}${RightDailySequence}${RightGMPartNumber}
         outputVariable: Right-LabelData
         name: Cell 0 3
-        description: The label serial - no supplier part number, line printed as 3 or 4
+        description: The 22-character serial kept in the database - the scan without the supplier serial
     falseBranch:
     - action:
         actionType: If
@@ -2089,21 +1933,12 @@
         comparedToType: Value
         comparedTo: 2
         name: Cell 1 1
-        description: Line 2 is printed as line 4
+        description: Line 2 - the line digit is kept as scanned
       trueBranch:
-      - action:
-          actionType: Math
-          sourceType: Value
-          source: 4
-          operator: SetVariableToValue
-          variable: Right-Label-Line
-          clearStartIndex: 1
-          clearLength: 1
-          name: Cell 1 2
       - action:
           actionType: FillTemplate
           templateSourceType: Inline
-          templateText: ESAT${RightLblYear}${RightDayOfYear}${Right-Label-Line}${RightDailySequence}${RightGMPartNumber}
+          templateText: ESAT${RightLblYear}${RightDayOfYear}${RightLine}${RightDailySequence}${RightGMPartNumber}
           outputVariable: Right-LabelData
           name: Cell 1 3
       falseBranch:
@@ -2769,12 +2604,6 @@
               name: Cell 0 13
               description: Birthed?
             trueBranch:
-            - action:
-                actionType: CallSubroutine
-                subroutineName: Right-Birth-Original
-                continueOnFailure: true
-                name: Cell 0 14
-                description: Record the original scan as its own item, never boxed
             - action:
                 actionType: CallSubroutine
                 subroutineName: Right-Axle-Print-Label

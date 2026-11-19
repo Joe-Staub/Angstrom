@@ -21,7 +21,7 @@ database any more, so the database steps come first.
 On the master, from this folder:
 
 ```
-Backup-PWInventory.cmd -Database PWInventory
+Backup-PWInventory.cmd -Instance Axletube\SQLEXPRESS -Database PWInventory
 ```
 
 The `.bak` lands in `C:\PWInventoryBackups\<yyyyMMdd>.BAK`. Copy it to the jump
@@ -66,6 +66,20 @@ sqlcmd -S <master>\SQLEXPRESS -d PWInventory2 -E -i misc\Create-Angstrom-Procedu
 
 It prints `dbo.Angstrom_NextLotNumber is installed.` Without it every box creation fails with
 "Cannot get next box number".
+
+Then give the account PlantWatch runs as (the operator login, `axletube\angstrom` at the
+plant) access to the new database. The migrator creates PWInventory2 under whoever runs it,
+so that account has a server login but no user in the new database, and PlantWatch logs
+`Cannot open database "PWInventory2" requested by the login` on every inventory call:
+
+```
+sqlcmd -S <master>\SQLEXPRESS -d PWInventory2 -E -C -Q "IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name='axletube\angstrom') CREATE USER [axletube\angstrom] FOR LOGIN [axletube\angstrom]; ALTER ROLE db_owner ADD MEMBER [axletube\angstrom]"
+```
+
+Newer `sqlcmd` builds encrypt by default and reject SQL Express's self-signed certificate;
+`-C` trusts it. The remote's RemotePW account needs the same: a local account with the same
+name and password as the master's works through integrated security; otherwise create a SQL
+login and use `User Id=...;Password=...` in the three connection strings.
 
 ## 5. Point the configuration at the master's SQL Server
 
@@ -127,3 +141,31 @@ for today with the test tubes in them.
 Set `provider: pw` and `Initial Catalog=PWInventory` back in the three YAML files, re-run
 `Create-Angstrom-Procedures.sql` from the previous `main` (its v1 body) against PWInventory,
 restart. Nothing in this cutover modifies PWInventory.
+
+## 9. GM serial reload (19 November 2026)
+
+The plant's PWInventory2 is replaced by a copy prepared on the dev machine: every item and box
+removed, then the 2428 checked GM Grand Rapids serials loaded (22 characters, line digit as
+scanned, birth date from the serial). `misc\Prepare-GMSerials.ps1` and `misc\Load-GMSerials.cmd`
+did it there; the plant gets the result by backup, copy and restore:
+
+1. On the master, stop PlantWatch, RemotePW and PWInventoryReporting (all hold connections).
+2. Back up what is there: `Backup-PWInventory.cmd -Instance Axletube\SQLEXPRESS -Database PWInventory2`.
+3. Copy the dev backup (`C:\PWInventoryBackups\<yyyyMMdd>.BAK` from the dev machine) to the
+   master, for example `C:\PWInventoryBackups\GM-reload.BAK`, then:
+   ```
+   sqlcmd -S Axletube\SQLEXPRESS -E -C -Q "ALTER DATABASE PWInventory2 SET SINGLE_USER WITH ROLLBACK IMMEDIATE; RESTORE DATABASE PWInventory2 FROM DISK='C:\PWInventoryBackups\GM-reload.BAK' WITH REPLACE; ALTER DATABASE PWInventory2 SET MULTI_USER"
+   ```
+4. The restore brings the dev machine's users with it, not the master's logins. Re-run
+   `Step4b-Grant-PlantWatch-Access.cmd` (or the grant in step 4 above) for `axletube\angstrom`,
+   and map the SQL login again:
+   ```
+   sqlcmd -S Axletube\SQLEXPRESS -d PWInventory2 -E -C -Q "ALTER USER pwplant2 WITH LOGIN = pwplant2"
+   ```
+   (if that says the user does not exist: `CREATE USER pwplant2 FOR LOGIN pwplant2; ALTER ROLE db_owner ADD MEMBER pwplant2`).
+5. Re-run `misc\Create-Angstrom-Procedures.sql` against PWInventory2: the procedure comes with
+   the backup, but running it again is harmless and proves the database is the right one.
+6. Check: `SELECT COUNT(*) FROM dbo.Item` must read 2428 and `SELECT COUNT(*) FROM dbo.Item
+   WHERE Part_Number LIKE 'LOT%'` must read 0. Box numbering starts again at L00001 and R00001.
+7. Push the matching configuration (line digit kept, full scan on the label, no second item per
+   tube) to the master and the remote before the first scan.
