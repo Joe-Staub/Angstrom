@@ -195,10 +195,10 @@
   dataType: String
 - variableType: Constant
   name: NOREAD
-  description: 'Constant: NoRead'
+  description: 'Constant: NOREAD - upper case, because the scan is upper-cased before it is compared to this'
   isArray: false
   dataType: String
-  defaultValue: NoRead
+  defaultValue: NOREAD
 - variableType: Constant
   name: OUTPUT_FOLDER
   description: 'Constant: C:\AxleReports'
@@ -373,3 +373,15 @@
   name: WIP-Part-Label-Template
   isArray: false
   dataType: String
+- variableType: Local
+  name: Clear-Error-Entered
+  description: What the operator typed into the Clear Error password popup; blanked after the check
+  isArray: false
+  dataType: String
+- variableType: Local
+  name: Clear-Error-Password
+  description: Password for the Clear Error buttons on both sides. Kept in persistence group Security (%ProgramData%\HTE\PlantWatch\Variables\Security.yaml); 123 until changed there
+  isArray: false
+  dataType: String
+  defaultValue: 123
+  persistenceGroup: Security

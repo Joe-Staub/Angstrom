@@ -37,6 +37,15 @@ Database: `PWDatabase` → `localhost\SQLEXPRESS`, catalog `PWInventory`, provid
   resets light, button colour and flag.
 - `Left-Error-Message` is the only text the operator sees; it also carries non-error notices
   ("Container Label Printed", "Label reprinted").
+- **Clear Error is password-protected** (since 2026-11-19): `Left/Right-Clear-Ack-Button_Logic_1` opens a
+  PopupDialog (Password kind, 60 s limit) into `Clear-Error-Entered` and compares it with
+  `Clear-Error-Password`, a variable in persistence group `Security` whose default is `123`. A
+  match clears the message and the alert; anything else, Cancel or the timeout posts "Password
+  not accepted - error not cleared" and leaves the alert. The typed value is blanked afterwards.
+  To change the password edit `%ProgramData%HTEPlantWatchVariablesSecurity.yaml` on each
+  machine (the master and the remote each keep their own copy) and restart, or change the
+  variable default in the Configurator before the file exists. The If cell logs the comparison at
+  debug level, so the password appears in a debug log.
 - Persistence group `Angstrom-Axle-Tube`: `LeftLotLabel`, `RightLotLabel`,
   `Left/Right-Production-Count` only. Box counts are **not** persisted; they live in the
   database (see below).
@@ -133,6 +142,10 @@ differ, e.g. `Label1`→`Label1_2`, `OutputText2`→`OutputText2_2`, `Label-Left
 | Birth failed, not a duplicate | the database error text | flag only | – |
 | Reprint with nothing printed yet | "Nothing to reprint yet" / "No box label printed yet" | none | – |
 | No read | "No read - scan the tube again"; the next scan clears it | none | – |
+
+The no-read test compares the upper-cased scan with the Constant variable `NOREAD`, so that
+constant's value must be `NOREAD` in upper case; until 2026-11-19 it was `NoRead`, so a real
+no-read never matched, fell through to "Unreadable part ID" and raised the alert.
 | Box creation failed | "Cannot get the next box number" / "Cannot create a new box" | flag only | – |
 | Printer write failed | the `Fail: …` text | flag only | – |
 
