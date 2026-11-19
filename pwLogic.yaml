@@ -608,19 +608,77 @@
   order: 0
   steps:
   - action:
-      actionType: Math
-      sourceType: Variable
-      source: BLANK
-      operator: SetVariableToValue
-      variable: Left-Error-Message
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 1
+      actionType: PopupDialog
+      dialogKind: Password
+      titleType: Value
+      title: Clear Error
+      promptType: Value
+      prompt: Enter the password to clear the error
+      defaultTextType: Value
+      defaultText: ''
+      resultVariableType: Variable
+      resultVariable: Clear-Error-Entered
+      statusVariable: ''
+      timeoutSeconds: 60
+      name: Cell 0 0
+      description: Supervisor password (persistence group Security); the answer is never logged by the popup
   - action:
-      actionType: CallSubroutine
-      subroutineName: Left-Clear-Alert
-      continueOnFailure: false
-      name: Cell 0 5
+      actionType: If
+      sourceType: Variable
+      source: Clear-Error-Entered
+      compareOperator: =
+      comparedToType: Variable
+      comparedTo: Clear-Error-Password
+      name: Cell 0 1
+      description: Matches Clear-Error-Password? Cancel or a timeout leaves it empty, so they fall through too
+    trueBranch:
+    - action:
+        actionType: Math
+        sourceType: Variable
+        source: BLANK
+        operator: SetVariableToValue
+        variable: Left-Error-Message
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 2
+    - action:
+        actionType: CallSubroutine
+        subroutineName: Left-Clear-Alert
+        continueOnFailure: false
+        name: Cell 0 3
+    - action:
+        actionType: Math
+        sourceType: Variable
+        source: BLANK
+        operator: SetVariableToValue
+        variable: Clear-Error-Entered
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 4
+        description: Do not keep the typed password around
+    falseBranch:
+    - action:
+        actionType: Math
+        sourceType: Value
+        source: Password not accepted - error not cleared
+        operator: SetVariableToValue
+        variable: Left-Error-Message
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 1 1
+    - action:
+        actionType: Math
+        sourceType: Variable
+        source: BLANK
+        operator: SetVariableToValue
+        variable: Clear-Error-Entered
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 1 2
+    - action:
+        actionType: Stop
+        stopped: false
+        name: Cell 1 3
 - gridRows: 3
   gridColumns: 15
   name: Left-Clear-Alert
@@ -1967,19 +2025,77 @@
   order: 0
   steps:
   - action:
-      actionType: Math
-      sourceType: Variable
-      source: BLANK
-      operator: SetVariableToValue
-      variable: Right-Error-Message
-      clearStartIndex: 1
-      clearLength: 1
-      name: Cell 0 1
+      actionType: PopupDialog
+      dialogKind: Password
+      titleType: Value
+      title: Clear Error
+      promptType: Value
+      prompt: Enter the password to clear the error
+      defaultTextType: Value
+      defaultText: ''
+      resultVariableType: Variable
+      resultVariable: Clear-Error-Entered
+      statusVariable: ''
+      timeoutSeconds: 60
+      name: Cell 0 0
+      description: Supervisor password (persistence group Security); the answer is never logged by the popup
   - action:
-      actionType: CallSubroutine
-      subroutineName: Right-Clear-Alert
-      continueOnFailure: false
-      name: Cell 0 5
+      actionType: If
+      sourceType: Variable
+      source: Clear-Error-Entered
+      compareOperator: =
+      comparedToType: Variable
+      comparedTo: Clear-Error-Password
+      name: Cell 0 1
+      description: Matches Clear-Error-Password? Cancel or a timeout leaves it empty, so they fall through too
+    trueBranch:
+    - action:
+        actionType: Math
+        sourceType: Variable
+        source: BLANK
+        operator: SetVariableToValue
+        variable: Right-Error-Message
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 2
+    - action:
+        actionType: CallSubroutine
+        subroutineName: Right-Clear-Alert
+        continueOnFailure: false
+        name: Cell 0 3
+    - action:
+        actionType: Math
+        sourceType: Variable
+        source: BLANK
+        operator: SetVariableToValue
+        variable: Clear-Error-Entered
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 0 4
+        description: Do not keep the typed password around
+    falseBranch:
+    - action:
+        actionType: Math
+        sourceType: Value
+        source: Password not accepted - error not cleared
+        operator: SetVariableToValue
+        variable: Right-Error-Message
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 1 1
+    - action:
+        actionType: Math
+        sourceType: Variable
+        source: BLANK
+        operator: SetVariableToValue
+        variable: Clear-Error-Entered
+        clearStartIndex: 1
+        clearLength: 1
+        name: Cell 1 2
+    - action:
+        actionType: Stop
+        stopped: false
+        name: Cell 1 3
 - gridRows: 3
   gridColumns: 15
   name: Right-Clear-Alert

@@ -156,15 +156,16 @@ did it there; the plant gets the result by backup, copy and restore:
    ```
    sqlcmd -S Axletube\SQLEXPRESS -E -C -Q "ALTER DATABASE PWInventory2 SET SINGLE_USER WITH ROLLBACK IMMEDIATE; RESTORE DATABASE PWInventory2 FROM DISK='C:\PWInventoryBackups\GM-reload.BAK' WITH REPLACE; ALTER DATABASE PWInventory2 SET MULTI_USER"
    ```
-4. The restore brings the dev machine's users with it, not the master's logins. Re-run
-   `Step4b-Grant-PlantWatch-Access.cmd` (or the grant in step 4 above) for `axletube\angstrom`,
-   and map the SQL login again:
+4. Database users travel with the backup; server logins do not. The dev backup holds one
+   user, `dbo`, and the login that runs the RESTORE becomes the owner, so restoring from a
+   prompt running as `axletube\angstrom` gives that account full access with nothing more to
+   do (if another account restores, run `Step4b-Grant-PlantWatch-Access.cmd` for angstrom).
+   The `pwplant2` SQL login has no user in the dev backup, so create it:
    ```
-   sqlcmd -S Axletube\SQLEXPRESS -d PWInventory2 -E -C -Q "ALTER USER pwplant2 WITH LOGIN = pwplant2"
+   sqlcmd -S Axletube\SQLEXPRESS -d PWInventory2 -E -C -Q "CREATE USER pwplant2 FOR LOGIN pwplant2; ALTER ROLE db_owner ADD MEMBER pwplant2"
    ```
-   (if that says the user does not exist: `CREATE USER pwplant2 FOR LOGIN pwplant2; ALTER ROLE db_owner ADD MEMBER pwplant2`).
-5. Re-run `misc\Create-Angstrom-Procedures.sql` against PWInventory2: the procedure comes with
-   the backup, but running it again is harmless and proves the database is the right one.
+5. `dbo.Angstrom_NextLotNumber` is inside the backup; nothing to run. Proof:
+   `sqlcmd -S Axletube\SQLEXPRESS -d PWInventory2 -E -C -Q "SELECT OBJECT_ID('dbo.Angstrom_NextLotNumber')"` prints a number.
 6. Check: `SELECT COUNT(*) FROM dbo.Item` must read 2428 and `SELECT COUNT(*) FROM dbo.Item
    WHERE Part_Number LIKE 'LOT%'` must read 0. Box numbering starts again at L00001 and R00001.
 7. Push the matching configuration (line digit kept, full scan on the label, no second item per
