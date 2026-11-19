@@ -84,11 +84,6 @@
   isArray: false
   dataType: String
 - variableType: Local
-  name: Left-Label-Line
-  description: Line digit printed on the axle label (scan line 1 prints as 3, 2 as 4)
-  isArray: false
-  dataType: String
-- variableType: Local
   name: Left-LabelData
   isArray: false
   dataType: String
@@ -266,11 +261,6 @@
   dataType: String
 - variableType: Local
   name: Right-Error-Message
-  isArray: false
-  dataType: String
-- variableType: Local
-  name: Right-Label-Line
-  description: Line digit printed on the axle label (scan line 1 prints as 3, 2 as 4)
   isArray: false
   dataType: String
 - variableType: Local

@@ -1,4 +1,4 @@
 enabled: yes
 provider: pw2
 databaseName: PWDatabase
-connectionString: Data Source=localhost\SQLEXPRESS;initial Catalog=PWInventory2;Integrated Security=SSPI
+connectionString: Data Source=Axletube\SQLEXPRESS;initial Catalog=PWInventory2;User Id=pwplant2;Password=Angstrom

@@ -55,17 +55,17 @@ Per side (Left shown; Right is the mirror with `Right`/`RIGHT`/`R` substituted):
   never boxed) it is boxed now instead; else if the failure text contains `IX_Item_Entity_Serial`
   it is a duplicate (`LeftAlert`, message, `Left-Log-Duplicate`); anything else is shown as
   the database error.
-- `Left-Build-Label`: the scan's line digit must be 1 or 2; it is printed as 3 or 4
-  (`Left-Label-Line`) and the **label serial** `Left-LabelData` is built as `ESAT` + year + day of
-  year + `Left-Label-Line` + daily sequence + GM part number, without the supplier part number.
-  Any other line digit posts "Unexpected line number N - bad read?", alerts and stops the scan
-  before the Birth, so the tube is neither in the database nor labelled.
-- **Two items per tube.** The scanner chart births the **label serial** (`Left-LabelData`); it is
-  the inventory item, so the duplicate check, the unboxed-serial recovery, the label and the box
-  all work on it. Tubes processed before label serials existed are therefore accepted once more.
-  `Left-Birth-Original` then records the original scan (`Left-PartId-Data`) as its own item,
-  never boxed; "already exists" is ignored, any other failure posts "Original scan not recorded -
-  …" and flags, but the tube is still labelled and boxed.
+- `Left-Build-Label`: the scan's line digit must be 1 or 2 and is kept as scanned. The
+  **database serial** `Left-LabelData` is the first 22 characters of the upper-cased scan, built
+  as `ESAT` + year + day of year + line + daily sequence + GM part number, without the supplier
+  serial. Any other line digit posts "Unexpected line number N - bad read?", alerts and stops the
+  scan before the Birth, so the tube is neither in the database nor labelled.
+- **One item per tube, two strings.** The 22-character serial is the inventory item: the Birth,
+  the duplicate check ("already exists"), the unboxed-serial recovery and the box all work on
+  it. The axle label prints the **full 31-character scan**, upper-cased: `Left-Axle-Print-Label`
+  copies `Left-PartId-Data` into `Left-Last-Label`, which the templates in `ConfigFiles` print in
+  the DataMatrix and as text. (Until 2026-11-19 the line digit was printed as 3/4 and the full
+  scan was birthed as a second item by `Left-Birth-Original`; both are gone.)
 - `Left-Box-Check`: consumed? (else `Left-Lot-Error`) → count updated (`Left-Lot-Status =
   Pass`, else `Left-Count-Error`) → `Left-Container-Count < BATCH_SIZE`, else
   `Left-Box-Print-Label` and `CreateLeftLot`. Row-1 branches are separated by NoOps on row 0
@@ -164,6 +164,13 @@ The ordered cutover to schema v2, with the check after each step, is `CUTOVER-V2
 ## Scripts in `misc/`
 
 - `Create-Angstrom-Procedures.sql`: the stored procedure the box numbering needs.
+- `Prepare-GMSerials.ps1`: checks the tube serials GM sends (xlsx or csv): upper-cases `esat`,
+  keeps the first 22 characters, takes the part from the serial, and writes
+  `GM-Serials-Checked.csv` plus `GM-Serials-Duplicates.csv` (with the reason) under
+  `C:\AxleReports\GM-Serials`. `Load-GMSerials.ps1` then empties PWInventory2 of every item and
+  box and loads the checked serials, birth date decoded from the serial's year and day of year;
+  preview without `-Commit`. Done on the dev copy 2026-11-19 (2428 loaded, 21 duplicates), then
+  backup, copy and restore to the plant.
 - `Export-LotContents.ps1` (`.cmd` wrapper): boxes and their tubes to CSV, one row per tube;
   `-Lot L00012`, `-Side Right`, `-Since`/`-Until`, `-OutFile`. Default output
   `C:\AxleReports\LotContents_<stamp>.csv`. Note `Item_Gene.TimeStamp` in the pw schema is a
